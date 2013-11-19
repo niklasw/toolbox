@@ -1,0 +1,30 @@
+<rpcList>
+    <rpc player="Niklas Wikstrom" rpcName="Bender" dmaster="Martin">
+        <attributes>
+        </attributes>
+
+        <weapons>
+        </weapons>
+
+        <skills>
+        </skills>
+
+        <equipment>
+        </equipment>
+    </rpc>
+
+    <rpc player="Petter Wolff" rpcName="Fry" dmaster="Martin">
+        <attributes>
+        </attributes>
+
+        <weapons>
+        </weapons>
+
+        <skills>
+        </skills>
+
+        <equipment>
+        </equipment>
+    </rpc>
+</rpcList>
+

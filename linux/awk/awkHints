@@ -1,0 +1,2 @@
+# Extract lines with 11 "columns" and remove extra space
+awk 'NF == 11 && gsub("  *"," ") {print}' starccmRun.70284.log

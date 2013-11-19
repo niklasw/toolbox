@@ -1,0 +1,4 @@
+# Remove trailing whitespace and then
+# Replace multiple empty lines with one single empty line:
+%s/\s\+$//e
+%s/\n\{3,}/\r\r/e

@@ -1,0 +1,31 @@
+###simpleDB data file
+<begin>
+<it>
+name:Niklas
+<sit>
+exercise:armhavningar
+<ssit>
+list:[3/45/2/324/4345/34/23]
+<sit>
+exercise:simning
+<ssit>
+list:[3/45/2/324/4345/34/23]
+<sit>
+exercise:chins
+<ssit>
+list:[3/45/2/324/4345/34/23]
+
+<it>
+name:Per
+<sit>
+exercise:armhavningar <ssit>
+list:[3/45/2/324/4345/34/23]
+<sit>
+exercise:simning
+<ssit>
+list:[3/45/2/324/4345/34/23]
+<sit>
+exercise:chins
+<ssit>
+list:[3/45/2/324/4345/34/23]
+<end>

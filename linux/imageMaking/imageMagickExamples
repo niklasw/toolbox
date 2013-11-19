@@ -1,0 +1,20 @@
+# Some snippets to do images funny with IM
+# Add text to an image:
+mogrify -gravity "North" -draw "text 0,3 'Example Text'"  -geometry +0+0 image.png
+
+# Append one image to oneother
+# Warning: png files becomes big if e.g. -geometry change
+# is applied??
+convert -append img0.png img1.png imgOut.png
+
+# Create a background and put image upon it
+
+convert -size 359x359 xc:white   whiteBox_359x359.png
+composite -gravity center logoNoText.png whiteBox_359x359.png   logoNoText_359x359.png 
+
+
+# Automatic screen capture:
+let i=1; while true; do import -window root scrn$i.png; (( i++ )); sleep 5; done
+
+# Replace one color to another
+for f in *.gif; do convert $f -fuzz 5% -fill "#8E3C4F" -opaque "#c8c8c8" wine/$f; done

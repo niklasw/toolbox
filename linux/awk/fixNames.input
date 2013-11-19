@@ -1,0 +1,22 @@
+solid Intersecptor Surf
+endsolid Intersecptor Surf
+solid Boat Wall
+endsolid Boat Wall
+solid Symmetri
+endsolid Symmetri
+solid Slip Wall
+endsolid Slip Wall
+solid Water Bottom
+endsolid Water Bottom
+solid Water Outlet
+endsolid Water Outlet
+solid Air Outlet
+endsolid Air Outlet
+solid Air Top Inlet
+endsolid Air Top Inlet
+solid Pipe
+endsolid Pipe
+solid Fine
+endsolid Fine
+solid internal ej beräkning
+endsolid internal ej beräkning

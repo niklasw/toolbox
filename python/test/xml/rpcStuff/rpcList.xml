@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE rpcList>
+<rpcList>
+  <rpc rpcName='Bender' player='Niklas Wikstrom' dmaster='MH'>
+    <attributes>
+      <strength>11</strength>
+      <stamina> 13 </stamina>
+      <agility> 17 </agility>
+      <intelligence> 12 </intelligence>
+      <psyche> 3 </psyche>
+    </attributes>
+    <weapons>
+      <weapon name='Battle Axe'>
+        <skill>15</skill>
+        <dmg>3t6</dmg>
+        <comment>
+        </comment>
+      </weapon>
+      <weapon name='Axe'>
+        <skill>12</skill>
+        <dmg>2t6</dmg>
+        <comment>
+        </comment>
+      </weapon>
+    </weapons>
+    <skills>
+      <skill name='Cooking'>15</skill>
+    </skills>
+  </rpc>
+  <rpc rpcName='Fry' player='Petter Wolff' dmaster='Sillen'>
+    <attributes>
+      <strength>18</strength>
+      <stamina> 13 </stamina>
+      <agility> 14 </agility>
+      <intelligence> 16 </intelligence>
+      <psyche> 13 </psyche>
+    </attributes>
+    <weapons>
+    </weapons>
+    <skills>
+      <skill name='Climb'>10</skill>
+    </skills>
+  </rpc>
+</rpcList>

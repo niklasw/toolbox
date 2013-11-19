@@ -1,0 +1,12 @@
+
+# To produce mpeg 4 that seems to be ok in windos media player:
+# Note that the files MUST be numbered correctly, i.e. the numbering must be a sequence
+# with step size 1, like 00010.png, 00011.png.
+# ! 00010, 00020 does NOT seem to work !
+
+ffmpeg -i Scene_1koppInside%05d_stamped.png    -qmax 8        -r 10             -vcodec msmpeg4v2 out.avi
+        ---------input files--------------    --quality--  --frame rate--
+
+
+ffmpeg -sameq -i image%05d.png -r 20 -vcodec msmpeg4v2 newMovie.avi
+

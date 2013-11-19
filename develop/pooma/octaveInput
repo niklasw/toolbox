@@ -1,0 +1,15 @@
+load outData.clean
+
+
+o=outData;
+
+w=outData(1:10,:);
+dw0=outData(11:20,:);
+dw1=outData(21:30,:);
+
+contour(w)
+pause(5)
+contour(dw0)
+pause(5)
+contour(dw1)
+pause(5)

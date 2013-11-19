@@ -1,0 +1,7 @@
+gsettings set org.gnome.desktop.wm.preferences focus-mode 'sloppy'
+gsettings set org.gnome.desktop.wm.preferences auto-raise false
+gsettings set org.gnome.desktop.wm.preferences raise-on-click false
+// Unity:
+gsettings set org.compiz.core:/org/compiz/profiles/unity/plugins/core/ hsize 6
+gsettings set org.compiz.core:/org/compiz/profiles/unity/plugins/core/ vsize 1
+gsettings set org.compiz.unityshell:/org/compiz/profiles/unity/plugins/unityshell/ launcher-hide-mode 0

@@ -1,0 +1,9 @@
+# convert from to and scale same aspect
+mencoder out.ogg -oac pcm -ovc lavc -o out.avi -vf scale -zoom -xy 720
+mencoder out.ogg -oac mp3lame -ovc xvid -xvidencopts bitrate=-4000 -o out.avi -vf scale -zoom -xy 1000
+
+mencoder "mf://*.png" -mf fps=10 -vf scale -zoom -xy 0.5 -o output.avi -ovc lavc -lavcopts vbitrate=1800:mbd=1
+
+for i in {1,2}; do mencoder <input> -oac lavc -ovc lavc -lavcopts acodec=mp2:vcodec=mpeg2video:mbd=1:vpass=$i:vbitrate=1800 -of mpeg -ofps 25 -vf scale -zoom -xy 640 -o <outputfile>; done
+
+mencoder "mf://*.png" -mf fps=10 -o output_mspg4v2.avi -ovc lavc -lavcopts vcodec=msmpeg4v2

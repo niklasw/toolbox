@@ -1,0 +1,26 @@
+# Life simplifyers by konwkn...
+
+def SaveImage(imageName,overwrite=False,size=(1600,1000)):
+    # Call in powerviz console like
+    # SaveImage('imageName.png',True,(1200,1000))
+    # Which will overwrite existing image with a new image of size (1200,1000)
+    # Default would be
+    # SaveImage('imageName.png')
+
+    v=app.currentViewer
+    v.saveImage(filename=imageName,size=size,forceOverwrite=overwrite)
+
+
+# Just a few shortcuts to straighten up the view...
+def up(vec):
+    v=app.currentViewer
+    v.cameraUpDirection=vec
+
+def xup():
+    up((1,0,0))
+
+def yup():
+    up((0,1,0))
+
+def zup():
+    up((0,0,1))

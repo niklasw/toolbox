@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE KDevPrjSession>
+<KDevPrjSession>
+<LastCompileConfig>(Default)</LastCompileConfig>
+ <Mainframe MaximizeMode="1" />
+ <DocsAndViews NumberOfDocuments="4" >
+<Doc0 CursorPosLine="29" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/home/nikwik/develop/c++/gnomemenus/gnomemenus/main.cpp" >
+<View0 Top="24" Width="400" Attach="1" Height="300" Left="3" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc0>
+  <Doc1 CursorPosLine="18" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/home/nikwik/develop/c++/gnomemenus/gnomemenus/list.cpp" >
+<View0 Top="46" Width="1133" Attach="1" Height="555" Left="25" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc1>
+  <Doc2 CursorPosLine="33" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="17" FileName="/home/nikwik/develop/c++/gnomemenus/gnomemenus/list.h" >
+<View0 Top="44" Width="1139" Attach="1" Height="582" Left="44" Focus="1" Type="KWriteView" MinMaxMode="2" />  </Doc2>
+  <Doc3 CursorPosLine="0" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/home/nikwik/develop/c++/gnomemenus/gnomemenus.lsm" >
+<View0 Top="90" Width="1145" Attach="1" Height="618" Left="69" Focus="0" Type="KWriteView" MinMaxMode="0" />  </Doc3> </DocsAndViews></KDevPrjSession>

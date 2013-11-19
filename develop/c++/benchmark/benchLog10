@@ -1,0 +1,15 @@
+N: 20    time:  1.73   Mflops: 75.7642
+N: 60    time:  1.31   Mflops: 84.4214
+N: 100    time:  1.48   Mflops: 86.4865
+N: 140    time:  1.98   Mflops: 88.6949
+N: 180    time:  1.7   Mflops: 54.8894
+N: 220    time:  1   Mflops: 42.592
+N: 260    time:  1.77   Mflops: 39.7198
+N: 300    time:  1.36   Mflops: 39.7059
+N: 340    time:  1.99   Mflops: 39.5015
+N: 380    time:  2.84   Mflops: 38.6423
+N: 420    time:  3.83   Mflops: 38.6883
+N: 460    time:  5.15   Mflops: 37.8004
+N: 500    time:  6.58   Mflops: 37.9939
+N: 540    time:  8.36   Mflops: 37.6708
+N: 580    time:  10.35   Mflops: 37.7028

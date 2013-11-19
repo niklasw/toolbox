@@ -1,0 +1,3 @@
+#!/bin/bash
+
+let i=1;while (( i <= $1 )); do echo -e "TIME STEP 1 $i";echo "PRINT GRAPHICS JPEG naca0012_alpha8_cavGS_$i.jpg"; (( i++ )); done

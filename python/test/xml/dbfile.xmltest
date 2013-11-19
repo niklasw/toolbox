@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<casedb>
+  <case user='nikwik' status='pending' id='P34xv'>
+    <options dir='/home/nikwik/tmp/runs/P34xv' i='' p='PREPOST' m='' b='1' db='' j='P34-start'/>
+  </case>
+  <case user='nikwik' status='pending' id='P35xv'>
+    <options dir='/home/nikwik/tmp/runs/P35xv' i='' p='PREPOST' m='' b='1' db='' j='P33-start'/>
+  </case>
+  <case status='pending' id='P34xv_a' user='nikwik'>
+    <options b='1' i='' m='' j='P34-start' db='' p='PREPOST' dir='/home/nikwik/tmp/runs/P34xv'/>
+  </case>
+  <case status='pending' id='P35xv_a' user='nikwik'>
+    <options b='1' i='' m='' j='P33-start' db='' p='PREPOST' dir='/home/nikwik/tmp/runs/P35xv'/>
+  </case>
+</casedb>
