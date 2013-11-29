@@ -22,17 +22,17 @@ class rotationMatrix:
     def X(self):
        p=self.phiX
        return matrix([[1, 0,        0       ], \
-                      [0, cos(p),   sin(p)  ], \
-                      [0, -sin(p),  cos(p)  ]])
+                      [0, cos(p),   -sin(p)  ], \
+                      [0, sin(p),  cos(p)  ]])
     def Y(self):
        p=self.phiY
-       return matrix([[cos(p),  0, sin(p) ], \
+       return matrix([[cos(p),  0, -sin(p) ], \
                       [0,       1, 0      ], \
-                      [-sin(p), 0, cos(p) ]])
+                      [sin(p), 0, cos(p) ]])
     def Z(self):
        p=self.phiZ
-       return matrix([[cos(p),  sin(p),  0 ], \
-                      [-sin(p), cos(p),  0 ], \
+       return matrix([[cos(p),  -sin(p),  0 ], \
+                      [sin(p), cos(p),  0 ], \
                       [0,       0,       1 ]])
 
     def rotate(self,V):

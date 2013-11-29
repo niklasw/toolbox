@@ -113,7 +113,7 @@ def plotFFT(
     if plotdata:
         Y = scipy.fft(samples)
         power = abs(Y[1:(n/2)+1])**2/n
-        power = scipy.signal.signaltools.medfilt(power,filterWidth)
+        #power = scipy.signal.signaltools.medfilt(power,filterWidth)
         # TODO: add option to plot powerdensityspectra:
         # pref =2.0e-5
         # power = 10*pylab.log10(power/pref**2)
