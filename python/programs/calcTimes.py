@@ -12,25 +12,18 @@ def hmscheck(hmsString,sep=':'):
     return hmsString
 
 def hms2s(hmsString,sep=':'):
-    hms = []; secs=0
-    hms = [ int(i) for i in hmsString.split(':') ]
+    from operator import mul
+    hms = map(int,hmsString.split(sep))
     try:
-        secs= {
-         1: lambda hms: hms[0]*3600,
-         2: lambda hms: hms[0]*3600+hms[1]*60,
-         3: lambda hms: hms[0]*3600+hms[1]*60+hms[2]}[len(hms)](hms)
+        return sum(map(mul,hms,(3600,60,1)))
     except KeyError:
         print 'format error\n'
         main()
 
-    return secs
-    
 def s2hms(s,sep=':'):
-    h = s/3600
-    m = (s-h*3600)/60
-    s = s-h*3600-m*60
-    h,m,s = [ str(i) for i in [h,m,s] ]
-    return h+sep+m+sep+s
+    H,S=int(s/3600),s%3600
+    M,S=int(S/60),S%60
+    return sep.join( [ '{0:02d}'.format(i) for i in [H,M,S] ] )
 
 def dTime(hms1,hms2,sep=':'):
     return s2hms(hms2s(hms2,sep)-hms2s(hms1,sep),sep)
