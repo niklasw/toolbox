@@ -4,9 +4,9 @@ import os,sys,re
 from fileParsing import loadArray
 import string
 try:
-    import pylab,scipy
+    import pylab,numpy
 except:
-    print 'Python modules pylab and scipy must be installed to run this script'
+    print 'Python modules pylab and numpy must be installed to run this script'
     sys.exit(1)
 
 
@@ -26,7 +26,7 @@ def Error(s):
 def getArgs():
     from optparse import OptionParser
     descString = """
-    Python thing relying on pylab and scipy to plot 
+    Python thing relying on pylab and numpy to plot 
     energy spectrum from sampled data.
     """
 
@@ -57,7 +57,7 @@ def getArgs():
 
     fwidth = int(opt.fwidth)
     # Make filter width odd, to work with medfilt
-    if scipy.mod(fwidth,2) == 0:
+    if numpy.mod(fwidth,2) == 0:
         fwidth += 1
 
     args={'file':opt.dataFile, \
@@ -90,9 +90,9 @@ def readData(fileName, cols, nCol=1):
 def vmag(U):
     d0,d1=U.shape
     if d1>1:
-        out = scipy.zeros(d0)
+        out = numpy.zeros(d0)
         for i,row in enumerate(U):
-            out[i] = scipy.sqrt(scipy.dot(row,row))
+            out[i] = numpy.sqrt(numpy.dot(row,row))
         return out
 
 def plotFFT(
@@ -111,7 +111,7 @@ def plotFFT(
     freq=freq[1:]*sampleFrq/2.0
 
     if plotdata:
-        Y = scipy.fft(samples)
+        Y = numpy.fft.fft(samples)
         power = abs(Y[1:(n/2)+1])**2/n
         #power = scipy.signal.signaltools.medfilt(power,filterWidth)
         # TODO: add option to plot powerdensityspectra:

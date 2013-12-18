@@ -2,6 +2,9 @@ gsettings set org.gnome.desktop.wm.preferences focus-mode 'sloppy'
 gsettings set org.gnome.desktop.wm.preferences auto-raise false
 gsettings set org.gnome.desktop.wm.preferences raise-on-click false
 
+// Fedora if single user on system
+gsettings set org.gnome.shell always-show-log-out 'true'
+
 gsettings set  org.gnome.desktop.input-sources xkb-options ['ctrl:nocaps']
 // Unity:
 gsettings set org.compiz.core:/org/compiz/profiles/unity/plugins/core/ hsize 6
