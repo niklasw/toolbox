@@ -54,18 +54,6 @@ class htmlTable:
         self.content = start+rows+end
 
 
-class cssTable:
-    def __init__(self, rowList):
-        self.rows = rowList
-        self.rowList = []
-        for row in self.rows:
-            self.rowList.append(newRow(row))
-        self.content = '\n'.join(self.rowList)
-
-    def newRow(self,cols):
-        return ','.join(cols)
-
-
 if __name__=='__main__':
     import sys,os
     from accountingTools import Configuration
