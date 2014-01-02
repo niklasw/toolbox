@@ -13,7 +13,7 @@
 # S   start   an attempt to start the job has been made (if the job fails to properly start, it may have multiple job start records)
 
 import os,sys,re
-from utils import *
+import utils
 
 debugSql = False
 
@@ -70,11 +70,12 @@ class jobDb:
 
     def read(self):
         import sqlite3 as sql
-        if os.path.exists(self.dbFileName):
-            self.newDb = False
+        if not os.path.exists(self.dbFileName):
+            utils.Error('Database file {0} does not exist'.format(self.dbFileName))
+	try:
             self.conn = sql.connect(self.dbFileName)
-        else:
-            Error('Cannot read from db {0}'.format(self.dbFileName))
+	except sql.DatabaseError:
+	    utils.Error('Could not connect to database file {0}'.format(self.dbFileName))
 
     def new(self):
         import sqlite3 as sql
@@ -88,7 +89,7 @@ class jobDb:
 
     def checkTables(self):
         # Check if existing table contains at least definitions in tableDef.
-        Error('NOT IMPLEMENTED')
+        utils.Error('NOT IMPLEMENTED')
         result = self.sqlQuery('PRAGMA table_info(%s)' % self.tableName)
         dbColumns = [ c.split('|') for c in result ]
         for item in self.tableDef:
@@ -114,7 +115,7 @@ class jobDb:
         data = '\n'.join(self.conn.iterdump())
         self.conn.commit()
 
-    #@timeit
+    #@utils.timeit
     def sqlQuery(self,query):
         with self.conn:
             cursor=self.conn.cursor()
@@ -129,7 +130,6 @@ class DbManager(jobDb):
         jobDb.__init__(self,conf.database)
         self.startTime = 0
 
-
     def syncTorqueLogs(self):
         from subprocess import Popen, PIPE
         source = self.conf.serverLogsPath+'/'+self.conf.logFileGlob
@@ -138,11 +138,9 @@ class DbManager(jobDb):
         p = Popen(cmd, stdout=PIPE)
         out,err = p.communicate()
         if err:
-            Warn('Could not sync logs from torque server')
+            utils.Warn('Could not sync logs from torque server')
         else:
             Info('Sync from torque server successful')
-
-
 
     def update(self):
         import glob
@@ -224,7 +222,7 @@ class Job(dict):
             self['pid']= sSplit[2]
             return sSplit[-1]
         except:
-            Warn('Could not gather info from string %s'%s)
+            utils.Warn('Could not gather info from string %s'%s)
             return 'user=NOTFOUND'
 
     def parseLine(self,l):
@@ -269,6 +267,7 @@ class Job(dict):
         pass
 
 
+
 class torqueParser(dict):
     def __init__(self, fileList = []):
         dict.__init__(self)
@@ -283,14 +282,14 @@ class torqueParser(dict):
                 jobList.append( job )
         return jobList
 
-    @timeit
+    @utils.timeit
     def parse(self):
         for f in self.files:
-            #try:
+            try:
                 with open(f,'r') as fp:
                     self.jobList+=self.parseFile(fp)
-            #except:
-            #    Warn('Could not open %s' % f)
+            except:
+                utils.Warn('Could not parse {0}'.format(f))
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import cherrypy
-from accountingTools import *
 from os.path import join as pjoin
 import cherryTemplates as CT
 import utils
@@ -47,7 +46,11 @@ class Root(object):
         table = CT.htmlTable(rows)
         table.new(cls='mytable', head=['Project','Wall Time', 'CPU Time'])
 
-        document.addContent(c1=table.content,c2='<p>Includes jobs started after {0}</p>'.format(epoch2date(self.db.startTime)),curpage=pageName)
+        document.addContent(
+		c1=table.content,
+		c2='<p>Includes jobs started after {0}</p>'.format(utils.epoch2date(self.db.startTime)),
+		curpage=pageName)
+
         self.content = document.content
 
     @cherrypy.expose
@@ -64,6 +67,7 @@ class Download:
 
 
 if __name__ == '__main__':
+    from accountingTools import Configuration, DbManager
 
     configFile = pjoin(os.getcwd(),'config')
 
