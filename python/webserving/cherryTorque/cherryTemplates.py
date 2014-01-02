@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 from string import Template
-from accountingTools import Info,Error,Warn
 import os
 
 class htmlTemplate:
@@ -16,8 +15,6 @@ class htmlTemplate:
                 self.OK = True
         except:
             self.content = 'Template not found {0}'.format(templateFile)
-
-
 
     def addContent(self,c1='', c2='', curpage='index'):
         if self.OK:
@@ -34,7 +31,9 @@ class htmlTable:
         self.content = ''
 
     def newRow(self,cols, clst=('even','odd')):
-        cls = clst[self.rowCounter % 2]
+	# Horisontally striping possilbe through CSS classes
+	# even or odd
+        cls = clst[self.rowCounter % len(clst)]
         r0 = '<tr class="{0}">'.format(cls)
         r1 = '</tr>'
         c = ' '.join(['<td>{0}</td>'.format(a) for a in cols])
@@ -54,7 +53,7 @@ class htmlTable:
         self.content = start+rows+end
 
 
-if __name__=='__main__':
+def test()
     import sys,os
     from accountingTools import Configuration
     from os.path import join as pjoin
@@ -79,6 +78,5 @@ if __name__=='__main__':
 
     print doc
 
-
-
-
+if __name__=='__main__':
+    test()

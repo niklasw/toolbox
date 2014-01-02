@@ -32,13 +32,11 @@ def epoch2date(e,fmt='%Y-%m'):
     import time
     return time.ctime(e)
 
-
 def coreCount(ppnString):
     n,ppn = ppnString.split(':',1)
     nNodes = int(n)
     nCores = int(ppn.split('=')[-1])
     return nNodes*nCores
-
 
 # Perf timer
 def timeit(method):
@@ -52,6 +50,3 @@ def timeit(method):
         return result
 
     return timed
-
-
-
