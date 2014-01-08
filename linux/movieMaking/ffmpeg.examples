@@ -10,3 +10,4 @@ ffmpeg -i Scene_1koppInside%05d_stamped.png    -qmax 8        -r 10             
 
 ffmpeg -sameq -i image%05d.png -r 20 -vcodec msmpeg4v2 newMovie.avi
 
+ffmpeg -i rapport-41-1930-svt-play.flv   -vcodec libh264 out3.avi
