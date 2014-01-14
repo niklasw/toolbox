@@ -34,6 +34,7 @@ class Configuration:
         self.serverLogsPath = config.get(self.db,'serverLogsPath')
 
         self.serverPort = int(config.get(self.site,'port'))
+        self.interfaceAddress = config.get(self.site,'interfaceAddress')
         self.htmlTemplate = config.get(self.site,'htmlTemplate')
 
 
@@ -128,19 +129,27 @@ class DbManager(jobDb):
     def __init__(self, conf):
         self.conf = conf
         jobDb.__init__(self,conf.database)
-        self.startTime = 0
+        self.startTime = utils.date2epoch('2013-01')
+        self.endTime = utils.date2epoch('2015-01')
 
     def syncTorqueLogs(self):
         from subprocess import Popen, PIPE
         source = self.conf.serverLogsPath+'/'+self.conf.logFileGlob
         target = self.conf.logsPath+'/'
+
+        if not os.path.isdir(target):
+            try:
+                os.makedirs(target)
+            except:
+                utils.Error('Could not create sync target dir {0}'.format(target))
         cmd = ['/usr/bin/rsync',source,target]
         p = Popen(cmd, stdout=PIPE)
         out,err = p.communicate()
         if err:
             utils.Warn('Could not sync logs from torque server')
+            utils.Warn('System error message was: {0}'.format(err))
         else:
-            Info('Sync from torque server successful')
+            utils.Info('Sync from torque server successful')
 
     def update(self):
         import glob
@@ -175,8 +184,8 @@ class DbManager(jobDb):
             wallTime = 0
             result = self.sqlQuery("""
             SELECT IResource_List_nodes, iresources_used_walltime FROM Jobs Where istatus = 'E'
-            and {0} = '{1}' and istart >= {2}
-            """.format(resource, user, self.startTime)) # List of tuples [(n,secs), (n,secs)...]
+            and {0} = '{1}' and istart >= {2} and iend <= {3}
+            """.format(resource, user, self.startTime,self.endTime)) # List of tuples [(n,secs), (n,secs)...]
             if result:
                 coreCounts= result[0]
 
@@ -186,10 +195,10 @@ class DbManager(jobDb):
                 totalWallTime += wallTime
                 totalCPUTime += cpuTime
 
-            rows.append((str(user), s2hms(wallTime),s2hms(cpuTime)))
+            rows.append((str(user), utils.s2hms(wallTime),utils.s2hms(cpuTime)))
 
         rows.append(('----','----','----'))
-        rows.append(('TOTAL', s2hms(totalWallTime),s2hms(totalCPUTime)))
+        rows.append(('TOTAL', utils.s2hms(totalWallTime),utils.s2hms(totalCPUTime)))
         return rows
 
     def getProjectHours(self):
@@ -240,9 +249,9 @@ class Job(dict):
             keyVal = item.split('=',1)
             key = re.sub('\.','_',keyVal[0]) # To fit SQL. No dots in sql keys.
             if re.search(self.wallTimeKey,key):    # Special treatment of time string
-                keyVal[1] = hms2s(keyVal[1])
+                keyVal[1] = utils.hms2s(keyVal[1])
             if re.search(self.nodeCountKey,key):
-                keyVal[1] = coreCount(keyVal[1])
+                keyVal[1] = utils.coreCount(keyVal[1])
             self[key] = keyVal[1]
 
     def defaultDict(self):
@@ -285,11 +294,11 @@ class torqueParser(dict):
     @utils.timeit
     def parse(self):
         for f in self.files:
-            try:
+            #try:
                 with open(f,'r') as fp:
                     self.jobList+=self.parseFile(fp)
-            except:
-                utils.Warn('Could not parse {0}'.format(f))
+            #except:
+            #    utils.Warn('Could not parse {0}'.format(f))
 
 
 
@@ -320,7 +329,7 @@ def test():
     for project in projectList:
         wallSecs = jdb.sqlQuery("SELECT SUM(iresources_used_walltime) FROM Jobs WHERE istatus = 'E' and IResource_List_other = '%s'" % project)
         if project[0] != 'NOVALUE':
-            print project, s2hms(wallSecs[0][0])
+            print project, utils.s2hms(wallSecs[0][0])
 
 
 if __name__=='__main__':
