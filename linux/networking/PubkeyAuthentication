@@ -1,0 +1,4 @@
+sudo restorecon -R -v $PWD/.ssh/
+
+chmod 700 $HOME/.ssh
+#...

@@ -2,12 +2,12 @@
 
 
 [Site]
-interfaceAddress = 192.168.0.0
+interfaceAddress = 150.227.20.126
 port = 8081
-htmlTemplate = /home/nikwik/Data/Torque/Accounting/CSS/cherryTemplate.html
+htmlTemplate = /home/soft/Servers/cherryTorque/CSS/cherryTemplate.html
 
 [Db]
-path = /home/nikwik/Data/Torque/Accounting/torqueLogs
-database = /home/nikwik/Data/Torque/Accounting/torqueLogs/torqueLog.db
+path = /tmp/torqueLogs
+database = /tmp/torqueLogs/torqueLog.db
 serverLogsPath = ghibli:/var/lib/torque/server_priv/accounting
 glob = 20*

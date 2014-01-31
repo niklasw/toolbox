@@ -16,9 +16,13 @@ class htmlTemplate:
         except:
             self.content = 'Template not found {0}'.format(templateFile)
 
-    def addContent(self,c1='', c2='', curpage='index'):
+    def addContent(self,c1='', c2='',c3='',c4='', curpage='index'):
         if self.OK:
-            self.content = self.template.safe_substitute(content1=c1, content2=c2, currentpage=curpage)
+            self.content = self.template.safe_substitute(content1=c1,
+                                                         content2=c2,
+                                                         content3=c3,
+                                                         content4=c4,
+                                                         currentpage=curpage)
 
     def __str__(self):
         return self.content
@@ -52,8 +56,50 @@ class htmlTable:
         rows = '\n'.join(rowList)
         self.content = start+rows+end
 
+class listLink:
+    def __init__(self,name='**',href='#',cls=''):
+        self.dictionary= {'name':name, 'href':href, 'class':cls}
+        self.content = self.generate()
 
-def test()
+    def generate(self):
+        line = '<li><a class="$class" href="$href">$name</a></li>'
+        return Template(line).safe_substitute(self.dictionary)
+
+    def __str__(self):
+        return str(self.content)
+
+class htmlList:
+    def __init__(self,itemList=[], name='List'):
+        self.items = itemList
+        self.content=self.generate(head=name)
+
+    def generate(self, head='List'):
+        content = '<ul>\n'
+        content+= '\t<li style="font-weight:bold;">{0}</li>\n'.format(head)
+        content+= '\t<li>-----------</li>\n'
+        for item in self.items:
+            content+= '\t{0}\n'.format(item)
+        content += '</ul>\n'
+        return content
+
+    def update(self, itemList, name='List'):
+        self.items=itemList
+        self.content = self.generate(head=name)
+
+class dateSelector(htmlList):
+    def __init__(self, name='dList', startYear=2013, endYear=2014, xdate='sdate',current='2013-01',curpage='index'):
+        self.lines=[]
+        for Y in range(startYear,endYear+1):
+            dates = ['{0:04d}-{1:02d}'.format(Y, a) for a in range(1,13)]
+            for date in dates:
+                print date, 'curr date arg =', current
+                cclass = 'current' if date == current else ''
+                L = listLink(name=date,href='{2}?{0}={1}'.format(xdate,date,curpage),cls=cclass)
+                self.lines.append(L)
+        htmlList.__init__(self,self.lines, name)
+
+
+def test():
     import sys,os
     from accountingTools import Configuration
     from os.path import join as pjoin

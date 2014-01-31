@@ -30,7 +30,8 @@ def date2epoch(d,fmt='%Y-%m'):
 
 def epoch2date(e,fmt='%Y-%m'):
     import time
-    return time.ctime(e)
+    print e
+    return time.strftime(fmt,time.localtime(e))
 
 def coreCount(ppnString):
     n,ppn = ppnString.split(':',1)
