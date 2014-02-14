@@ -38,17 +38,29 @@ def getcols(astring):
     cols=astring.split(':')
     return len(cols), [ int(a) for a in cols ]
 
+def meanFilter(A,i,w):
+    hw = int(w/2)
+    w0 = min(hw,max(i-hw,0))
+    w1 = max(hw,min(hw,len(A)-i))
+    return pylab.mean(A[i-w0:i+w1])
+
+def filtered(A,w):
+    return pylab.array( [ meanFilter(A,i,w) for i in range(len(A)) ])
+
 def usage(exit):
     print """
     Python thing relying on pylab and numpy to plot
     column stored data in one or several files. Data
     files can contain one or two columns.
 
-    Usage: plot0.py <file> [file2 [file3]] [options]
+    Usage: plot0.py <file> [file2 [file3]] [options and arguments]
 
     Options are:
     -minus              Reverse sign on Y data
     -log                Log Y axis
+    -diff               Plot the diff of data instead
+    -filter [width]     mean filter data with filter width
+                        width must be even
     -legend "a b c"     Adds a legend
     -legendloc [0-10]   Legend location (pydoc pylab.legend)
     -grid
@@ -78,6 +90,8 @@ legendNames=[]
 legendLocation=0
 dosave=False
 dolog=False
+dodiff=False
+filterWidth=0
 doclean=False
 doshow=True
 linestyle=''
@@ -106,6 +120,10 @@ while len(arguments):
         minus=True
     elif arg=='-log':
         dolog=True
+    elif arg=='-diff':
+        dodiff=True
+    elif arg=='-filter':
+        filterWidth=int(getnext(arguments))
     elif arg=='-legendloc':
         legendLocation=getnext(arguments).split()
     elif arg=='-legend':
@@ -191,25 +209,29 @@ for d in data:
         y=d[:]
         Y.append(y)
 
-    if dolog:
-        print "WARNING:\nEvaluating magnitude of variable to avoid log(-y)"
-        for y_ in Y:
-            print 'Plotting'
-            pylab.plot(pylab.log10(x),pylab.log10(pylab.fabs(y_)),linestyle)
-    else:
-        for y_ in Y:
-            print 'Plotting'
-            if minus:
-                pylab.plot(x,-y_,linestyle)
-            else:
-                pylab.plot(x,y_,linestyle)
-                print miny
-                if miny:
-                    print 'Using Y axis limits'
-                    pylab.ylim(miny,maxy)
-                if minx:
-                    print 'Using X axis limits'
-                    pylab.ylim(minx,maxx)
+    for y_ in Y:
+        print 'Plotting'
+        if minus:
+            y_=-y_
+            pylab.plot(x,-y_,linestyle)
+        if dodiff:
+            y_=pylab.diff(y_)
+            x =x[0:-1]
+        if dolog:
+            print "WARNING:\nEvaluating magnitude of variable to avoid log(-y)"
+            y_ = pylab.log10(pylab.fabs(y_))
+            x  = pylab.log10(x)
+
+        if filterWidth:
+            y_ = filtered(y_,filterWidth)
+
+        pylab.plot(x,y_,linestyle)
+        if miny:
+            print 'Using Y axis limits'
+            pylab.ylim(miny,maxy)
+        if minx:
+            print 'Using X axis limits'
+            pylab.ylim(minx,maxx)
 
 
 
