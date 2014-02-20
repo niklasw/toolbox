@@ -15,6 +15,8 @@ def getArgs(i):
         if not os.path.isfile(opts.logfile):
             i.error('Cannot find supplied log file')
         opts.parseLog = True
+    else:
+        opts.parseLog = False
 
     return opts, args
 
@@ -61,11 +63,11 @@ if __name__=='__main__':
     nCells = i.get('Number of cells', test=float, default=10000)
     cTime = 0
     nSteps= 0
-    if not opts.parseLog:
+    if opts.parseLog:
+        nSteps,cTime = parseLog(opts.logfile)
+    else:
         cTime  = i.get('Elapsed time', test=float, default=1000)
         nSteps = i.get('Number of iterations/time steps', test=int, default=100)
-    else:
-        nSteps,cTime = parseLog(opts.logfile)
 
     i.info('\n{0}\n'.format('='*50))
     i.info('Simulation speed index = {0:0.1f} "cell-iterations per core-second".'.format(nSteps*nCells/(nCores*cTime)))
