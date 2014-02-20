@@ -81,12 +81,12 @@ if __name__=='__main__':
     cTime = 0
     nSteps= 0
     if opts.parseLog:
-        nSteps,cTime = parseLog(opts.logfile)
+        nSteps,cTime = parseLog(opts)
     else:
         cTime  = i.get('Elapsed time', test=float, default=1000)
         nSteps = i.get('Number of iterations/time steps', test=int, default=100)
 
     i.info('\n{0}\n'.format('='*50))
-    i.info('Simulation speed index = {0:0.1f} "cell-iterations per core-second".'.format(nSteps*nCells/(nCores*cTime)))
+    i.info('Simulation speed index = {0:0.1f} "cell-iterations per core-second".'.format(nSteps*nCells/float(nCores*cTime)))
 
     i.info('')
