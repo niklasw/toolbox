@@ -66,7 +66,10 @@ def parseLog(opts):
     if err:
         failed(err)
     try:
-        out = map(int, out.split())
+        out = map(float, out.split())
+        for n in out:
+            if n <= 0:
+                failed('Did you use the version option -V 1?')
         return out
     except:
         failed('Got this "{0}"'.format(out))
