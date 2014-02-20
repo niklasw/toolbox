@@ -8,6 +8,7 @@ def getArgs(i):
     import os
     parser=OptionParser(description="One measure of simulation speed. Can run interactively or parsing a log")
     parser.add_option('-f','--logfile',dest='logfile',default=None, help='Optional log file to parse data from')
+    parser.add_option('-V','--foamversion',dest='foamversion',default=2, help='Foam version (major only)')
     opts,args=parser.parse_args()
 
     if (getattr(opts, 'logfile')):
@@ -21,15 +22,27 @@ def getArgs(i):
     return opts, args
 
 
-def parseLog(logFile):
+def parseLog(opts):
     from subprocess import Popen,PIPE
 
     def failed(e):
         print "Log file parsing failed: {0}".format(e)
         sys.exit(1)
 
+    # Different awking depending on log file format
+    awkCmd1='''
+    BEGIN{count=0}
+    {
+        if ($1 ~ "ClockTime"){
+            count++
+            ctime=$3
+        }
+    }
+    END{
+        printf("%i %i", count, ctime)
+    }'''
 
-    awkCmd='''
+    awkCmd2='''
     BEGIN{count=0}
     {
         if ($1 ~ "ExecutionTime"){
@@ -41,7 +54,11 @@ def parseLog(logFile):
         printf("%i %i", count, ctime)
     }'''
 
-    cmd = ['awk',awkCmd,logFile]
+    awkCmd = awkCmd2
+    if opts.foamversion == "1":
+        awkCmd = awkCmd1
+
+    cmd = ['awk',awkCmd,opts.logfile]
 
     p = Popen(cmd, stdout=PIPE, stderr=PIPE)
     out,err = p.communicate()
