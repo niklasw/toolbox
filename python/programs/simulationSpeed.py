@@ -85,6 +85,7 @@ if __name__=='__main__':
     nSteps= 0
     if opts.parseLog:
         nSteps,cTime = parseLog(opts)
+        i.info('Simulation ran for {0} steps in {1} seconds'.format(nSteps,cTime))
     else:
         cTime  = i.get('Elapsed time', test=float, default=1000)
         nSteps = i.get('Number of iterations/time steps', test=int, default=100)
