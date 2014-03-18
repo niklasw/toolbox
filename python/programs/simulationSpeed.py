@@ -84,13 +84,8 @@ if __name__=='__main__':
 
     opts,args=getArgs(i)
 
-    nCores = getNCores() #i.get('Number of cores', test=int, default=1)
-    if nCores > 0:
-        i.info('Found {0} processor directories. Assuming {0} cores run.'.format(nCores))
-    else:
-        nCores = 1
-        i.info('Warning, found no processor directories.  Assuming serial run.')
-    nCells = i.get('Number of cells', test=float, default=10000)
+    nCores = i.get('Number of cores', test=int, default=getNCores())
+    nCells = i.get('Number of cells', test=float, default=1e6)
     cTime = 0
     nSteps= 0
     if opts.parseLog:
