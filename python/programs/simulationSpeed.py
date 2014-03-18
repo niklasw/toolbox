@@ -21,6 +21,11 @@ def getArgs(i):
 
     return opts, args
 
+def getNCores():
+    import os,re
+    dirContent=os.listdir(os.getcwd())
+    ppat=re.compile('processor[0-9]+')
+    return len(filter(ppat.match, dirContent))
 
 def parseLog(opts):
     from subprocess import Popen,PIPE
@@ -79,7 +84,12 @@ if __name__=='__main__':
 
     opts,args=getArgs(i)
 
-    nCores = i.get('Number of cores', test=int, default=1)
+    nCores = getNCores() #i.get('Number of cores', test=int, default=1)
+    if nCores > 0:
+        i.info('Found {0} processor directories. Assuming {0} cores run.'.format(nCores))
+    else:
+        nCores = 1
+        i.info('Warning, found no processor directories.  Assuming serial run.')
     nCells = i.get('Number of cells', test=float, default=10000)
     cTime = 0
     nSteps= 0
@@ -91,6 +101,7 @@ if __name__=='__main__':
         nSteps = i.get('Number of iterations/time steps', test=int, default=100)
 
     i.info('\n{0}\n'.format('='*50))
-    i.info('Simulation speed index = {0:0.1f} "cell-iterations per core-second".'.format(nSteps*nCells/float(nCores*cTime)))
+    i.info('Simulation  speed index = {0:0.1f} "cell-iterations per core-second".'.format(nSteps*nCells/float(nCores*cTime)))
+    i.info('Alternative speed index = {0:0.3e} "core-seconds per cell-iteration".'.format(float(nCores*cTime)/(nSteps*nCells)))
 
     i.info('')

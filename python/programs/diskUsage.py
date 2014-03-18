@@ -9,8 +9,22 @@ if not os.getuid() == 0:
     print '-------------------------------------------------------------------'
     print ''
 
+root=os.getcwd()
+if len(sys.argv) == 2:
+    d=sys.argv[1]
+    root=os.path.join(root,d)
+    if not os.path.isdir(root):
+        print 'Cannot find directory {0}.'.format(root)
+        sys.exit(1)
 
-dirs=os.listdir(os.getcwd())
+print 'Parsing directories under {0}'.format(root)
+
+dirs=[os.path.join(root,d) for d in os.listdir(root)]
+
+if not dirs:
+    print 'No files found'
+    sys.exit(0)
+
 # Du will be reported in kiloBytes
 cmnd= ['du', '-sck']+dirs
 
