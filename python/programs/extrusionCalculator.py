@@ -26,6 +26,7 @@ def getArgs():
     parser.add_option('-n','--nsteps',dest='nsteps',default=20,help='Number of extrusion layers.')
     parser.add_option('-d','--start',dest='start',default=0.01,help='First cell thickness.')
     parser.add_option('-L','--length',dest='length',default=1.0,help='Extrusion length.')
+    parser.add_option('-B','--basesize',dest='basesize',default=1.0,help='Base size normalisation.')
 
     (opt,arg)=parser.parse_args()
 
@@ -46,6 +47,7 @@ def getArgs():
     opt.nsteps = validateOption(opt.nsteps,int)
     opt.length = validateOption(opt.length,float)
     opt.start  = validateOption(opt.start,float)
+    opt.basesize  = validateOption(opt.basesize,float)
 
     return opt,arg
 
@@ -79,9 +81,11 @@ if __name__ == '__main__':
 
     Warn('Assuming constant rate stretching')
     Info('Number of layers         = %7i' % opt.nsteps)
-    Info('Magnitude                = %7i' % opt.length)
-    Info('Expansion ratio          = %4.2f' % expansionRatio)
-    Info('Last to first cell ratio = %4.1f' % expansionRatio**opt.nsteps)
+    Info('Magnitude                = %7.2e' % opt.length)
+    Info('Expansion ratio          = %4.2e' % expansionRatio)
+    Info('First cell heigth (input)= %4.2e' % (opt.start/opt.basesize))
+    Info('Last  cell heigth (input)= %4.2e' % ((opt.start*expansionRatio**opt.nsteps)/opt.basesize))
+    Info('Last to first cell ratio = %4.1e' % expansionRatio**opt.nsteps)
 
 
 

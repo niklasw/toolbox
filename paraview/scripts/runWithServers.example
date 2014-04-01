@@ -1,0 +1,1 @@
+pvrenderserver >& /tmp/pvrs.log& paraview --server-url=cdsrs://poko:11111/localhost:22221 

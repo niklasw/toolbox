@@ -43,8 +43,8 @@ class rotationMatrix:
         return array(A.transpose())[0]
 
 if __name__=="__main__":
-    v=[1,1,1]
-    M=rotationMatrix(0,90,-90)
+    v=[1,0,0]
+    M=rotationMatrix(0,10,00)
     vr=M.rotate(v)
     v=array(v)
     print vr,v

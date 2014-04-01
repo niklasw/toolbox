@@ -6,7 +6,7 @@
 #PBS -m be
 #PBS -q rosso
 #PBS -o nikwikTest.log
-#PBS -l other=e26504
+#PBS -l other=bench
 
 function mkHostFile()
 {
