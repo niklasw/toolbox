@@ -81,11 +81,11 @@ if __name__ == '__main__':
 
     Warn('Assuming constant rate stretching')
     Info('Number of layers         = %7i' % opt.nsteps)
-    Info('Magnitude                = %7.2e' % opt.length)
-    Info('Expansion ratio          = %4.2e' % expansionRatio)
-    Info('First cell heigth (input)= %4.2e' % (opt.start/opt.basesize))
-    Info('Last  cell heigth (input)= %4.2e' % ((opt.start*expansionRatio**opt.nsteps)/opt.basesize))
-    Info('Last to first cell ratio = %4.1e' % expansionRatio**opt.nsteps)
+    Info('Magnitude                = %7.3e' % opt.length)
+    Info('Expansion ratio          = %4.3e' % expansionRatio)
+    Info('First cell heigth (input)= %4.3e' % (opt.start/opt.basesize))
+    Info('Last  cell heigth (input)= %4.3e' % ((opt.start*expansionRatio**opt.nsteps)/opt.basesize))
+    Info('Last to first cell ratio = %4.2e' % expansionRatio**opt.nsteps)
 
 
 

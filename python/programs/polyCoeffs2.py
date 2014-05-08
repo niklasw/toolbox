@@ -15,7 +15,7 @@ except:
 
 x = array(data[:,0])
 y = array(data[:,1])+273.15
-x -= x[0]
+#x -= x[0]
 
 a,b,c = polyfit(x,y,2)
 
@@ -28,7 +28,8 @@ polynome = '%0.2e*t^2 + %0.2e*t + %0.2e' % (a,b,c)
 
 print '\n\t',polynome
 
-plot(x,y,'r-o',x,a*x**2+b*x+c,'g-')
+X = linspace(x[0],x[-1],1000)
+plot(x,y,'r-o',X,a*X**2+b*X+c,'g-')
 legend(('data',polynome))
 
 imagename='polyfit.png'

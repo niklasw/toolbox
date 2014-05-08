@@ -19,14 +19,13 @@ def getArgs():
     """
 
     parser=OptionParser(description=descString)
-    parser.add_option('-f','--file',dest='stlFile',default='afile',help='Input stl file')
+    parser.add_option('-f','--file',dest='stlFile',default=None,help='Input stl file')
     parser.add_option('-t','--split',dest='split',action='store_true',default=False,help='Split into separate files')
 
     options,arguments = parser.parse_args()
 
 
-    print getattr(options,'stlFile')
-    if getattr(options,'stlFile'):
+    if not getattr(options,'stlFile'):
         print 'Missing -f'
 
     def argError(s):
@@ -46,4 +45,11 @@ def getArgs():
     return options,arguments
 
 
-getArgs()
+o,a = getArgs()
+
+print o.stlFile
+
+if o.split:
+    print 'split'
+
+
