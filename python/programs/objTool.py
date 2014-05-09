@@ -14,12 +14,11 @@ def getArgs():
 
     parser=OptionParser(description=descString)
     parser.add_option('-f','--file',dest='objFile',default=None,help='Input obj file')
-    parser.add_option('-i','--inplace',dest='inplace',default=False,help='NOT IMPLEMENTED! Replace input file')
     parser.add_option('-o','--output',dest='output',default=None,help='Output obj file')
     parser.add_option('-s','--scale',dest='scale',default=1.0,help='Scaling factor')
     parser.add_option('-B','--boundingbox',dest='bounds',action='store_true',default=False,help='Calculate bounding box')
     parser.add_option('-t','--split',dest='split',action='store_true',default=False,help='Split into separate files')
-    parser.add_option('-b','--binary',dest='binary',action='store_true',default=False,help='Input file is binary')
+    parser.add_option('-b','--binary',dest='binary',action='store_true',default=False,help='NOT IMPLEMENTED. Input file is binary')
     parser.add_option('-T','--translate',dest='translate',default=None,help='Translate all vertices')
 
     (opt,arg)=parser.parse_args()
@@ -48,23 +47,13 @@ def getArgs():
 
 
 
-    argDict = { 'objIn':objIn,
-            'objOut':objOut,
-            'scale':float(opt.scale),
-            'split':opt.split,
-            'bounds':opt.bounds,
-            'translate':translation,
-            'binary':opt.binary}
-
-    return argDict
+    return opt,arg
 
 
 class objToolBox:
     def __init__(self,objFile,objOutFile):
         self.objFile = objFile
-        readOpt = 'r'
-        self.objHandle = open(objFile,readOpt)
-        self.vertPat = re.compile('^\s*v\s.*',re.I)
+        self.objHandle = open(objFile)
         self.regions = []
         self.objOut = objOutFile
         self.head = ''
@@ -92,7 +81,13 @@ class objToolBox:
             sys.exit(0)
 
     def read(self):
-        self.data = map(string.strip, self.objHandle.readlines())
+        ''' Store all non-empty lines
+        and strip whites and newls'''
+        self.data = [
+                        line for line in 
+                        map(string.strip, self.objHandle.readlines()) 
+                        if line
+                    ]
 
     def getHead(self):
         '''Reading file header.
@@ -130,20 +125,23 @@ class objToolBox:
             print 'Cannot find region', region, 'in data'
             return []
 
-    def getRegionVerts(self,region):
-        faces = self.getRegionFaces(region)
+    def getRegionVerts(self,region=''):
+        '''Return a generator for selected vertices.
+        Returns all vertices if not region set.'''
         def f(faces):
-            verts = []
             vertInds = []
             for face in faces:
                 vertInds+=face
             vertInds = set(vertInds)
 
             for v in vertInds:
-                verts.append(self.verts[v-1])
-            print '\tRegion {0} has {1} vertices'.format(region,len(verts))
-            return verts
-        return f(faces)
+                yield self.verts[v-1]
+
+        if region:
+            faces = self.getRegionFaces(region)
+            return f(faces)
+        else:
+            return (v for v in self.verts)
 
     def vertsStr(self):
         return ( 'v {0:e} {1:e} {2:e}\n'.format(v) for v in self.verts )
@@ -166,18 +164,14 @@ class objToolBox:
         minX=minY=minZ =  1.0e10
         maxX=maxY=maxZ = -1.0e10
         verts = []
-        if region:
-            print '\tfor region',region
-            verts = self.getRegionVerts(region)
-        else:
-            verts = self.verts
 
         cX=cY=cZ=0.0
-        for v in verts:
+        for v in self.getRegionVerts(region):
             X,Y,Z = v
             minX,minY,minZ = min(minX,X),min(minY,Y),min(minZ,Z)
             maxX,maxY,maxZ = max(maxX,X),max(maxY,Y),max(maxZ,Z)
             cX,cY,cZ=[(maxX+minX)/2.,(maxY+minY)/2.,(maxZ+minZ)/2.]
+
         print '''\tobj bounds for %s in %s =
         centre (%f, %f, %f)
         min    (%f, %f, %f)
@@ -198,9 +192,9 @@ class objToolBox:
 
 
 if __name__=='__main__':
-    arguments = getArgs()
+    options, arguments = getArgs()
 
-    ot = objToolBox(arguments['objIn'], arguments['objOut'])
+    ot = objToolBox(options.objFile, options.output)
 
     ot.getHead()
     print ot.head
@@ -211,8 +205,6 @@ if __name__=='__main__':
 
     print 'Containing regions:'
     for r in ot.regions:
-        #ot.calcBounds(r)
-        print r
         ot.calcBounds(r)
 
     #for line in ot.vertsStr():
