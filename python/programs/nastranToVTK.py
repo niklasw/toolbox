@@ -23,9 +23,9 @@ def readGeometry(fileName,geometryDict):
         if line[1:5] == tag:
             elemNo = int(line[9:16])
             if tag == 'TRIA':
-                points = map(int,(line[25:32],line[32:40],line[40:48]))
-            else:
-                points = map(int,(line[25:32],line[32:40],line[40:48],line[48:56]))
+                points = [int(a) for a in (line[25:32],line[32:40],line[40:48])]
+            elif tag == 'QUAD':
+                points = [int(a) for a in (line[25:32],line[32:40],line[40:48],line[48:56])]
             # Decrease id -1 due to fortran notation
             points = [ p-1 for p in points]
             geom[tag].append(points)
@@ -63,14 +63,12 @@ def readModes(fileName, shapesDict):
                     except:
                         continue
             except:
-                print 'EOF', modeFileName
+                print 'Read {0} arrays from data file'.format(modeNo)
                 break
     
-    print 'Finished modes.'
-    print 'Extracted from file:'
-    print '\t{0} modes'.format(modeNo)
 
 def convertGeometry(geometry):
+    '''Creates, fill and return a vtkPolyData object'''
     nGeometryPoints = len(geometry['GRID'])
     _vtkPoints = vtk.vtkPoints()
     _vtkPoints.SetNumberOfPoints(nGeometryPoints)
@@ -94,25 +92,29 @@ def convertGeometry(geometry):
     polyData.SetPoints(_vtkPoints)
     polyData.SetPolys(_vtkFaces)
 
+    print 'Geometry converted to vtkPolyData object'
+
     return polyData
 
 def addModeData(shapes,polyData):
+    '''Append mode data (vector array) to vtkPolyData object'''
     for modeName in shapes.keys():
-        print modeName, len(shapes[modeName])
         _vtkDisplacement = vtk.vtkFloatArray()
         _vtkDisplacement.SetNumberOfComponents(3)
         _vtkDisplacement.SetName('Mode_{0:03d}'.format(modeName))
-        #_vtkDisplacement.SetName('Mode_%03d'%modeName)
         for displacement in shapes[modeName]:
             dx,dy,dz = displacement
             _vtkDisplacement.InsertNextTuple3(dx,dy,dz)
     
         polyData.GetPointData().AddArray(_vtkDisplacement)
+    print 'Added {0} arrays to vtk object'.format(len(shapes.keys()))
 
 
+from os.path import splitext
 
 datFileName = sys.argv[1]
 modeFileName = sys.argv[2]
+vtkFileName = splitext(datFileName)[0]+'.vtp'
 
 geometry = dict()
 shapes = dict()
@@ -126,9 +128,11 @@ addModeData(shapes,_vtkPolyData)
 
 _vtkPolyData.Modified()
 
+print 'Writing vtk file {0}'.format(vtkFileName)
 writer = vtk.vtkXMLPolyDataWriter()
-writer.SetFileName('data.vtp')
+writer.SetFileName(vtkFileName)
 writer.SetInputData(_vtkPolyData)
 writer.Write()
+print 'End.'
 
 
