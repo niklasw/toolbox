@@ -15,11 +15,11 @@ def getArgs():
     parser=OptionParser(description=descString)
     parser.add_option('-f','--file',dest='objFile',default=None,help='Input obj file')
     parser.add_option('-o','--output',dest='output',default=None,help='Output obj file')
-    parser.add_option('-s','--scale',dest='scale',default=1.0,help='Scaling factor')
+    parser.add_option('-s','--scale',dest='scale',default=None,help='Scaling factor')
+    parser.add_option('-t','--translate',dest='translate',default=None,help='Translate all vertices')
     parser.add_option('-B','--boundingbox',dest='bounds',action='store_true',default=False,help='Calculate bounding box')
-    parser.add_option('-t','--split',dest='split',action='store_true',default=False,help='Split into separate files')
+    parser.add_option('-T','--split',dest='split',action='store_true',default=False,help='Split into separate files')
     parser.add_option('-b','--binary',dest='binary',action='store_true',default=False,help='NOT IMPLEMENTED. Input file is binary')
-    parser.add_option('-T','--translate',dest='translate',default=None,help='Translate all vertices')
 
     (opt,arg)=parser.parse_args()
 
@@ -37,11 +37,16 @@ def getArgs():
     objOut = opt.output
     if not opt.output:
         objOut = objBase+'_scaled'+objExt
-    translation=[0,0,0]
-    if opt.translate:
-        tString = opt.translate
+
+    if opt.scale:
         try:
-            translation = map(float,opt.translate.strip('()').split())
+            opt.scale = float(opt.scale)
+        except:
+            argError('translation vector not in format \"(x y z)\".')
+
+    if opt.translate:
+        try:
+            opt.translate = map(float,opt.translate.strip('()').split())
         except:
             argError('translation vector not in format \"(x y z)\".')
 
@@ -62,23 +67,11 @@ class objToolBox:
         self.faces = {}
         self.read()
         self.getVerts()
+        self.ops = {'scale': lambda x,s: x*s,
+                    'translate': lambda x,t: x+array(t)}
 
     def extractRegionName(self,line):
         return line.split(' ',1)[1]
-
-    def action(self, scale=1.0, split=False, bounds=False, translate=False):
-        if sum(map(abs,translate)) > 0:
-            self.translate(translate)
-            sys.exit(0)
-        if bounds:
-            self.calcBounds()
-            sys.exit(0)
-        if scale != 1.0:
-            self.scale(scale)
-            sys.exit(0)
-        if split:
-            self.split()
-            sys.exit(0)
 
     def read(self):
         ''' Store all non-empty lines
@@ -146,20 +139,8 @@ class objToolBox:
     def vertsStr(self):
         return ( 'v {0:e} {1:e} {2:e}\n'.format(v) for v in self.verts )
 
-    def translate(self,translation):
-        print 'Translating obj vertices by vector',translation
-        def f(v,t):
-            t = array(t)
-            return [ a+t for a in v ]
-        self.verts = f(self.verts,translation)
 
-    def scale(self,scaleFactor):
-        print 'Scaling obj vertices by factor',scaleFactor
-        def f(v,s):
-            return [ a*s for a in v ]
-        self.verts = f(self.verts,scaleFactor)
-
-    def calcBounds(self, region='defaultRegion'):
+    def bounds(self, region='defaultRegion'):
         print '\tCalculating bounding box for', self.objFile
         minX=minY=minZ =  1.0e10
         maxX=maxY=maxZ = -1.0e10
@@ -183,7 +164,11 @@ class objToolBox:
 
     def split(self):
         print 'Spliting obj file into regions:'
+        print '\t!NOT IMPLEMENTED'
         pass
+
+    def transform(self,op,v):
+        self.verts = [ op(a,v) for a in self.verts ]
 
     def getRegions(self):
         for line in self.data:
@@ -199,13 +184,15 @@ if __name__=='__main__':
     ot.getHead()
     print ot.head
 
-    ot.scale(1.0)
-    ot.translate([0,0,0])
     ot.getRegions()
+
+    if options.translate:
+        ot.transform(ot.ops['translate'], options.translate)
+    if options.scale:
+        ot.transform(ot.ops['scale'], options.scale)
 
     print 'Containing regions:'
     for r in ot.regions:
-        ot.calcBounds(r)
+        if options.bounds:
+            ot.bounds(r)
 
-    #for line in ot.vertsStr():
-    #    print line
