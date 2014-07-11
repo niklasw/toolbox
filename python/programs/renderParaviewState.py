@@ -62,7 +62,7 @@ def main():
     views = servermanager.GetRenderViews()
 
     for i,view in enumerate(views):
-        view.Background = [1,1,1]
+        #view.Background = [1,1,1]
         viewImage = 'view'+str(i)+'_'+imageBase+imageExt
         view.WriteImage(viewImage,'vtkPNGWriter',1)
 

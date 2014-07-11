@@ -6,7 +6,7 @@ def readGeometry(fileName,geometryDict):
     geometryDict['GRID'] = []
     geometryDict['TRIA'] = []
     geometryDict['QUAD'] = []
-    
+
     try:
         with open(fileName) as fp:
             datData= fp.readlines()
@@ -14,7 +14,7 @@ def readGeometry(fileName,geometryDict):
         print 'Failed to open geometry input'
 
     def readVertex(line,tag,geom):
-        if line[0:len(tag)] == tag: 
+        if line[0:len(tag)] == tag:
             gridNo = int(line[8:17].strip())
             verts = map(float,(line[18:32], line[32:40], line[40:49]))
             geom[tag].append(verts)
@@ -34,7 +34,7 @@ def readGeometry(fileName,geometryDict):
             readVertex(line,'GRID',geometryDict)
             readFace(line,'TRIA',geometryDict)
             readFace(line,'QUAD',geometryDict)
-    
+
     print 'Finished geometry.'
     print 'Extracted from file:'
     print '\tpoints {0}'.format(len(geometryDict['GRID']))
@@ -65,29 +65,29 @@ def readModes(fileName, shapesDict):
             except:
                 print 'Read {0} arrays from data file'.format(modeNo)
                 break
-    
+
 
 def convertGeometry(geometry):
     '''Creates, fill and return a vtkPolyData object'''
     nGeometryPoints = len(geometry['GRID'])
     _vtkPoints = vtk.vtkPoints()
     _vtkPoints.SetNumberOfPoints(nGeometryPoints)
-    
+
     for i,p in enumerate(geometry['GRID']):
         _vtkPoints.InsertPoint(i,p)
-    
+
     def addMeshElements(nasFaces, vtkFaces, f=vtk.vtkTriangle):
         for face in nasFaces:
             vtkFace = f()
             for i,id in enumerate(face):
                 vtkFace.GetPointIds().SetId(i,id)
             vtkFaces.InsertNextCell(vtkFace)
-    
+
     _vtkFaces = vtk.vtkCellArray()
-    
+
     addMeshElements(geometry['TRIA'], _vtkFaces, vtk.vtkTriangle)
     addMeshElements(geometry['QUAD'], _vtkFaces, vtk.vtkQuad)
-    
+
     polyData = vtk.vtkPolyData()
     polyData.SetPoints(_vtkPoints)
     polyData.SetPolys(_vtkFaces)
@@ -105,9 +105,29 @@ def addModeData(shapes,polyData):
         for displacement in shapes[modeName]:
             dx,dy,dz = displacement
             _vtkDisplacement.InsertNextTuple3(dx,dy,dz)
-    
+
         polyData.GetPointData().AddArray(_vtkDisplacement)
     print 'Added {0} arrays to vtk object'.format(len(shapes.keys()))
+
+
+def addCylTransformedData(shapes,polyData):
+    '''Append mode data (vector array) to vtkPolyData object'''
+    from numpy import array,sin,cos,sqrt,arctan2
+    for modeName in shapes.keys():
+        _vtkDisplacement = vtk.vtkFloatArray()
+        _vtkDisplacement.SetNumberOfComponents(3)
+        _vtkDisplacement.SetName('cylMode_{0:03d}'.format(modeName))
+        axis = array([1,0,0])
+
+        for displacement in shapes[modeName]:
+            dx,dy,dz = displacement
+            dr = sqrt(dy**2+dz**2)
+            dphi = arctan2(dz,dy)
+            _vtkDisplacement.InsertNextTuple3(dr,dphi,dx)
+
+        polyData.GetPointData().AddArray(_vtkDisplacement)
+    print 'Added {0} arrays to vtk object'.format(len(shapes.keys()))
+
 
 
 from os.path import splitext
@@ -124,7 +144,8 @@ readModes(modeFileName, shapes)
 
 _vtkPolyData = convertGeometry(geometry)
 addModeData(shapes,_vtkPolyData)
-   
+#addCylTransformedData(shapes,_vtkPolyData)
+
 
 _vtkPolyData.Modified()
 

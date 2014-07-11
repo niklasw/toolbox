@@ -29,8 +29,8 @@ def polyp1(r,coeffs):
 def waveHeight(p):
     return  p/9.81
 
-R=0.36
-u0=1.5
+R=3.0
+u0=2.0
 p0=0.
 r=linspace(R,6*R,100)
 
@@ -48,6 +48,7 @@ print "p(r/R) r/R = 8", p1(u0,R,8*R)
 print "p(r/R) r/R =16 ",p1(u0,R,16*R)
 print ''
 
+print "w(r/R) r/R = 1", waveHeight(p1(u0,R,1*R))
 print "w(r/R) r/R = 2", waveHeight(p1(u0,R,2*R))
 print "w(r/R) r/R = 4", waveHeight(p1(u0,R,4*R))
 print "w(r/R) r/R = 6", waveHeight(p1(u0,R,6*R))
