@@ -1,0 +1,160 @@
+<CustomFilterDefinitions>
+  <CustomProxyDefinition name="surfaceStreamlines" group="sources">
+    <CompoundSourceProxy id="5010" servers="1">
+      <Proxy group="filters" type="MaskPoints" id="4808" servers="1" compound_name="MaskPoints1">
+        <Property name="GenerateVertices" id="4808.GenerateVertices" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="4808.GenerateVertices.bool"/>
+        </Property>
+        <Property name="Input" id="4808.Input" number_of_elements="1">
+          <Proxy value="4708" output_port="0"/>
+          <Domain name="groups" id="4808.Input.groups"/>
+          <Domain name="input_type" id="4808.Input.input_type"/>
+        </Property>
+        <Property name="MaximumNumberOfPoints" id="4808.MaximumNumberOfPoints" number_of_elements="1">
+          <Element index="0" value="500"/>
+          <Domain name="range" id="4808.MaximumNumberOfPoints.range"/>
+        </Property>
+        <Property name="Offset" id="4808.Offset" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="range" id="4808.Offset.range"/>
+        </Property>
+        <Property name="OnRatio" id="4808.OnRatio" number_of_elements="1">
+          <Element index="0" value="2"/>
+          <Domain name="range" id="4808.OnRatio.range"/>
+        </Property>
+        <Property name="ProportionalMaximumNumberOfPoints" id="4808.ProportionalMaximumNumberOfPoints" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="4808.ProportionalMaximumNumberOfPoints.bool"/>
+        </Property>
+        <Property name="RandomMode" id="4808.RandomMode" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="4808.RandomMode.bool"/>
+        </Property>
+        <Property name="RandomModeType" id="4808.RandomModeType" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="enum" id="4808.RandomModeType.enum">
+            <Entry value="0" text="Randomized Id Strides"/>
+            <Entry value="1" text="Random Sampling"/>
+            <Entry value="2" text="Spatially Stratified Random Sampling"/>
+          </Domain>
+        </Property>
+        <Property name="SingleVertexPerCell" id="4808.SingleVertexPerCell" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="bool" id="4808.SingleVertexPerCell.bool"/>
+        </Property>
+      </Proxy>
+      <Proxy group="filters" type="ArbitrarySourceStreamTracer" id="4908" servers="1" compound_name="StreamTracerWithCustomSource1">
+        <Property name="ComputeVorticity" id="4908.ComputeVorticity" number_of_elements="1">
+          <Element index="0" value="1"/>
+          <Domain name="bool" id="4908.ComputeVorticity.bool"/>
+        </Property>
+        <Property name="InitialIntegrationStep" id="4908.InitialIntegrationStep" number_of_elements="1">
+          <Element index="0" value="0.2"/>
+          <Domain name="range" id="4908.InitialIntegrationStep.range"/>
+        </Property>
+        <Property name="Input" id="4908.Input" number_of_elements="1">
+          <Proxy value="4708" output_port="0"/>
+          <Domain name="groups" id="4908.Input.groups"/>
+          <Domain name="input_array" id="4908.Input.input_array">
+            <InputArray attribute_type="point" number_of_components="3"/>
+          </Domain>
+          <Domain name="input_type" id="4908.Input.input_type"/>
+        </Property>
+        <Property name="IntegrationDirection" id="4908.IntegrationDirection" number_of_elements="1">
+          <Element index="0" value="2"/>
+          <Domain name="enum" id="4908.IntegrationDirection.enum">
+            <Entry value="0" text="FORWARD"/>
+            <Entry value="1" text="BACKWARD"/>
+            <Entry value="2" text="BOTH"/>
+          </Domain>
+        </Property>
+        <Property name="IntegrationStepUnit" id="4908.IntegrationStepUnit" number_of_elements="1">
+          <Element index="0" value="2"/>
+          <Domain name="enum" id="4908.IntegrationStepUnit.enum">
+            <Entry value="1" text="Length"/>
+            <Entry value="2" text="Cell Length"/>
+          </Domain>
+        </Property>
+        <Property name="IntegratorType" id="4908.IntegratorType" number_of_elements="1">
+          <Element index="0" value="2"/>
+          <Domain name="enum" id="4908.IntegratorType.enum">
+            <Entry value="0" text="Runge-Kutta 2"/>
+            <Entry value="1" text="Runge-Kutta 4"/>
+            <Entry value="2" text="Runge-Kutta 4-5"/>
+          </Domain>
+        </Property>
+        <Property name="MaximumError" id="4908.MaximumError" number_of_elements="1">
+          <Element index="0" value="1e-06"/>
+          <Domain name="range" id="4908.MaximumError.range"/>
+        </Property>
+        <Property name="MaximumIntegrationStep" id="4908.MaximumIntegrationStep" number_of_elements="1">
+          <Element index="0" value="0.5"/>
+          <Domain name="range" id="4908.MaximumIntegrationStep.range"/>
+        </Property>
+        <Property name="MaximumNumberOfSteps" id="4908.MaximumNumberOfSteps" number_of_elements="1">
+          <Element index="0" value="2000"/>
+          <Domain name="range" id="4908.MaximumNumberOfSteps.range"/>
+        </Property>
+        <Property name="MaximumPropagation" id="4908.MaximumPropagation" number_of_elements="1">
+          <Element index="0" value="1.43580001592636"/>
+          <Domain name="bounds" id="4908.MaximumPropagation.bounds"/>
+        </Property>
+        <Property name="MinimumIntegrationStep" id="4908.MinimumIntegrationStep" number_of_elements="1">
+          <Element index="0" value="0.01"/>
+          <Domain name="range" id="4908.MinimumIntegrationStep.range"/>
+        </Property>
+        <Property name="SelectInputVectors" id="4908.SelectInputVectors" number_of_elements="5">
+          <Element index="0" value=""/>
+          <Element index="1" value=""/>
+          <Element index="2" value=""/>
+          <Element index="3" value="0"/>
+          <Element index="4" value="U"/>
+          <Domain name="array_list" id="4908.SelectInputVectors.array_list">
+            <String text="U"/>
+            <String text="U_0"/>
+          </Domain>
+        </Property>
+        <Property name="Source" id="4908.Source" number_of_elements="1">
+          <Proxy value="4808" output_port="0"/>
+          <Domain name="groups" id="4908.Source.groups"/>
+        </Property>
+        <Property name="TerminalSpeed" id="4908.TerminalSpeed" number_of_elements="1">
+          <Element index="0" value="1e-12"/>
+          <Domain name="range" id="4908.TerminalSpeed.range"/>
+        </Property>
+      </Proxy>
+      <Proxy group="filters" type="SurfaceVectors" id="4708" servers="1" compound_name="SurfaceVectors1">
+        <Property name="ConstraintMode" id="4708.ConstraintMode" number_of_elements="1">
+          <Element index="0" value="0"/>
+          <Domain name="enum" id="4708.ConstraintMode.enum">
+            <Entry value="0" text="Parallel"/>
+            <Entry value="1" text="Perpendicular"/>
+            <Entry value="2" text="PerpendicularScale"/>
+          </Domain>
+        </Property>
+        <Property name="Input" id="4708.Input" number_of_elements="1">
+          <Domain name="groups" id="4708.Input.groups"/>
+          <Domain name="input_array" id="4708.Input.input_array">
+            <InputArray attribute_type="point" number_of_components="3"/>
+          </Domain>
+          <Domain name="input_type" id="4708.Input.input_type"/>
+        </Property>
+        <Property name="SelectInputVectors" id="4708.SelectInputVectors" number_of_elements="5">
+          <Element index="0" value=""/>
+          <Element index="1" value=""/>
+          <Element index="2" value=""/>
+          <Element index="3" value="0"/>
+          <Element index="4" value="U"/>
+          <Domain name="array_list" id="4708.SelectInputVectors.array_list">
+            <String text="U"/>
+            <String text="U_0"/>
+          </Domain>
+        </Property>
+      </Proxy>
+      <Hints>
+        <ShowInMenu/>
+      </Hints>
+    </CompoundSourceProxy>
+  </CustomProxyDefinition>
+</CustomFilterDefinitions>
