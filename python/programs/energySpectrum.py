@@ -79,9 +79,9 @@ def getArgs():
 
 def cleanData(stringList):
     dropPat = re.compile('^\s*(?![\(\)\#\/a-zA-Z])')
-    parenPat = re.compile('[\(\)]')
+    parenPat = re.compile('[\(\),]')
     filtered = filter(dropPat.match, stringList)
-    filtered = [parenPat.sub('',a) for a in filtered]
+    filtered = [parenPat.sub(' ',a) for a in filtered]
     return map(string.strip,filtered)
 
 def readData(fileName, cols, nCol=1):
@@ -107,7 +107,7 @@ def plotFFT(
 
     n=len(samples)
 
-    freq=scipy.array(range(n/2+1))/(n/2.0)
+    freq=numpy.array(range(n/2+1))/(n/2.0)
     freq=freq[1:]*sampleFrq/2.0
 
     if plotdata:
