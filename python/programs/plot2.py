@@ -29,9 +29,9 @@ def getpart(infile,bpat,epat):
 
 def cleanData(stringList):
     dropPat = re.compile('^\s*(?![\(\)\#"\/a-zA-Z])')
-    parenPat = re.compile('[\(\)]')
+    parenPat = re.compile('[,\(\)]')
     filtered = filter(dropPat.match, stringList)
-    filtered = [parenPat.sub('',a) for a in filtered]
+    filtered = [parenPat.sub(' ',a) for a in filtered]
     return map(string.strip,filtered)
 
 def getcols(astring):
@@ -65,13 +65,16 @@ def usage(exit):
     -legendloc [0-10]   Legend location (pydoc pylab.legend)
     -grid
     -square             Does axis(equal)
-    -linestyle "r-o"         
+    -linestyle "r-o"
     -save fig.png       Outputs result to disk
     -title Title        Adds Title to plot
     -xlim               X axis limits min max
     -ylim               y axis limits min max
     -x                  X axis label
     -y                  Y axis label
+    -normalize          (scalar)
+    -trx                Translate along x
+    -try                Translate along y
     -noshow             Silent mode, no plot window
     -use                Columns to use 1:2
     -clean              Try to clean up file from
@@ -105,7 +108,9 @@ minx=False
 maxx=False
 miny=False
 maxy=False
-
+norm=1
+translateX=0
+translateY=0
 
 arguments.reverse()
 arguments.pop()
@@ -118,6 +123,12 @@ while len(arguments):
         files.append(arg)
     elif arg=='-minus':
         minus=True
+    elif arg=='-normalize':
+        norm=float(getnext(arguments))
+    elif arg=='-trx':
+        translateX=float(getnext(arguments))
+    elif arg=='-try':
+        translateY=float(getnext(arguments))
     elif arg=='-log':
         dolog=True
     elif arg=='-diff':
@@ -211,9 +222,10 @@ for d in data:
 
     for y_ in Y:
         print 'Plotting'
+        y_/=norm
+        x+=translateX
         if minus:
             y_=-y_
-            pylab.plot(x,-y_,linestyle)
         if dodiff:
             y_=pylab.diff(y_)
             x =x[0:-1]

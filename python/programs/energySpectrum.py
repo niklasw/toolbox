@@ -107,7 +107,7 @@ def plotFFT(
 
     n=len(samples)
 
-    freq=scipy.array(range(n/2+1))/(n/2.0)
+    freq=numpy.array(range(n/2+1))/(n/2.0)
     freq=freq[1:]*sampleFrq/2.0
 
     if plotdata:
