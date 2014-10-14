@@ -43,7 +43,7 @@ def getArgs():
     parser.add_option('--logX',dest='logX',action='store_true',default=False,help='Log X axis')
     parser.add_option('--logY',dest='logY',action='store_true',default=False,help='Log Y axis')
     parser.add_option('--diff',dest='diff',action='store_true',default=False,help='Plot diff of Y values instead')
-    parser.add_option('--filter',dest='filterWidth',default=1,help='Filter Y-data with this filter width')
+    parser.add_option('--filter',dest='filterWidth',default=0,help='Filter Y-data with this filter width')
     parser.add_option('--skipLines',dest='skipLines',default=0,help='Number of data lines to skip')
 
     parser.add_option('-x','--xLabel',dest='xLabel',default='x',help='X axis label')
@@ -110,11 +110,6 @@ class dataManager:
         self.legend = []
         self.optionsApplied = []
 
-    def clean(self,stringList):
-        filtered = filter(self.dropPat.match, stringList)
-        filtered = [self.parenPat.sub(' ',a) for a in filtered]
-        return map(string.strip,filtered)
-
     def getCols(self):
         cols=self.options.columns.split(':')
         return len(cols), [ int(a) for a in cols ]
@@ -130,29 +125,32 @@ class dataManager:
         return numpy.mean(A[i-w0:i+w1])
 
     def filtered(self,A,w):
-        return numpy.array( [ meanFilter(A,i,w) for i in range(len(A)) ])
+        return numpy.array( [ self.meanFilter(A,i,w) for i in range(len(A)) ])
+
+    def clean(self,stringList):
+        from itertools import ifilter
+        return (self.parenPat.sub(' ',a).strip() for a in ifilter(self.dropPat.match,stringList))
 
     def read(self):
+        from itertools import imap
+
         for f in self.files:
             Info( 'Reading file {0}'.format(f))
-            thisData=''
-            thisData=open(f).readlines()
-            thisData=self.clean(thisData[:])
             fLList=[]
-            if self.options.skipLines >= len(thisData):
+            with open(f) as fp:
+                for i,line in enumerate(self.clean(fp.readlines())):
+                    if i >=  self.options.skipLines:
+                        try:
+                            fLList.append(map(float,line.split()))
+                        except:
+                            print "Warning: Could not read line number {0}".format(i)
+
+            if not len(fLList):
                 Warn('skipLines > data set length. Data set ignored')
                 continue
 
-            for i,line in enumerate(thisData):
-                if i >=  self.options.skipLines:
-                    try:
-                        fLList.append(map(float,line.split()))
-                    except:
-                        print "Warning: Could not read line", line
             fLList=filter(len,fLList)
-            del thisData
-            self.arrays.append(numpy.asarray(fLList))
-            self.shapes.append(numpy.shape(self.arrays[-1]))
+
             try:
                 self.arrays.append(numpy.asarray(fLList))
                 self.shapes.append(numpy.shape(self.arrays[-1]))
@@ -196,12 +194,25 @@ class dataManager:
                 return False
         return True
 
+    def diff(self,x,y):
+        dx = (x[1:]-x[0:-1])
+        dy = (y[1:]-y[0:-1])
+        return dy/dx
 
     def applyDataOptions(self):
         if not self.optionsApplied[self.current]:
-            Info('Applying translation and scaling')
+            Info('Applying data transformations')
+            if self.options.filterWidth:
+                for i,y in enumerate(self.y):
+                    self.y[i] = self.filtered(y, self.options.filterWidth)
+                
             self.x *= self.options.scaleX
             self.x += self.options.translateX
+
+            if self.options.diff:
+                for i,y in enumerate(self.y):
+                    self.y[i] = self.diff(self.x,y)
+                self.x = (self.x[1:]+self.x[0:-1])*0.5
 
             for i,y in enumerate(self.y):
                 y *= self.options.scaleY
@@ -222,16 +233,22 @@ class dataManager:
 
 
 class plotter:
+    lineColors='b g r c m y k'.split()
     def __init__(self, dmgr):
 
         self.data=dmgr
         self.lines = []
         self.fig = plt.figure()
-        self.ax = self.fig.add_subplot(111)
+        #axesKw={}
+        #if self.data.options.square:
+        #    axesKw = {'aspect':'equal'}
+        self.ax = self.fig.add_subplot(111) #,**axesKw)
 
     def add(self):
-        for d in self.data.y:
-            line, = plt.plot(self.data.x,d, self.data.options.lineStyle)
+        for i,d in enumerate(self.data.y):
+            line, = plt.plot(self.data.x,d,
+                             color=self.lineColors[i],
+                             linestyle=self.data.options.lineStyle)
             self.lines.append(line)
 
     def decorate(self):
@@ -248,6 +265,9 @@ class plotter:
 
         if self.data.assertLegend():
             self.ax.legend(self.lines,self.data.legend, loc=0)
+
+        if self.data.options.square:
+            self.ax.set_aspect('equal')
 
 
     def save(self):

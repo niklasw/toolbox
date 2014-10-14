@@ -73,6 +73,7 @@ def usage(exit):
     -x                  X axis label
     -y                  Y axis label
     -normalize          (scalar)
+    -normalizex         (scalar)
     -trx                Translate along x
     -try                Translate along y
     -noshow             Silent mode, no plot window
@@ -109,6 +110,7 @@ maxx=False
 miny=False
 maxy=False
 norm=1
+normx=1
 translateX=0
 translateY=0
 
@@ -125,6 +127,8 @@ while len(arguments):
         minus=True
     elif arg=='-normalize':
         norm=float(getnext(arguments))
+    elif arg=='-normalizex':
+        normx=float(getnext(arguments))
     elif arg=='-trx':
         translateX=float(getnext(arguments))
     elif arg=='-try':
@@ -224,6 +228,7 @@ for d in data:
         print 'Plotting'
         y_/=norm
         x+=translateX
+        x/=normx
         if minus:
             y_=-y_
         if dodiff:
