@@ -33,6 +33,27 @@ def getArgs():
     Python thing to simply plot data
     """
 
+    def argError(s):
+        s = '* ERROR: %s. *' % s
+        n=len(s)
+        print '\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*')
+        parser.print_help()
+        sys.exit(1)
+
+    def validateFiles(args):
+        if not args:
+            argError('Input data file needed.')
+        for f in args:
+            if not os.path.isfile(f):
+                argError('Cannot read file {0}'.format(f))
+
+    def validateOption(option, test, msg='Invalid argument', allowed=[]):
+        try:    option = test(option)
+        except: argError('%s; got %s' % (msg,option))
+        if allowed and not option in allowed:
+            argError('%s; got %s. Allowed values are %s' % (msg,option,allowed))
+        return option
+
     parser=OptionParser(description=descString)
     parser.add_option('--negX',dest='negX',action='store_true',default=False,help='Negate X-values')
     parser.add_option('--negY',dest='negY',action='store_true',default=False,help='Negate Y-values')
@@ -65,24 +86,7 @@ def getArgs():
 
     options,arguments = parser.parse_args()
 
-    def argError(s):
-        s = '* ERROR: %s. *' % s
-        n=len(s)
-        print '\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*')
-        parser.print_help()
-        sys.exit(1)
-
-    def validateFiles(arguments):
-        for f in arguments:
-            if not os.path.isfile(f):
-                argError('Cannot read file {0}'.format(f))
-
-    def validateOption(option, test, msg='Invalid argument', allowed=[]):
-        try:    option = test(option)
-        except: argError('%s; got %s' % (msg,option))
-        if allowed and not option in allowed:
-            argError('%s; got %s. Allowed values are %s' % (msg,option,allowed))
-        return option
+    validateFiles(arguments)
 
     options.translateX = validateOption(options.translateX,float)
     options.translateY = validateOption(options.translateY,float)
@@ -202,10 +206,11 @@ class dataManager:
     def applyDataOptions(self):
         if not self.optionsApplied[self.current]:
             Info('Applying data transformations')
+
             if self.options.filterWidth:
                 for i,y in enumerate(self.y):
                     self.y[i] = self.filtered(y, self.options.filterWidth)
-                
+
             self.x *= self.options.scaleX
             self.x += self.options.translateX
 
