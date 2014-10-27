@@ -84,16 +84,16 @@ def getArgs():
             argError('%s; got %s. Allowed values are %s' % (msg,option,allowed))
         return option
 
-    options.translateX = validateOption(options.translateX,float)
-    options.translateY = validateOption(options.translateY,float)
-    options.scaleX = validateOption(options.scaleX,float)
-    options.scaleY = validateOption(options.scaleY,float)
+    options.translateX  = validateOption(options.translateX,float)
+    options.translateY  = validateOption(options.translateY,float)
+    options.scaleX      = validateOption(options.scaleX,float)
+    options.scaleY      = validateOption(options.scaleY,float)
     options.filterWidth = validateOption(options.filterWidth,int)
-    options.xMin = validateOption(options.xMin,float)
-    options.xMax = validateOption(options.xMax,float)
-    options.yMin = validateOption(options.yMin,float)
-    options.yMax = validateOption(options.yMax,float)
-    options.skipLines = validateOption(options.skipLines,int)
+    options.xMin        = validateOption(options.xMin,float)
+    options.xMax        = validateOption(options.xMax,float)
+    options.yMin        = validateOption(options.yMin,float)
+    options.yMax        = validateOption(options.yMax,float)
+    options.skipLines   = validateOption(options.skipLines,int)
 
     return options,arguments
 
@@ -239,9 +239,6 @@ class plotter:
         self.data=dmgr
         self.lines = []
         self.fig = plt.figure()
-        #axesKw={}
-        #if self.data.options.square:
-        #    axesKw = {'aspect':'equal'}
         self.ax = self.fig.add_subplot(111) #,**axesKw)
 
     def add(self):
@@ -262,13 +259,10 @@ class plotter:
             self.ax.grid('on')
         if self.data.options.title:
             self.ax.set_title(self.data.options.title)
-
         if self.data.assertLegend():
             self.ax.legend(self.lines,self.data.legend, loc=0)
-
         if self.data.options.square:
             self.ax.set_aspect('equal')
-
 
     def save(self):
         if self.data.options.figName:
@@ -290,7 +284,7 @@ if __name__=="__main__":
 
     p = plotter(data)
 
-    for i in range (data.nArrays()):
+    for i in range(data.nArrays()):
         data.current = i
         data.assertXY()
         data.applyDataOptions()
