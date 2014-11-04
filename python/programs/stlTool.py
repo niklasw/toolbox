@@ -60,10 +60,14 @@ def getArgs():
 
 class stlToolBox:
     def __init__(self,stlFile,stlOutFile,binary=False):
+        import gzip
         self.stlFile = stlFile
         readOpt = 'r'
         if binary: readOpt='rb'
-        self.stlHandle = open(stlFile,readOpt)
+        if stlFile[-3:] == '.gz':
+            self.stlHandle = gzip.open(stlFile)
+        else:
+            self.stlHandle = open(stlFile,readOpt)
         self.vertPat = re.compile('^\s*vertex\s+',re.I)
         self.regions = []
         self.stlOut = stlOutFile
