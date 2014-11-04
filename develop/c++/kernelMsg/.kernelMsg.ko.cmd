@@ -1,0 +1,1 @@
+cmd_/home/nikwik/toolbox/develop/c++/kernelMsg/kernelMsg.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/nikwik/toolbox/develop/c++/kernelMsg/kernelMsg.ko /home/nikwik/toolbox/develop/c++/kernelMsg/kernelMsg.o /home/nikwik/toolbox/develop/c++/kernelMsg/kernelMsg.mod.o
