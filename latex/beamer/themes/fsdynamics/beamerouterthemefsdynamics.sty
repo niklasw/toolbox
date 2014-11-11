@@ -1,0 +1,98 @@
+\mode<presentation>
+
+\setbeamertemplate{itemize items}[square]
+\setbeamertemplate{blocks}[rounded][shadow=true]
+\setbeamertemplate{navigation symbols}{}
+
+\usefonttheme[onlylarge]{structuresmallcapsserif}
+%\usefonttheme[onlysmall]{structurebold}
+\usefonttheme[onlylarge]{structurebold}
+
+\pgfdeclareimage[width=0.25\paperwidth]{logo}{ThemeImages/fsdLogo.png}
+\pgfdeclareimage[width=0.45\paperwidth]{biglogo}{ThemeImages/fsdLogo.png}
+\usesectionheadtemplate
+  {\hfill\insertsectionhead}
+  {\hfill\color{fg!50!bg}\insertsectionhead}
+
+\setbeamertemplate{headline}%{fsdynamics theme}
+{
+    \setlength{\unitlength}{1.0cm}
+    \begin{picture}(0,0)
+        \put(0,0.0){\includegraphics[width=\paperwidth]{ThemeImages/pptBanner.png}}
+        \put(1.05,0.3){\pgfuseimage{logo}}
+    \end{picture}
+}
+
+\addtobeamertemplate{headline}
+{\vskip 1cm}
+
+\defbeamertemplate*{sidebar right}{fsdynamicstheme}{}
+
+\defbeamertemplate*{footline}{fsdynamicstheme}
+{
+    \ifnum\c@framenumber>1%
+        \begin{beamercolorbox}[wd=0mm,ht=0mm]{fsdynamicsbox}
+            \setlength{\unitlength}{1.0cm}
+            \begin{picture}(0,0)%
+                \put(0,0.5){\rule{1.0\paperwidth}{1.2mm}}%
+                \put(0.5,0.2){\tiny \textcolor{black}{\setauthor{}}}%
+                \put(2.5,0.2){\tiny \textcolor{black}{\setinstitute}}%
+                \put(8.5,0.2){\tiny \textcolor{black}{\footkeys}}%
+                \put(12,0.2){\tiny \textcolor{black}{\insertframenumber/\inserttotalframenumber}}%
+            \end{picture}
+        \end{beamercolorbox}
+         %\pgfuseshading{fsdynamicsframefootshadered}
+        \else
+    \fi
+}
+
+\setbeamertemplate{title page}
+{
+   % \begin{beamercolorbox}[wd=0mm,ht=0mm]{fsdynamicsbox}
+   \vspace{0.5cm}
+        \setlength{\unitlength}{1.0cm}
+        \begin{picture}(0,0)%
+            \put(0.0,0.50){\tiny \textbf{Document type:} \infoclass{}}%
+            \put(0.0,0.25){\tiny \textbf{Issuer:} \insertauthor}%
+            \put(0.0,0.00){\tiny \textbf{Date:} \insertdate}%
+
+            \put(4.0,0.50){\tiny \textbf{Distribution:} \customer{}}%
+            \put(4.0,0.25){\tiny \textbf{Inspected by:} \reviewer{}}%
+
+            \put(8.0,0.50){\tiny \textbf{Document no:} \documentno{} }%
+            \put(8.0,0.25){\tiny \textbf{Approved by:} \approver{}}%
+        \end{picture}
+   % \end{beamercolorbox}
+
+    \vspace{.2\paperheight}
+    \pgfuseimage{biglogo}
+    \vspace{.1\paperheight}
+
+    {\usebeamerfont{title}\usebeamercolor[fsdynamicsred]{title}\inserttitle}
+    \vspace{1.5cm}
+
+    \begin{raggedleft}
+        \tiny
+        \textbf{FS Dynamics Sweden AB}\\
+        G\aa{}rdsv\"agen 10\\
+        SE-169\,70 Solna \\
+        http://www.fsdynamics.se \\[3mm]
+        \insertframenumber/\inserttotalframenumber \\
+    \end{raggedleft}
+
+}
+
+\setbeamertemplate{frametitle}%
+{
+    \vspace{2mm}
+    \strut\insertframetitle\strut
+}
+
+\setbeamertemplate{background canvas}{
+    \ifnum\c@framenumber=1%
+        \includegraphics[width=\paperwidth,height=\paperheight]{ThemeImages/fsdDigitalWave.jpg}
+    \fi
+}
+
+
+\mode<all>

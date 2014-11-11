@@ -1,0 +1,75 @@
+\mode<presentation>
+
+\definecolor{fsdynamicsblue}{RGB}{4,19,62}
+\definecolor{fsdynamicsgreen}{RGB}{160,173,0}
+\definecolor{fsdynamicsgrey}{RGB}{109,110,114}
+\definecolor{fsdynamicslightgrey}{RGB}{226,226,228}
+\definecolor{fsdynamics}{RGB}{226,226,228}
+\definecolor{fsdynamicsred}{RGB}{227,24,54}
+\definecolor{fsdynamicsblack}{RGB}{0,0,0}
+
+\setbeamercolor{item}{fg=fsdynamicsred, bg=fsdynamicsred}
+\setbeamercolor{enumerate item}{fg=fsdynamicsred, bg=fsdynamicsred}
+\setbeamercolor{title}{fg=black, bg=fsdynamicsgrey}
+
+\setbeamercolor{blocks}{fg=black,bg=fsdynamicsred}
+\setbeamercolor{blocks title}{fg=black,bg=fsdynamicsred}
+
+\setbeamercolor{author in head/foot}{parent=section in head/foot}
+\setbeamercolor{title in head/foot}{parent=subsection in head/foot}
+\setbeamercolor{normal text}{fg=black,bg=fsdynamics}
+
+\setbeamercolor{fsdynamicsbox}{fg=fsdynamicslightgrey,bg=white}
+\setbeamercolor{block body}{parent=normal text,use=block title,bg=block title.bg!10!bg}
+\setbeamercolor{block body alerted}{parent=normal text,use=block title alerted,bg=block title alerted.bg!10!bg}
+\setbeamercolor{block body example}{parent=normal text,use=block title example,bg=block title example.bg!10!bg}
+
+\setbeamercolor{block title}{bg=lightgray,fg=darkgray}
+\setbeamercolor{block title alerted}{use=alerted text,fg=white,bg=alerted text.fg!75!black}
+\setbeamercolor{block title example}{use=example text,fg=white,bg=example text.fg!75!black}
+
+\setbeamercolor{frametitle}{bg=,fg=fsdynamicsgrey}
+\setbeamercolor{title}{bg=white,fg=black}
+\setbeamercolor{author}{bg=white,fg=darkgray}
+\setbeamercolor{institute}{bg=white,fg=darkgray}
+\setbeamercolor{date}{bg=white,fg=darkgray}
+
+\setbeamercolor{background canvas}{parent=normal text}
+\setbeamercolor{background}{parent=background canvas}
+
+\setbeamercolor{itemize items}{fg=fsdynamicsred,bg=fsdynamicsred}
+\setbeamercolor{normal text}{fg=black,bg=white}
+\setbeamercolor{titlelike}{fg=white,bg=white}
+
+% Define beamer object for footer
+\setbeamercolor{fsdynamicsblackbox}{fg=white,bg=black}
+\setbeamercolor{fsdynamicsbox}{fg=fsdynamicslightgrey,bg=white}
+\setbeamercolor{fsdynamicsbluebox}{fg=white,bg=fsdynamicsblue}
+\setbeamercolor{section in head/foot}{parent=palette quaternary}
+\setbeamercolor{subsection in head/foot}{parent=palette primary}
+
+\setbeamercolor*{palette primary}{use=structure,fg=black,bg=structure.fg}
+\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=structure.fg!75!black}
+\setbeamercolor*{palette tertiary}{use=structure,fg=white,bg=structure.fg!50!black}
+\setbeamercolor*{palette quaternary}{fg=white,bg=black}
+
+\setbeamercolor*{sidebar}{use=structure,bg=structure.fg}
+
+\setbeamercolor*{palette sidebar primary}{use=structure,fg=structure.fg!10}
+\setbeamercolor*{palette sidebar secondary}{fg=white}
+\setbeamercolor*{palette sidebar tertiary}{use=structure,fg=structure.fg!50}
+\setbeamercolor*{palette sidebar quaternary}{fg=white}
+
+\setbeamercolor*{titlelike}{parent=palette primary}
+
+\setbeamercolor*{separation line}{}
+\setbeamercolor*{fine separation line}{}
+
+\pgfdeclarehorizontalshading{fsdynamicsframefootshadeblue}{13.1mm}{color(0pt)=(fsdynamics); color(105.0mm)=(fsdynamicsblue)}
+\pgfdeclarehorizontalshading{fsdynamicsframefootshadegreen}{13.1mm}{color(0pt)=(fsdynamics); color(0.82\paperwidth)=(fsdynamicsgreen)}
+\pgfdeclarehorizontalshading{fsdynamicsframefootshadegrey}{13.1mm}{color(0pt)=(fsdynamics); color(0.82\paperwidth)=(fsdynamicsgrey)}
+\pgfdeclarehorizontalshading{fsdynamicsframefootshadered}{13.1mm}{color(0pt)=(fsdynamics); color(0.82\paperwidth)=(fsdynamicsred)}
+\pgfdeclarehorizontalshading{fsdynamicsframefootblack}{13.1mm}{color(0pt)=(fsdynamicsblack); color(105.0mm)=(fsdynamicsblack)}
+\pgfdeclarehorizontalshading{beamer@frametitleshade}{\paperheight}{rgb(0pt)=(0.6980,0.6980,0.6980); rgb(\paperwidth)=(0.6980,0.6980,0.6980)}
+
+\mode<all>

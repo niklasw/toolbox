@@ -1,0 +1,46 @@
+\mode<presentation>
+
+\setbeamertemplate{itemize items}[square]
+\setbeamertemplate{blocks}[rounded][shadow=true]
+\setbeamertemplate{navigation symbols}{}
+
+%\usefonttheme[onlylarge]{structuresmallcapsserif}
+%\usefonttheme[onlysmall]{structurebold}
+\usefonttheme[onlylarge]{structurebold}
+
+%\usesectionheadtemplate
+%  {\hfill\insertsectionhead}
+%  {\hfill\color{fg!50!bg}\insertsectionhead}
+%
+\defbeamertemplate*{headline}{scaniatheme}{}
+
+\defbeamertemplate*{sidebar right}{scaniatheme}
+{}
+
+\defbeamertemplate*{footline}{scaniatheme}
+{
+\begin{beamercolorbox}[wd=128.0mm,ht=13.15mm]{scaniawhitebox}
+\setlength{\unitlength}{1.0cm}
+\begin{picture}(0,0)%
+\put(9.2,0.3){\includegraphics[width=30mm]{scania-logo-color-white}}%
+\put(0.5,0.52){\rule{85mm}{3.5mm}}%
+\put(0.5,0.3){\tiny Info Class \infoclass{}}%
+\put(2.5,0.3){\tiny \setinstitute/\setauthor}%
+\put(5.5,0.3){\tiny \footkeys }%
+\put(7.7,0.3){\tiny \setdate}%
+\end{picture}
+\end{beamercolorbox}
+%\pgfuseshading{scaniaframefootshadered}
+}
+
+
+%\AtBeginDocument{
+%  \pgfdeclareverticalshading{beamer@topshade}{\paperwidth}{%
+%    color(0pt)=(bg);
+%    color(4pt)=(black!50!bg)}
+%}
+
+\addtobeamertemplate{headline}
+{\vskip 2mm}
+
+\mode<all>
