@@ -56,7 +56,7 @@ def turbulenceProperties():
             eps = Cmu**(3.0/4)*tke**(3.0/2)/lt
             nut = Cmu*tke**(2.0)/eps
             omega = tke/nut
-            nuTilda = (3.0/2)**0.5*(U*ti*lt)
+            nuTilda = (3.0/2)**0.5*(U*ti/100.0*lt)
             Info(("epsilon", eps))
             Info(("turbulent viscosity",nut))
             Info(("omega",omega))
