@@ -58,7 +58,7 @@ def get_waves(strength, depth, U, distance):
 
     g = 9.81
     h = 4*M/U*np.sqrt(2*np.pi*g/(R*U**2))*exp((-g*f)/U**2)*cos(g*R/U**2+np.pi/4)
-
+    return h
 
 strength_source = 10.0            # strength of the source
 x_source, y_source = -25.0, 0.0   # location of the source
