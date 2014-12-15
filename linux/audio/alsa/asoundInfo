@@ -1,0 +1,20 @@
+#!/bin/bash
+
+STATUS_RUNNING=$(find /proc/asound/ -name status -exec grep -l RUNNING {} \;)
+
+[[ -f "$STATUS_RUNNING" ]] || { echo -e "\nCould not find running device"; exit 1; }
+
+PROC_DIR=$(dirname $STATUS_RUNNING)
+HW_PARAMS=$PROC_DIR/hw_params
+INFO=$PROC_DIR/info
+
+if [[ -f "$HW_PARAMS" ]]; then
+	echo -e "::info::"
+	cat $INFO
+	echo -e "\n::hw_params::"
+	cat $HW_PARAMS
+else
+	echo -e "Could not find running device"
+fi
+
+
