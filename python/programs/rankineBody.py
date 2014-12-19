@@ -173,12 +173,6 @@ plt.ylim(y_start, y_end)
 plt.streamplot(X, Y, u, v, density=3, linewidth=1, arrowsize=2, arrowstyle='->')
 plt.scatter([x_source, x_sink], [y_source, y_sink], color='#CD2305', s=80, marker='o')
 
-##  calculates the stagnation point
-#x_stagnation = x_source - np.sqrt(strength_source/(4*pi)/u_inf)
-#y_stagnation = y_source
-## adding the stagnation point to the figure
-#plt.scatter(x_stagnation, y_stagnation, color='g', s=80, marker='o')
-
 # adds the dividing line to the figure
 contf=plt.contour(X, Y, psi,
             levels= [0],
