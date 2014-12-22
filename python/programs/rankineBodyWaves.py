@@ -5,6 +5,8 @@ from math import *
 import numpy as np
 import matplotlib.pyplot as plt
 
+fsize = 32
+
 class mesh:
     def __init__(self,x0,x1,y0,y1,Nx,Ny):
         self.x0 = x0
@@ -36,8 +38,8 @@ class mesh:
         return [self.x1-self.x0, self.y1-self.y0]
 
     def plot(self):
-        plt.xlabel('x', fontsize=16)
-        plt.ylabel('y', fontsize=16)
+        plt.xlabel('x', fontsize=fsize)
+        plt.ylabel('y', fontsize=fsize)
         plt.xlim(self.x0, self.x1)
         plt.ylim(self.y0, self.y1)
         plt.scatter(self.X, self.Y, color='#CD2305', s=8, marker='o')
@@ -158,10 +160,10 @@ class rankineBody:
         return 2*pi*self.fs.u**2/g
 
     def plotStreamlines(self):
-        plt.title('Stream function')
+        plt.title('Stream function',fontsize=fsize)
         plt.grid(True)
-        plt.xlabel('x', fontsize=16)
-        plt.ylabel('y', fontsize=16)
+        plt.xlabel('x', fontsize=fsize)
+        plt.ylabel('y', fontsize=fsize)
         X = self.mesh.X
         Y = self.mesh.Y
         u = self.u
@@ -173,10 +175,10 @@ class rankineBody:
         plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
 
     def plotPotential(self):
-        plt.title('Potential')
+        plt.title('Potential',fontsize=fsize)
         plt.grid(True)
-        plt.xlabel('x', fontsize=16)
-        plt.ylabel('y', fontsize=16)
+        plt.xlabel('x', fontsize=fsize)
+        plt.ylabel('y', fontsize=fsize)
         X = self.mesh.X
         Y = self.mesh.Y
         x_sources = [s.x for s in self.sources]
@@ -186,10 +188,10 @@ class rankineBody:
         plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
 
     def plotCp(self):
-        plt.title('Pressure coefficient, $C_p$')
+        plt.title('Pressure coefficient, $C_p$',fontsize=fsize)
         plt.grid(True)
-        plt.xlabel('x', fontsize=16)
-        plt.ylabel('y', fontsize=16)
+        plt.xlabel('x', fontsize=fsize)
+        plt.ylabel('y', fontsize=fsize)
         X = self.mesh.X
         Y = self.mesh.Y
         x_sources = [s.x for s in self.sources]
@@ -198,7 +200,7 @@ class rankineBody:
         contf = plt.contourf(X, Y, self.getCp(), levels=np.linspace(-2.0, 1.0, 100), extend='both')
         plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
         cbar = plt.colorbar(contf)
-        cbar.set_label('$C_p$', fontsize=16)
+        cbar.set_label('$C_p$', fontsize=fsize)
         cbar.set_ticks([-2.0, -1.0, 0.0, 1.0])
 
 
@@ -209,9 +211,9 @@ class rankineBody:
 
     def plotWaves(self,depth,distance):
         wh = self.waves(depth,distance)
-        plt.title('Waves along center line above body')
-        plt.xlabel('Distance')
-        plt.ylabel('Centerline surface elevation')
+        plt.title('Waves along center line above body', fontsize=fsize)
+        plt.xlabel('Distance', fontsize=fsize)
+        plt.ylabel('Centerline surface elevation', fontsize=fsize)
         plt.plot(distance,wh)
         plt.grid('on')
         plt.xlim(0,np.max(distance))
@@ -257,15 +259,21 @@ if __name__ == '__main__':
     plt.figure(figsize = figureSize)
     body.plotStreamlines()
     body.plotBody()
+    if sys.argv[1] == 'save': plt.savefig('rankineStreamlines.png')
 
     plt.figure(figsize = figureSize)
     body.plotPotential()
     body.plotBody(line='dashed')
+    if sys.argv[1] == 'save': plt.savefig('rankinePotential.png')
+
     plt.figure(figsize = figureSize)
     body.plotCp()
     body.plotBody(line='dashed')
+    if sys.argv[1] == 'save': plt.savefig('rankineCp.png')
 
     plt.figure(figsize = figureSize)
+
     wh = body.plotWaves(depthFactor*w, np.linspace(0.1,8*wl,400))
+    if sys.argv[1] == 'save': plt.savefig('rankineWaves.png')
 
     plt.show()
