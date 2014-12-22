@@ -143,7 +143,7 @@ class rankineBody:
     def waves(self, depth, distance, g=9.81):
         '''Wave pattern along surface center line
         according to Shaffer/Yim'''
-        M = float(self.sources[0].strength)/(4*pi)
+        M = float(self.sources[0].strength) / (4*pi)
         f = float(depth)
         c = float(self.sources[0].x)
         U = self.fs.u
@@ -216,6 +216,7 @@ class rankineBody:
         plt.grid('on')
         plt.xlim(0,np.max(distance))
         plt.ylim(-1.1*np.max(wh),1.1*np.max(wh))
+        return wh
 
 
 def feet(l):
@@ -223,13 +224,13 @@ def feet(l):
 
 if __name__ == '__main__':
 
-    u_inf = 1.5
+    u_inf = 3
     x_offset = 1.4
     y_offset = 0.0
     depthFactor  = 2.0
-    sourceFactor = 0.1*4*pi
+    sourceFactor = 0.104*(4*pi)
 
-    sourceStrength = u_inf * sourceFactor #*4*pi ??
+    sourceStrength = u_inf * sourceFactor
 
     Mesh = mesh(-1.5*x_offset,1.5*x_offset,-1*x_offset, 1*x_offset,300,200)
 
@@ -245,6 +246,7 @@ if __name__ == '__main__':
     print 'Body Lpp    = ',l
     print 'Body w      = ',w
     print 'Body aspect = ',l/w
+    print 'Cl depth    = ', depthFactor*w
 
     wl =  body.getWaveLength()
     print 'Wave length = ',wl
@@ -264,6 +266,6 @@ if __name__ == '__main__':
     body.plotBody(line='dashed')
 
     plt.figure(figsize = figureSize)
-    body.plotWaves(depthFactor*w, np.linspace(0.1,8*wl,400))
+    wh = body.plotWaves(depthFactor*w, np.linspace(0.1,8*wl,400))
 
     plt.show()
