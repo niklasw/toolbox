@@ -3375,7 +3375,7 @@ surface_type: 2
 transparency: 0.500000
 thresholding: 1
 vector_type: 0
-geom_funct: "lambda2"
+geom_funct: "cflambda2"
 scalar_funct: "Ux_norm"
 vector_funct: "U"
 thresh_funct: "Z"
