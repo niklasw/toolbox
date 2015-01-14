@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env pvpython
 """Demo script that converts a series of legacy VTK files (time-steps) to a PVD file
 referencing a series of VTU files.
 """
@@ -125,7 +125,6 @@ class partsContainer:
 
 def main():
     import string, thread
-    from processing import Process, Queue
     if not servermanager.ActiveConnection:
         connection = servermanager.Connect()
 
@@ -151,6 +150,7 @@ def main():
 
     if nCpus > 1:
         print "PARALLEL RUN NOT IMPLEMENTED"
+        from processing import Process, Queue
         sys.exit(1)
         i = 0
         while i < parts.nparts:
