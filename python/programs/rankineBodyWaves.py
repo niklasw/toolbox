@@ -5,6 +5,11 @@ from math import *
 import numpy as np
 import matplotlib.pyplot as plt
 
+savefig = False
+if len(sys.argv) == 2:
+    if sys.argv[1] == 'save':
+        savefig = True
+
 fsize = 32
 
 class mesh:
@@ -226,19 +231,24 @@ def feet(l):
 
 if __name__ == '__main__':
 
-    u_inf = 3
+    u_inf = 1.5
     x_offset = 1.4
     y_offset = 0.0
+    x1_offset = 0.1
+    y1_offset = 0.3
     depthFactor  = 2.0
     sourceFactor = 0.104*(4*pi)
 
     sourceStrength = u_inf * sourceFactor
+    sourceStrength1 = u_inf * sourceFactor*3
 
     Mesh = mesh(-1.5*x_offset,1.5*x_offset,-1*x_offset, 1*x_offset,300,200)
 
     Sources = []
     Sources.append( source( sourceStrength, -x_offset, y_offset, Mesh) )
     Sources.append( source(-sourceStrength,  x_offset, y_offset, Mesh) )
+    Sources.append( source( sourceStrength1, -x1_offset, y1_offset, Mesh) )
+    Sources.append( source(-sourceStrength1,  x1_offset, y1_offset, Mesh) )
 
     FS = freeStream(u_inf,0,Mesh)
 
@@ -259,21 +269,21 @@ if __name__ == '__main__':
     plt.figure(figsize = figureSize)
     body.plotStreamlines()
     body.plotBody()
-    if sys.argv[1] == 'save': plt.savefig('rankineStreamlines.png')
+    if savefig: plt.savefig('rankineStreamlines.png')
 
     plt.figure(figsize = figureSize)
     body.plotPotential()
     body.plotBody(line='dashed')
-    if sys.argv[1] == 'save': plt.savefig('rankinePotential.png')
+    if savefig: plt.savefig('rankinePotential.png')
 
     plt.figure(figsize = figureSize)
     body.plotCp()
     body.plotBody(line='dashed')
-    if sys.argv[1] == 'save': plt.savefig('rankineCp.png')
+    if savefig: plt.savefig('rankineCp.png')
 
     plt.figure(figsize = figureSize)
 
     wh = body.plotWaves(depthFactor*w, np.linspace(0.1,8*wl,400))
-    if sys.argv[1] == 'save': plt.savefig('rankineWaves.png')
+    if savefig: plt.savefig('rankineWaves.png')
 
     plt.show()
