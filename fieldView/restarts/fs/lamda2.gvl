@@ -1,0 +1,17 @@
+layout_restart_version: 1
+num_panes: 1
+width: 1861
+height: 1000
+separator_width: -1
+pane_gfx_offset: 2
+current_pane_id: "0"
+index: 0
+type: splitter
+orientation: Vertical
+count: 1
+sizes: 1000
+index: 0
+type: pane
+id: "0"
+name: "1"
+rect: 0, 0, 1861, 1000

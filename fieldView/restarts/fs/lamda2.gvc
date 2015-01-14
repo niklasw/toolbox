@@ -1,0 +1,28 @@
+content_restart_version: 3
+hardcopy_base_color: 0.8 0.8 0.8
+id: "0"
+name: "1"
+num_member_datasets: 1
+dataset: 0
+curent_dataset: 0
+zoom: 5.79557
+angle_axis: 1.66395 -0.761956 0.408632 0.502438
+translation: -0.311937 0.018513 -0.0396509
+scale: 94.5581
+light_direction: 0.57735 0.57735 0.57735
+rotation_center_on: 0
+rotation_center: 0 0 0
+perspective: 1
+perspective_angle: 40
+perspective_z: -3.40239
+outline: 0
+axis_markers: 1
+back_color: 2
+use_image: 0
+image_name: ""
+image_position: 1
+step_rotation_factor: 5
+step_scale_factor: 1.1
+step_translation_factor: 0.3
+view_syncing: 1
+sweep_linking: 1
