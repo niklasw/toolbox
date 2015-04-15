@@ -7,6 +7,14 @@ from os.path import splitext
 from paraview.simple import *
 #paraview.simple._DisableFirstRenderCameraReset()
 
+
+# Check number of arguments. If two, expect the second to
+# be an STL file
+
+haveStl = False
+if len(sys.argv) == 2:
+    haveStl = True
+
 vtkWaveFile = sys.argv[1]
 vtkWaveFileBase = splitext(vtkWaveFile)[0]
 csvWaveFile = vtkWaveFileBase+'.csv'
