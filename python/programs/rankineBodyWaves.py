@@ -196,8 +196,10 @@ class rankineBody:
         offset = float(source.x)
         U = abs(self.fs.u)
 
-        h = lambda sign,R: sign*4*M/U*sqrt(2*pi*g/(R*U**2))*exp(-g*f/U**2)*cos(g*R/U**2+pi/4)
-        return np.array([h(1.0,R-offset) for R in distance ])
+        R = [ sqrt(f**2+d**2) for d in distance ]
+
+        h = lambda sign,r: sign*4*M/U*sqrt(2*pi*g/(r*U**2))*exp(-g*f/U**2)*cos(g*r/U**2+pi/4)
+        return np.array([h(1.0,R-offset) for r in R ])
 
     def getWaveLength(self,g=9.81):
         '''Wave length according to Shaffer/Yim'''
