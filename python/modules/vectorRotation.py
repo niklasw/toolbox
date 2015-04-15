@@ -35,19 +35,22 @@ class rotationMatrix:
                       [sin(p), cos(p),  0 ], \
                       [0,       0,       1 ]])
 
-    def rotate(self,V):
+    def rotate(self,V,order='xyz'):
+        funDict={'x':self.X, 'y':self.Y, 'z':self.Z}
         A = matrix(V).transpose()
-        A = self.X()*A
-        A = self.Y()*A
-        A = self.Z()*A
+        for xyz in order:
+            A = funDict[xyz]()*A
         return array(A.transpose())[0]
 
 if __name__=="__main__":
-    v=[1,0,0]
-    M=rotationMatrix(0,10,00)
-    vr=M.rotate(v)
+    v=[1,1,0.1]
     v=array(v)
-    print vr,v
-    print sqrt(dot(vr,vr)), sqrt(dot(v,v))
+    M=rotationMatrix(4,10,80)
+    for o in ['xyz','xzy','zxy','zyx','yxz','yzx']:
+        print '\n',o
+        vr=M.rotate(v,o)
+        print v
+        print vr
+        print 'Vector lengths: ', sqrt(dot(vr,vr)),'==', sqrt(dot(v,v))
 
 

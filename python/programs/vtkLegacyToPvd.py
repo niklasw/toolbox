@@ -33,6 +33,7 @@ def getArgs():
         sys.exit(1)
 
     inputDir = os.getcwd()
+    partDirs=[]
     if opt.partDirs:
         partDirs = glob.glob(opt.partDirs)
 

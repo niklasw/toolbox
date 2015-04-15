@@ -84,6 +84,8 @@ def getArgs():
 
     parser.add_option('-c','--use',dest='columns',default='0:1',help='Define columns to plot e.g. 0:1:3')
 
+    parser.add_option('-F','--fft',dest='fft', default=0, help = 'Also plot fft on dataset, argument is dt. 0 disables fft.')
+
     options,arguments = parser.parse_args()
 
     validateFiles(arguments)
@@ -98,6 +100,7 @@ def getArgs():
     options.yMin        = validateOption(options.yMin,float)
     options.yMax        = validateOption(options.yMax,float)
     options.skipLines   = validateOption(options.skipLines,int)
+    options.fft         = validateOption(options.fft,float)
 
     return options,arguments
 
@@ -113,6 +116,8 @@ class dataManager:
         self.current = 0
         self.legend = []
         self.optionsApplied = []
+        self.fft = None
+        self.fftFrq = None
 
     def getCols(self):
         cols=self.options.columns.split(':')
@@ -203,6 +208,20 @@ class dataManager:
         dy = (y[1:]-y[0:-1])
         return dy/dx
 
+    def FFT(self,dt):
+        import scipy
+        self.fft = []
+        self.fftFrq = []
+        dt = self.options.fft
+        for y in self.y:
+            n = len(self.y)
+            sampleFrq = 1.0/dt
+            freq = numpy.array(range(n/2+1))/(n/2.0)
+            y = freq[1:]*sampleFrq/2.0
+            power = scipy.fft(self.y)
+            self.fft.append(abs(y[1:(n/2)+1])**2/n)
+            self.fftFrq.append(freq)
+
     def applyDataOptions(self):
         if not self.optionsApplied[self.current]:
             Info('Applying data transformations')
@@ -231,6 +250,9 @@ class dataManager:
                 Warn('Negative x-values are zeroed due to log option')
                 self.x = numpy.log(numpy.maximum(self.x,0))
 
+            if self.options.fft != 0:
+                self.FFT(5e-4)
+
             self.optionsApplied[self.current] = True
 
     def nArrays(self):
@@ -243,6 +265,7 @@ class plotter:
 
         self.data=dmgr
         self.lines = []
+        self.fftLines = []
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111) #,**axesKw)
 
@@ -252,6 +275,19 @@ class plotter:
                              color=self.lineColors[i],
                              linestyle=self.data.options.lineStyle)
             self.lines.append(line)
+
+    def addFft(self):
+        if not self.data.fft:
+            return
+
+        self.fftFig = plt.figure()
+        self.fftAx  = self.fftFig.add_subplot(111)
+        for i,d in enumerate(self.data.fft):
+            x = self.fftFrq[i]
+            line, = plt.loglog(x,d,
+                               self.lineColors[i],
+                               linestyle=self.data.options.lineStyle)
+            self.fftLines.append(line)
 
     def decorate(self):
         '''Legend is defined by the last data set (loaded file)
