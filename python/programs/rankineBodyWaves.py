@@ -79,11 +79,20 @@ class source:
 
 class freeStream:
     def __init__(self,U,V,Mesh):
+        self.mesh = Mesh
         self.psi = 0.5*U*Mesh.Y**2
         self.phi = U*Mesh.X
         self.u = U
         self.v = V
 
+    def potential(self):
+        self.phi = 0.5*U*self.mesh.Y**2
+
+    def velocity(self):
+        pass
+
+    def streamFunction(self):
+        pass
 
 class rankineBody:
     def __init__(self, fs, sources):

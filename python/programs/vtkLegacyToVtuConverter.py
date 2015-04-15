@@ -1,10 +1,12 @@
+#!/usr/bin/env pvpython
 """Demo script that converts a legacy VTK file to a VTU file.
 """
 
 from paraview import servermanager
+import sys
 
-INPUTFILE = ["/home/nikwik/VTK/andritz_2800.vtk","VTK/primairnose/primairnose_2800.vtk"]
-OUTPUTFILE = "andritz_2800.vtu"
+INPUTFILE = sys.argv[2:]
+OUTPUTFILE = sys.argv[1]
 
 # create a built-in connection
 if not servermanager.ActiveConnection:
