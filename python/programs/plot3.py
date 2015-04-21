@@ -292,6 +292,7 @@ class plotter:
     def decorate(self):
         '''Legend is defined by the last data set (loaded file)
         '''
+        xmin,xmax=plt.xlim()
         if self.data.options.xLabel:
             self.ax.set_xlabel(self.data.options.xLabel)
         if self.data.options.yLabel:
@@ -300,8 +301,22 @@ class plotter:
             self.ax.grid('on')
         if self.data.options.title:
             self.ax.set_title(self.data.options.title)
-        if self.data.assertLegend():
+        if self.data.legend and self.data.assertLegend():
             self.ax.legend(self.lines,self.data.legend, loc=0)
+
+        if self.data.options.yMin:
+            ymin=self.data.options.yMin
+            plt.ylim(ymin,ymax)
+        if self.data.options.yMax:
+            ymax=self.data.options.yMax
+            plt.ylim(ymin,ymax)
+        if self.data.options.xMin:
+            xmin=self.data.options.xMin
+            plt.xlim(xmin,xmax)
+        if self.data.options.xMax:
+            xmax=self.data.options.xMax
+            plt.xlim(xmin,xmax)
+
         if self.data.options.square:
             self.ax.set_aspect('equal')
 

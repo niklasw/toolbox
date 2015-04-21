@@ -70,9 +70,7 @@ class source:
         return (u,v)
 
     def streamFunction(self):
-        r = self.r
-        #return self.strength/(4*pi) * (1.0-self.X/(4*pi*r))
-        return self.strength/(2*pi)*np.arctan2(self.mesh.Y,self.X)
+        return self.strength/(2*pi)*np.arctan2(self.Y,self.X)
 
 class freeStream:
     def __init__(self,U,V,Mesh):
@@ -133,10 +131,13 @@ class rankineBody:
         '''Iteratively solve for Rankine body
         dimensions according to equations in Shaffer
         page 3'''
+        if self.fs.u == 0:
+            print 'WARNING: cannot solveDimensions. U=0'
+            return 1.0,1.0
         strength = self.sources[0].strength
         U = self.fs.u
         c = abs(self.sources[0].x)
-        M=strength/(4*pi)
+        M=strength #*(4*pi)
 
         K = c*M/(U*pi)
 
@@ -158,7 +159,7 @@ class rankineBody:
                 d0=d
 
             print "WARNING: Solver did not converge"
-            return 0.0
+            return 1.0,1.0
 
         w = solve(hRHS,K,guess/5.0)
         l = solve(lRHS,K,guess)
@@ -176,9 +177,9 @@ class rankineBody:
         according to Shaffer/Yim'''
         # Divide by 4p? Depending on wether Shaffer is consistent
         # regarding the source notation M or not.
-        M = abs(float(self.sources[0].strength) / (4*pi))
-        f = abs(float(depth))
-        c = abs(float(self.sources[0].x))
+        M = abs(self.sources[0].strength)# * (4*pi)
+        f = abs(depth)
+        c = abs(self.sources[0].x)
         U = abs(self.fs.u)
         Fr = self.Froude(f)
         B = 8*M/(f**2*U*Fr) * exp(-1/Fr**2) * sin(c/(f*Fr**2))
@@ -189,17 +190,21 @@ class rankineBody:
     def singleSourceWaves(self,depth,distance,sourceId=0,g=9.81):
         '''Wave pattern from a single source moving beneath
         a free surface  according to Shaffer/Yim'''
+        if self.fs.u == 0:
+            print 'WARNING: No freestream U, cannot calculate waves'
+            return np.zeros(len(distance))
         source = self.sources[sourceId]
-        M = abs(float(source.strength) / (4*pi))
-        f = abs(float(depth))
-        c = abs(float(source.x))
-        offset = float(source.x)
+        M = source.strength# * (4*pi)
+        f = abs(depth)
+        offset = source.x
         U = abs(self.fs.u)
+        print "Source strength factor = ", M/self.fs.u
 
-        R = [ sqrt(f**2+d**2) for d in distance ]
+        R = [ sqrt(f**2+(d-offset)**2) for d in distance ]
 
-        h = lambda sign,r: sign*4*M/U*sqrt(2*pi*g/(r*U**2))*exp(-g*f/U**2)*cos(g*r/U**2+pi/4)
-        return np.array([h(1.0,R-offset) for r in R ])
+        h = lambda r: 4*M/U*sqrt(2*pi*g/(r*U**2))*exp(-g*f/U**2)*cos(g*r/U**2+pi/4)
+
+        return np.array([h(r) for r in R ])
 
     def getWaveLength(self,g=9.81):
         '''Wave length according to Shaffer/Yim'''
@@ -207,16 +212,18 @@ class rankineBody:
 
     def plotWaves(self,depth,distance):
         #wh = self.waves(depth,distance)
-        wh = self.singleSourceWaves(depth,distance,0)
-        wh+= self.singleSourceWaves(depth,distance,1)
+        wh = np.zeros(len(distance))
+        for i in range(len(self.sources)):
+            wh += self.singleSourceWaves(depth,distance,i,g=9.81)
+
+        plt.plot(distance,wh,'g')
 
         plt.title('Waves along center line above body', fontsize=fsize)
         plt.xlabel('Distance', fontsize=fsize)
         plt.ylabel('Centerline surface elevation', fontsize=fsize)
-        plt.plot(distance,wh)
         plt.grid('on')
         plt.xlim(-2,np.max(distance))
-        plt.ylim(-2*np.max(wh[len(wh)/2:]),2*np.max(wh[len(wh)/2:]))
+        #plt.ylim(-2*np.max(wh[len(wh)/2:]),2*np.max(wh[len(wh)/2:]))
 
         x_sources = [s.x for s in self.sources]
         y_sources = [s.y for s in self.sources]
@@ -272,8 +279,12 @@ class canvas:
         x_sources = [s.x for s in self.sources]
         y_sources = [s.y for s in self.sources]
 
-        contf = plt.contourf(X, Y, self.sources.potential(), levels=np.linspace(-4.0, 4.0, 100), extend='both')
-        plt.contour(X, Y, self.sources.potential(), levels=[-1,0,1],extend='both',linestyles='dashed',linewidths=2,colors='#000000')
+        pot = self.sources.potential()
+        maxPot = np.max(self.sources.potential())
+        minPot = np.min(self.sources.potential())
+
+        contf = plt.contourf(X, Y, self.sources.potential(), levels=np.linspace(minPot/4,maxPot/4,100), extend='both')
+        #plt.contour(X, Y, self.sources.potential(), levels=[-1,0,1],extend='both',linestyles='dashed',linewidths=2,colors='#000000')
         plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
 
     def plotCp(self):
@@ -286,7 +297,8 @@ class canvas:
         x_sources = [s.x for s in self.sources]
         y_sources = [s.y for s in self.sources]
 
-        contf = plt.contourf(X, Y, self.sources.getCp(), levels=np.linspace(-2.0, 1.0, 100), extend='both')
+        contf = plt.contourf(X, Y, self.sources.getCp(), levels=np.linspace(-2.0, 1.2, 100), extend='both')
+        trash = plt.contour(X, Y, self.sources.getCp(), levels=[0.90], colors='#000000', linewidths=2, linestyles='dashed')
         plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
         cbar = plt.colorbar(contf)
         cbar.set_label('$C_p$', fontsize=fsize)
@@ -297,20 +309,23 @@ class canvas:
         Y = self.sources.mesh.Y
         plt.contour(X, Y, self.sources.streamFunction(), levels= [0.0], colors='#CD2305', linewidths=2, linestyles=line)
 
-def feet2m(l):
+def f2m(l):
     return l*0.3048
-def m2feet(m):
+def m2f(m):
     return m/0.3048
 
 if __name__ == '__main__':
 
-    u_inf = 3.048    # 10 feet/s    Shaffer page 13
-    x_offset = 1.274 # 4.18 ft from Shaffer page 5
+    u_inf = f2m(10)                 # 10 feet/s    Shaffer page 13
+    x_offset = f2m(4.18)            # 4.18 ft from Shaffer page 5
     y_offset = 0.0
+    clDepth      = f2m(3)           # 3 feet    Shaffer page 13
+    sourceFactor = 0.104            # From page 5 in Shaffer ( 4*pi ??)
 
-    # depthFactor  = 2.0          # Centerline depth is body diameter x depthFactor
-    clDepth      = 0.9144         # 3 feet    Shaffer page 13
-    sourceFactor = 0.104*(4*pi)   # From page 5 in Shaffer ( 4*pi ??)
+    #x_offset = f2m(2.09)            # 4.18 ft from Shaffer page 5
+    #y_offset = 0.0
+    #clDepth      = f2m(1.5)         # 3 feet    Shaffer page 13
+    #sourceFactor = 0.026            # From page 5 in Shaffer ( 4*pi ??)
 
     sourceStrength = u_inf * sourceFactor
 
@@ -347,15 +362,16 @@ if __name__ == '__main__':
 
 
     l,w = body.solveDimensions(guess=1.0)
-    print 'Velocity    = {0:8.2f} m/s, {1:8.2f} f/s'.format(u_inf,m2feet(u_inf))
-    print 'Src offset  = {0:8.2f} m, {1:8.2f} f'.format(x_offset,m2feet(x_offset))
-    print 'Body Lpp    = {0:8.2f} m, {1:8.2f} feet'.format(l,m2feet(l))
-    print 'Body w      = {0:8.2f} m, {1:8.2} feet'.format(w,m2feet(w))
+    print 'Velocity    = {0:8.2f} m/s, {1:8.2f} f/s'.format(u_inf,m2f(u_inf))
+    print 'Src offset  = {0:8.2f} m, {1:8.2f} f'.format(x_offset,m2f(x_offset))
+    print 'Body Lpp    = {0:8.2f} m, {1:8.2f} feet'.format(l,m2f(l))
+    print 'Body w      = {0:8.2f} m, {1:8.2} feet'.format(w,m2f(w))
     print 'Body aspect = {0:8.2f}'.format(l/w)
-    print 'Cl depth    = {0:8.2f} m, {1:8.2f} feet'.format(clDepth,m2feet(clDepth))
+    print 'Cl depth    = {0:8.2f} m, {1:8.2f} feet'.format(clDepth,m2f(clDepth))
 
     plt.figure(figsize=figureSize)
-    wh = body.plotWaves(clDepth, np.linspace(x_offset+0.1,8*wl,400))
+    wh = body.plotWaves(clDepth, np.linspace(x_offset*2,8*wl,400))
+    print 'Max wave h  = {0:8.2f} m, {1:8.2f} inch'.format(max(wh),m2f(max(wh)*12))
     # ------------------------------------------------
 
     plt.show()
