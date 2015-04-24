@@ -80,7 +80,8 @@ class source:
         return (v,u) # reversed, due to indexing...
 
     def streamFunction(self):
-        return self.strength/(2*pi)*np.arctan2(self.Y,self.X)
+        #return self.strength/(2*pi)*np.arctan2(self.Y,self.X)
+        return self.strength*(1-self.X/(4*pi*self.r))
 
 class freeStream:
     def __init__(self,U,V,Mesh):
@@ -104,7 +105,8 @@ class freeStream:
         return (v,u)
 
     def streamFunction(self):
-        return self.mesh.Y*self.u
+        #return self.mesh.Y*self.u
+        return 0.5*self.u*self.mesh.Y**2
 
 class sourceList(list):
     def __init__(self, Mesh):
@@ -150,6 +152,9 @@ class sourceList(list):
             return 1.0 - (u**2+v**2)/self.fs.u**2
         else:
             return np.zeros(self.mesh.X.shape)
+
+    def strengths(self):
+        return np.array([S.strength for S in self])
 
 class rankineBody:
     def __init__(self, sources, depth, g=9.81):
@@ -323,8 +328,11 @@ class canvas:
 
         strf = self.sources.streamFunction()
 
-        plt.contour(X, Y, strf, levels=np.linspace(strf.min(),strf.max(),21),extend='both')
+        contf = plt.contourf(X, Y, strf, levels=np.linspace(strf.min(),strf.max(),100),extend='both')
         plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
+        cbar = plt.colorbar(contf)
+        cbar.set_label('$\Psi$', fontsize=fsize)
+        plt.axis('equal')
 
     def plotPotential(self):
         plt.title('Potential',fontsize=fsize)
@@ -345,6 +353,7 @@ class canvas:
         cbar = plt.colorbar(contf)
         cbar.set_label('$\Phi$', fontsize=fsize)
         #cbar.set_ticks([int(minPot), -1.0, 0.0, 1.0])
+        plt.axis('equal')
 
         plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
 
@@ -364,11 +373,13 @@ class canvas:
         cbar = plt.colorbar(contf)
         cbar.set_label('$C_p$', fontsize=fsize)
         cbar.set_ticks([-2.0, -1.0, 0.0, 1.0])
+        plt.axis('equal')
 
-    def plotBody(self, line='solid'):
+    def plotBody(self, line='solid', color='#CD2305'):
         X = self.sources.mesh.X
         Y = self.sources.mesh.Y
-        plt.contour(X, Y, self.sources.streamFunction(), levels= [0.0], colors='#CD2305', linewidths=2, linestyles=line)
+        L = [0]
+        plt.contour(X, Y, self.sources.streamFunction(), levels=L, colors=color, linewidths=2, linestyles=line)
 
 
 def f2m(l):
@@ -408,15 +419,15 @@ if __name__ == '__main__':
     c.new(figureSize)
     c.plotStreamlines()
     c.plotStreamfunction()
-    c.plotBody(line='dashed')
+    c.plotBody(line='solid', color='#ffffff')
 
     c.new(figureSize)
     c.plotPotential()
-    c.plotBody(line='dashed')
+    c.plotBody(line='solid', color='#000000')
 
     c.new(figureSize)
     c.plotCp()
-    c.plotBody(line='dashed')
+    c.plotBody(line='solid', color='#000000')
 
     plt.show()
 

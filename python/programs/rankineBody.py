@@ -121,11 +121,11 @@ def feet(l):
 
 g = 9.81
 depthFactor = 4                 # Operating depth = beam*depthFactor
-strengthFactor = 0.1
-u_inf = 1.5                      # freestream speed
+strengthFactor = 0.104
+u_inf = 3.05                      # freestream speed
 strength_source = u_inf*strengthFactor*4*pi     # strength of the source/sink
 strength_sink = -strength_source # strength of the sink
-x_source, y_source = -1.4, 0.0    # location of the source
+x_source, y_source = -1.27, 0.0    # location of the source
 x_sink, y_sink = -x_source, 0.0  # location of the sink
 
 # Mesh generation
@@ -200,7 +200,7 @@ print "Source pair distance  = {0}".format(2*abs(x_source))
 # stationary wave generation according to Yim/Shaffer
 
 lpp,beam = solveDimensions(strength_source, u_inf, x_source, guess=0.5)
-operatingDepth = beam*depthFactor
+operatingDepth = 0.91 #beam*depthFactor
 waveLength = getWaveLength(u_inf,g)
 maxLength = 10*waveLength
 getSourceFromStagnation(lpp/2,u_inf,x_sink)
