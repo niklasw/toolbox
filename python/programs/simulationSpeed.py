@@ -21,6 +21,28 @@ def getArgs(i):
 
     return opts, args
 
+def getNCells():
+    import re,os
+    from os.path import join as pjoin
+    from os.path import isfile as isfile
+    logOpts = [ pjoin(os.getcwd(),'qlogs','checkMesh.log'),
+                pjoin(os.getcwd(),'logs','checkMesh.log'),
+                pjoin(os.getcwd(),'checkMesh.log')]
+
+    pat = re.compile(r'cells:\s*([0-9]+)')
+    for meshLog in logOpts:
+        if isfile(meshLog):
+            with open(meshLog,'r') as fp:
+                for line in fp:
+                    found = pat.search(line)
+                    if found:
+                        try:
+                            nCells = int(found.groups()[0])
+                        except:
+                            i.info('Failed extracting nCells from log')
+                        return nCells
+    return 1
+
 def getNCores():
     import os,re
     dirContent=os.listdir(os.getcwd())
@@ -85,7 +107,7 @@ if __name__=='__main__':
     opts,args=getArgs(i)
 
     nCores = i.get('Number of cores', test=int, default=getNCores())
-    nCells = i.get('Number of cells', test=float, default=1e6)
+    nCells = i.get('Number of cells', test=float, default=getNCells())
     cTime = 0
     nSteps= 0
     if opts.parseLog:
