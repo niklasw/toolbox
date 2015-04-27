@@ -238,7 +238,6 @@ class rankineBody:
         for S in self.sources:
             wh += self.singleSourceWaves(distance,S)
         return wh
-        #return self.waves_combined(distance)
 
     def singleSourceWaves(self,distance,source):
         '''Wave pattern from a single source moving beneath
@@ -379,7 +378,35 @@ class canvas:
         X = self.sources.mesh.X
         Y = self.sources.mesh.Y
         L = [0]
-        plt.contour(X, Y, self.sources.streamFunction(), levels=L, colors=color, linewidths=2, linestyles=line)
+        contf = plt.contour(X, Y, self.sources.streamFunction(), levels=L, colors=color, linewidths=2, linestyles=line)
+        return contf
+
+    def plotBodyAndSaveGeometry(self, line='solid', color='#CD2305',fileName='body'):
+        contf = self.plotBody(line,color)
+        path = contf.collections[0].get_paths()[0]
+        vertices = path.vertices
+        #- Extract body size
+        L = vertices[:,0].max() - vertices[:,0].min()
+        W = vertices[:,1].max() - vertices[:,1].min()
+        print '\nBody dimensions, extracted from body plot:'
+        print '\tplotBody L    = {0:8.2f} m'.format(L)
+        print '\tplotBody W    = {0:8.2f} m\n'.format(W)
+
+        # Save geometry as wavefront .obj format
+        # to be able to import to other software
+        np.savetxt(fileName+'.dat',vertices)
+
+        with open(fileName+'.obj','w') as obj:
+            X = zip(vertices[:,0], vertices[:,1])
+            print X[0]
+            print X[1]
+            obj.write('o {0}_mesh\n'.format(fileName))
+            for v in X:
+                obj.write('v {0} {1} 0\n'.format(v[0],v[1]))
+            for i in range(1,len(X)):
+                obj.write('l {0} {1}\n'.format(i,i+1))
+
+
 
 
 def f2m(l):
@@ -404,7 +431,7 @@ if __name__ == '__main__':
 
     sourceStrength = u_inf * sourceFactor
 
-    Mesh = mesh(-1.5*x_offset,1.5*x_offset,-1*x_offset, 1*x_offset,300,200)
+    Mesh = mesh(-1.5*x_offset,1.5*x_offset,-1*x_offset, 1*x_offset,600,400)
 
     Sources = sourceList(Mesh)
     Sources.addSource( sourceStrength, -x_offset, y_offset)
@@ -419,7 +446,7 @@ if __name__ == '__main__':
     c.new(figureSize)
     c.plotStreamlines()
     c.plotStreamfunction()
-    c.plotBody(line='solid', color='#ffffff')
+    c.plotBodyAndSaveGeometry(line='solid', color='#ffffff',fileName='RankineBody')
 
     c.new(figureSize)
     c.plotPotential()
@@ -428,6 +455,8 @@ if __name__ == '__main__':
     c.new(figureSize)
     c.plotCp()
     c.plotBody(line='solid', color='#000000')
+
+
 
     plt.show()
 

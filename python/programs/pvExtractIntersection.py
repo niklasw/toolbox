@@ -94,6 +94,7 @@ if haveStl:
 havePlt = False
 try:
     from matplotlib import pyplot as plt
+    havePlt = True
 except:
     print 'Warning: plotting is not available, sonce matplotlib failed to import'
 
