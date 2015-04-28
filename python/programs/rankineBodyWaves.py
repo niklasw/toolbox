@@ -237,7 +237,7 @@ class rankineBody:
         wh = np.zeros(len(distance))
         for S in self.sources:
             wh += self.singleSourceWaves(distance,S)
-        return wh
+        return wh/(4*pi)
 
     def singleSourceWaves(self,distance,source):
         '''Wave pattern from a single source moving beneath
@@ -245,6 +245,7 @@ class rankineBody:
         M = source.strength
         f = abs(self.depth)
         c = source.x
+        cSign = c/abs(c)
         U = abs(self.fs.u)
         g = self.g
         print "Source strength factor (from Shaffer) = ", M/U
@@ -300,6 +301,10 @@ class canvas:
     def new(self, size):
         plt.figure(figsize=size)
 
+    def sub(self,nnn=111):
+        plt.subplot(nnn)
+
+
     def plotStreamlines(self):
         plt.title('Streamlines',fontsize=fsize)
         plt.grid(True)
@@ -348,13 +353,11 @@ class canvas:
         minPot = np.min(self.sources.potential())
 
         contf = plt.contourf(X, Y, self.sources.potential(), levels=np.linspace(minPot,maxPot,100), extend='both')
-        #plt.contour(X, Y, self.sources.potential(), levels=[-1,0,1],extend='both',linestyles='dashed',linewidths=2,colors='#000000')
+        plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
+
         cbar = plt.colorbar(contf)
         cbar.set_label('$\Phi$', fontsize=fsize)
-        #cbar.set_ticks([int(minPot), -1.0, 0.0, 1.0])
         plt.axis('equal')
-
-        plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
 
     def plotCp(self):
         plt.title('Pressure coefficient, $C_p$',fontsize=fsize)
@@ -369,6 +372,7 @@ class canvas:
         contf = plt.contourf(X, Y, self.sources.getCp(), levels=np.linspace(-2.0, 1.2, 100), extend='both')
         trash = plt.contour(X, Y, self.sources.getCp(), levels=[0.90], colors='#000000', linewidths=2, linestyles='dashed')
         plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
+
         cbar = plt.colorbar(contf)
         cbar.set_label('$C_p$', fontsize=fsize)
         cbar.set_ticks([-2.0, -1.0, 0.0, 1.0])
@@ -382,20 +386,14 @@ class canvas:
         return contf
 
     def plotBodyAndSaveGeometry(self, line='solid', color='#CD2305',fileName='body'):
+        '''Plots the streamfunction value 0 iso-contour AND extracts the
+        plot point coordinates. The extracted coordinates are saved in wavefront
+        .obj format, since it can be imported by e.g. Blender and Paraview.'''
         contf = self.plotBody(line,color)
+
+        #- Extract and save body contour as geometry file
         path = contf.collections[0].get_paths()[0]
         vertices = path.vertices
-        #- Extract body size
-        L = vertices[:,0].max() - vertices[:,0].min()
-        W = vertices[:,1].max() - vertices[:,1].min()
-        print '\nBody dimensions, extracted from body plot:'
-        print '\tplotBody L    = {0:8.2f} m'.format(L)
-        print '\tplotBody W    = {0:8.2f} m\n'.format(W)
-
-        # Save geometry as wavefront .obj format
-        # to be able to import to other software
-        np.savetxt(fileName+'.dat',vertices)
-
         with open(fileName+'.obj','w') as obj:
             X = zip(vertices[:,0], vertices[:,1])
             print X[0]
@@ -406,6 +404,33 @@ class canvas:
             for i in range(1,len(X)):
                 obj.write('l {0} {1}\n'.format(i,i+1))
 
+        #- Extract and report body size
+        L = vertices[:,0].max() - vertices[:,0].min()
+        W = vertices[:,1].max() - vertices[:,1].min()
+        print '\nBody dimensions, extracted from body plot:'
+        print '\tplotBody L    = {0:8.2f} m'.format(L)
+        print '\tplotBody W    = {0:8.2f} m\n'.format(W)
+
+    def plotWaves(self,body,distance, normalize=False):
+        wh = body.waves(distance)
+
+        if normalize:
+            wh *= body.fs.u*body.depth/abs(body.sources[0].strength)
+            distance /= body.length
+
+        plt.plot(distance,wh,'g')
+        #plt.plot(distance-1.36,wh2,'g')
+
+        plt.title('Waves @ $C_L$', fontsize=fsize)
+        plt.xlabel('x', fontsize=fsize)
+        plt.ylabel('$\zeta$', fontsize=fsize)
+        plt.grid('on')
+        plt.xlim(-2,np.max(distance))
+        #plt.ylim(-2*np.max(wh[len(wh)/2:]),2*np.max(wh[len(wh)/2:]))
+
+        x_sources = [s.x for s in body.sources]
+        y_sources = [s.y for s in body.sources]
+        plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
 
 
 
@@ -416,14 +441,14 @@ def m2f(m):
 
 if __name__ == '__main__':
 
-    ## Settings for Shaffers long body
+    ## Settings for Shaffers 9 ft 7/1 body
     u_inf = f2m(10)                 # 10 feet/s    Shaffer page 13
     x_offset = f2m(4.18)            # 4.18 ft from Shaffer page 5
     y_offset = 0.0
     clDepth      = f2m(3)           # 3 feet    Shaffer page 13
     sourceFactor = 0.104            # From page 5 in Shaffer ( 4*pi ??)
 
-    ## Settings for Shaffers short body
+    ## Settings for Shaffers 4.5 ft 7/1 body
     #x_offset = f2m(2.09)            # 4.18 ft from Shaffer page 5
     #y_offset = 0.0
     #clDepth      = f2m(1.5)         # 3 feet    Shaffer page 13
@@ -444,21 +469,21 @@ if __name__ == '__main__':
     c = canvas(Sources)
 
     c.new(figureSize)
+
+    c.sub(221)
     c.plotStreamlines()
     c.plotStreamfunction()
     c.plotBodyAndSaveGeometry(line='solid', color='#ffffff',fileName='RankineBody')
 
-    c.new(figureSize)
+    c.sub(222)
     c.plotPotential()
     c.plotBody(line='solid', color='#000000')
 
-    c.new(figureSize)
+    c.sub(223)
     c.plotCp()
     c.plotBody(line='solid', color='#000000')
 
 
-
-    plt.show()
 
     # -Rankine Body ----------------------------------
     body = rankineBody(Sources,clDepth)
@@ -469,11 +494,14 @@ if __name__ == '__main__':
         body.solveDimensions(guess=1.0)
         body.info()
 
-        plt.figure(figsize=figureSize)
         downstreamCoordinates = np.linspace(x_offset*2,8*wl,400)
-        wh = body.plotWaves(downstreamCoordinates)
-        print 'Max wave h  = {0:8.2f} m, {1:8.2f} inch'.format(max(wh),m2f(max(wh)*12))
+
+        c.sub(224)
+        c.plotWaves(body,downstreamCoordinates, normalize=False)
+
         print 'Wave length = ',wl
-        plt.show()
     # ------------------------------------------------
+
+    plt.tight_layout()
+    plt.show()
 
