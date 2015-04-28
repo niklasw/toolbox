@@ -264,25 +264,15 @@ class rankineBody:
         '''Wave length'''
         return 2*pi*self.fs.u**2/g
 
-    def plotWaves(self,distance):
+    def writeWaves(self,distance):
         wh = self.waves(distance)
-        # wh2= self.waves_combined(distance)
 
-        plt.plot(distance,wh,'g')
-        #plt.plot(distance-1.36,wh2,'g')
+        with open('RankineBodyWaves.dat','w') as fp:
+            fp.write('# X elevation\n')
+            for i,d in enumerate(distance):
+                w = wh[i]
+                fp.write('{0} {1}\n'.format(d,w))
 
-        plt.title('Waves along center line above body', fontsize=fsize)
-        plt.xlabel('Distance', fontsize=fsize)
-        plt.ylabel('Centerline surface elevation', fontsize=fsize)
-        plt.grid('on')
-        plt.xlim(-2,np.max(distance))
-        #plt.ylim(-2*np.max(wh[len(wh)/2:]),2*np.max(wh[len(wh)/2:]))
-
-        x_sources = [s.x for s in self.sources]
-        y_sources = [s.y for s in self.sources]
-        plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
-
-        return wh
 
     def info(self):
         c = abs(self.sources[0].x)
@@ -498,6 +488,7 @@ if __name__ == '__main__':
 
         c.sub(224)
         c.plotWaves(body,downstreamCoordinates, normalize=False)
+        body.writeWaves(downstreamCoordinates)
 
         print 'Wave length = ',wl
     # ------------------------------------------------
