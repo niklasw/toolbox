@@ -336,16 +336,21 @@ class canvas:
         plt.subplot(nnn)
         plt.tick_params(axis='both', which='both', labelsize=self.lblsize)
 
+
+    def decorate(self,title=''):
+        if title:
+            plt.title(title,fontsize=self.fsize)
+        plt.grid(True)
+        plt.xlabel('$x$', fontsize=self.fsize)
+        plt.ylabel('$y$', fontsize=self.fsize)
+
     def present(self,figName):
         plt.tight_layout()
         plt.savefig(figName)
         plt.show()
 
     def plotStreamlines(self):
-        plt.title('Streamlines',fontsize=self.fsize)
-        plt.grid(True)
-        plt.xlabel('$x$', fontsize=self.fsize)
-        plt.ylabel('$y$', fontsize=self.fsize)
+        self.decorate()
         X = self.sources.mesh.X
         Y = self.sources.mesh.Y
         u,v = self.sources.velocity()
@@ -356,10 +361,7 @@ class canvas:
         plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
 
     def plotStreamfunction(self):
-        plt.title('Streamfunction',fontsize=self.fsize)
-        plt.grid(True)
-        plt.xlabel('$x$', fontsize=self.fsize)
-        plt.ylabel('$y$', fontsize=self.fsize)
+        self.decorate('Streamfunction')
         X = self.sources.mesh.X
         Y = self.sources.mesh.Y
         u,v = self.sources.velocity()
@@ -368,50 +370,51 @@ class canvas:
 
         strf = self.sources.streamFunction()
 
-        contf = plt.contourf(X, Y, strf, levels=np.linspace(strf.min(),strf.max(),100),extend='both')
+        contf = plt.contourf(X, Y, strf, levels=np.linspace(strf.min(),strf.max(),50),extend='both',cmap=plt.cm.RdBu_r)
         plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
-        cbar = plt.colorbar(contf)
+
+        cbarTicks = np.arange(0,strf.max(),0.5)
+        print cbarTicks
+        cbar = plt.colorbar(contf,ticks=cbarTicks)
         cbar.set_label('$\Psi$', fontsize=self.fsize)
         plt.axis('equal')
 
     def plotPotential(self):
-        plt.title('Potential',fontsize=self.fsize)
-        plt.grid(True)
-        plt.xlabel('$x$', fontsize=self.fsize)
-        plt.ylabel('$y$', fontsize=self.fsize)
+        self.decorate('Potential')
         X = self.sources.mesh.X
         Y = self.sources.mesh.Y
         x_sources = [s.x for s in self.sources]
         y_sources = [s.y for s in self.sources]
 
         pot = self.sources.potential()
-        maxPot = np.max(self.sources.potential())
-        minPot = np.min(self.sources.potential())
+        maxPot = pot.max()*0.5
+        minPot = pot.min()*0.5
 
-        contf = plt.contourf(X, Y, self.sources.potential(), levels=np.linspace(minPot,maxPot,100), extend='both')
+        contf = plt.contourf(X, Y, self.sources.potential(), levels=np.linspace(minPot,maxPot,50), extend='both',cmap=plt.cm.RdBu_r)
         plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
 
-        cbar = plt.colorbar(contf)
+        cbarTicks = [int(a) for a in np.arange(minPot,maxPot,2.0)]
+        cbar = plt.colorbar(contf, ticks=cbarTicks)
         cbar.set_label('$\Phi$', fontsize=self.fsize)
         plt.axis('equal')
 
     def plotCp(self):
-        plt.title('Pressure coefficient, $C_p$',fontsize=self.fsize)
+        self.decorate('Pressure coefficient, $C_p$')
         plt.grid(True)
-        plt.xlabel('$x$', fontsize=self.fsize)
-        plt.ylabel('$y$', fontsize=self.fsize)
+        plt.xlabel('$x$', fontsize=self.fsize*1.5)
+        plt.ylabel('$y$', fontsize=self.fsize*1.5)
         X = self.sources.mesh.X
         Y = self.sources.mesh.Y
         x_sources = [s.x for s in self.sources]
         y_sources = [s.y for s in self.sources]
 
-        contf = plt.contourf(X, Y, self.sources.getCp(), levels=np.linspace(-2.0, 1.2, 100), extend='both')
+        contf = plt.contourf(X, Y, self.sources.getCp(), levels=np.linspace(-0.5, 1.0, 50), extend='both',cmap=plt.cm.RdBu_r)
         trash = plt.contour(X, Y, self.sources.getCp(), levels=[0.90], colors='#000000', linewidths=2, linestyles='dashed')
-        plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
+        #plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
 
         cbar = plt.colorbar(contf)
         cbar.set_label('$C_p$', fontsize=self.fsize)
-        cbar.set_ticks([-2.0, -1.0, 0.0, 1.0])
+        cbar.set_ticks([-0.5, 0.0, 0.5, 1.0])
         plt.axis('equal')
 
     def plotBody(self, line='solid', color='#CD2305'):
@@ -454,7 +457,7 @@ class canvas:
             wh *= body.fs.u*body.depth/abs(body.sources[0].strength)
             distance /= body.length
 
-        plt.plot(distance,wh,'g')
+        plt.plot(distance,wh,'#053061',linewidth=2)
         #plt.plot(distance-1.36,wh2,'g')
 
         plt.title('Waves @ $C_L$', fontsize=self.fsize)
