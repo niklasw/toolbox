@@ -76,8 +76,24 @@ if __name__ == '__main__':
         c.plotWaves(body,downstreamCoordinates, normalize=False)
         body.writeWaves(downstreamCoordinates)
 
+
         print 'Wave length = ',wl
     # ------------------------------------------------
     c.present('RankineBodyWaves.png')
+
+#     if body.ok():
+#         c.new(figureSize)
+#         c.plotWaves(body,downstreamCoordinates, normalize=False)
+#         body.depth *= 2
+#         body.info()
+#         c.plotWaves(body,downstreamCoordinates, normalize=False)
+#         body.depth *= 2
+#         body.info()
+#         c.plotWaves(body,downstreamCoordinates, normalize=False)
+#         body.depth *= 2
+#         body.info()
+#         c.plotWaves(body,downstreamCoordinates, normalize=False)
+#         plt.show()
+
 
 

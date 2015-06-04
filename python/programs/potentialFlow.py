@@ -118,13 +118,6 @@ class sourceList(list):
             v += s.velocity()[1]
         return (u,v)
 
-    def velocity(self):
-        u,v = self.fs.velocity()
-        for s in self:
-            u += s.velocity()[0]
-            v += s.velocity()[1]
-        return (u,v)
-
     def streamFunction(self):
         psi = self.fs.streamFunction()
         for s in self:
@@ -147,6 +140,170 @@ class sourceList(list):
     def strengths(self):
         return np.array([S.strength for S in self])
 
+def solveSources(U, length, aspect):
+    l = length/2
+    h = aspect*l
+
+    Z    = np.pi*U*h**2
+    diff = 1.0
+    eps = 1e-8
+    #- Initial M guess
+    M = Z*1.1
+
+    while diff > eps:
+        #- Compute c(M) from eq3 Shaffer
+        A = Z/M
+        c = A*h/sqrt(1-A*A)
+
+        #- Newton-Rapson find root for eq2
+        X = l*l-c*c
+        Y = l/(np.pi*U)
+
+        f = X*X - c*M*Y
+
+        dAdM = -A/M
+        dcdM = dAdM*c*(1/A + A/(1-A*A))
+        dXdM = -2*c*dcdM;
+        dfdM = 2*X*dXdM - (dcdM*M + c)*Y;
+
+        delM = f/dfdM
+        M-=delM
+        diff = np.abs(delM)
+        print 'looping'
+        if M < Z:
+            print 'M corrected'
+            M = 1.01*Z
+
+    A = Z/M
+    c = A*h/sqrt(1-A*A)
+
+    return c,M
+
+class rankine:
+    def __init__(self,length,aspect,freestream,depth,g=9.81):
+        self.fs = freestream
+        self.depth = depth
+        self.g = g
+        self.length = length
+        self.aspect = aspect
+        self.width = length*aspect
+        self.sources = sourceList(freestream.mesh)
+        self.sources.fs = freestream
+        self.offset = (0.0,0.0)
+        self.solveSources()
+
+    def ok(self):
+        '''Just a method to turn of rankine body calculations
+        if not all parameters are available, e.g. lacking
+        freestream'''
+        return ((len(self.sources) == 2) and (self.fs.u != 0))
+
+    def solveSources(self):
+        l = self.length/2.0
+        h = self.aspect*l
+        U = self.fs.u
+
+        Z    = np.pi*U*h**2
+        diff = 1.0
+        eps = 1e-8
+        #- Initial M guess
+        M = Z*1.1
+
+        while diff > eps:
+            #- Compute c(M) from eq3 Shaffer
+            A = Z/M
+            c = A*h/sqrt(1-A*A)
+
+            #- Newton-Rapson find root for eq2
+            X = l*l-c*c
+            Y = l/(np.pi*U)
+
+            f = X*X - c*M*Y
+
+            dAdM = -A/M
+            dcdM = dAdM*c*(1/A + A/(1-A*A))
+            dXdM = -2*c*dcdM;
+            dfdM = 2*X*dXdM - (dcdM*M + c)*Y;
+
+            delM = f/dfdM
+            M-=delM
+            diff = np.abs(delM)
+            if M < Z:
+                M = 1.01*Z
+
+        A = Z/M
+        c = A*h/sqrt(1-A*A)
+
+        self.sources.addSource( M,-c+self.offset[0],self.offset[1])
+        self.sources.addSource(-M, c+self.offset[0],self.offset[1])
+
+        print "c, M =", c,M
+
+        return c,M
+
+    def Froude(self,L):
+        g = self.g
+        U = sqrt(self.fs.u**2+self.fs.v**2)
+        Fr =  U/sqrt(g*L)
+        return U/sqrt(g*L)
+
+    def waves(self,distance):
+        '''Superposition of waves from all sources
+        '''
+        wh = np.zeros(len(distance))
+        for S in self.sources:
+            wh += self.singleSourceWaves(distance,S)
+        return wh/(4*pi)
+
+    def singleSourceWaves(self,distance,source):
+        '''Wave pattern from a single source moving beneath
+        a free surface  according to Shaffer/Yim'''
+        M = source.strength
+        f = abs(self.depth)
+        c = source.x
+        cSign = c/abs(c)
+        U = abs(self.fs.u)
+        g = self.g
+        print "Source strength factor (from Shaffer) = ", M/U
+
+        # Function to calculate distance to source from downstream
+        # distance and depth (Pythagora)
+        R = lambda d: sqrt(f**2 + (d-c)**2)
+
+        # Function of r (distance to source) to calculate surface elevation
+        # from a single source, according to Shaffer and Yim
+        h = lambda r: 4*M/U*sqrt(2*pi*g/(r*U**2))*exp(-g*f/U**2)*cos(g*r/U**2+pi/4)
+
+        return np.array([h(R(d)) for d in distance ])
+
+    def getWaveLength(self,g=9.81):
+        '''Wave length'''
+        return 2*pi*self.fs.u**2/g
+
+    def writeWaves(self,distance):
+        wh = self.waves(distance)
+
+        with open('RankineBodyWaves.dat','w') as fp:
+            fp.write('# X elevation\n')
+            for i,d in enumerate(distance):
+                w = wh[i]
+                fp.write('{0} {1}\n'.format(d,w))
+
+
+    def info(self):
+        def m2f(m):
+            return m/0.3048
+        c = abs(self.sources[0].x)
+        print 'Velocity    = {0:8.2f} m/s, {1:8.2f} f/s'.format(self.fs.u,m2f(self.fs.u))
+        print 'Src offset  = {0:8.2f} m, {1:8.2f} f'.format(c,m2f(c))
+        print 'Body Lpp    = {0:8.2f} m, {1:8.2f} feet'.format(self.length,m2f(self.length))
+        print 'Body w      = {0:8.2f} m, {1:8.2} feet'.format(self.width,m2f(self.width))
+        print 'Body aspect = {0:8.2f}'.format(self.length/self.width)
+        print 'Cl depth    = {0:8.2f} m, {1:8.2f} feet'.format(self.depth,m2f(self.depth))
+        print 'Froude(d)   = {0:8.2f}'.format(self.Froude(self.depth))
+
+
+
 class rankineBody:
     def __init__(self, sources, depth, g=9.81):
         self.sources = sources
@@ -162,48 +319,6 @@ class rankineBody:
         freestream'''
         return ((len(self.sources) == 2) and (self.fs.u != 0))
 
-
-    def solveSources(self, length, aspect):
-        ''' NOT WORKING!
-        Iteratively solve for Rankine body
-        sources according to equations in Shaffer
-        page 3. Requires an approximate Rankine body
-        to start from'''
-        if self.fs.u == 0:
-            print 'WARNING: cannot solveDimensions. U=0!'
-            return 1.0,1.0
-
-        def MRHS(l,U,c):
-            return pi*U*(l**2-c**2)**2/(c*l)
-
-        def cRHS(l,U,A,c,M):
-            h2 = A**2 * l**2
-            return sqrt(h2+c**2)*(pi*U*h2)/M
-
-        def solve(l,U,A,c,M):
-            c0 = c
-            M0 = M
-            eps = 1e-6
-            relax = 0.1
-            for i in range(50):
-                print 'Solver: ',M,c
-                M = MRHS(l,U,c0)
-                c = cRHS(l,U,A,c0,M)
-                if abs(M0-M) < eps and abs(c0-c) < eps:
-                    return M,c
-                M0 = M*relax+M0*(1-relax)
-                c0 = c*relax+c0*(1-relax)
-            print "WARNING: Solver did not converge!"
-            return 1.0,1.0
-
-
-        M = self.sources[0].strength
-        U = self.fs.u
-        c = abs(self.sources[0].x)
-        l = length
-        A = aspect
-
-        return solve(l,U,A,c,M)
 
     def solveDimensions(self, guess):
         '''Iteratively solve for Rankine body
@@ -248,22 +363,6 @@ class rankineBody:
         U = sqrt(self.fs.u**2+self.fs.v**2)
         Fr =  U/sqrt(g*L)
         return U/sqrt(g*L)
-
-    def waves_combined(self, distance):
-        '''Wave pattern along surface center line above a
-        Rankine body, according to Shaffer/Yim'''
-        M = abs(self.sources[0].strength)# * (4*pi)
-        f = abs(self.depth)
-        c = abs(self.sources[0].x)
-        U = abs(self.fs.u)
-        Fr = self.Froude(f)
-        B = 8*M/(f**2*U*Fr) * exp(-1/Fr**2) * sin(c/(f*Fr**2))
-
-        R = lambda d: sqrt(f**2 + (d-c)**2)
-
-        h2f = lambda r: B*sqrt(2*pi*f/r) * sin(r/(f*Fr**2) - 3*pi/4)
-
-        return [f*h2f(R(d)) for d in distance ]
 
     def waves(self,distance):
         '''Superposition of waves from all sources
@@ -337,12 +436,12 @@ class canvas:
         plt.tick_params(axis='both', which='both', labelsize=self.lblsize)
 
 
-    def decorate(self,title=''):
+    def decorate(self,title='',ylabel='$y$',xlabel='$x$'):
         if title:
             plt.title(title,fontsize=self.fsize)
         plt.grid(True)
-        plt.xlabel('$x$', fontsize=self.fsize)
-        plt.ylabel('$y$', fontsize=self.fsize)
+        plt.xlabel(xlabel, fontsize=self.fsize*1.5)
+        plt.ylabel(ylabel, fontsize=self.fsize*1.5)
 
     def present(self,figName):
         plt.tight_layout()
@@ -460,9 +559,7 @@ class canvas:
         plt.plot(distance,wh,'#053061',linewidth=2)
         #plt.plot(distance-1.36,wh2,'g')
 
-        plt.title('Waves @ $C_L$', fontsize=self.fsize)
-        plt.xlabel('$x$', fontsize=self.fsize)
-        plt.ylabel('$\zeta$', fontsize=self.fsize)
+        self.decorate('Waves @ $C_L$',ylabel='$\zeta$')
         plt.grid('on')
         plt.xlim(-2,np.max(distance))
         #plt.ylim(-2*np.max(wh[len(wh)/2:]),2*np.max(wh[len(wh)/2:]))
