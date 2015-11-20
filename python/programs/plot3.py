@@ -272,7 +272,7 @@ class plotter:
     def add(self):
         for i,d in enumerate(self.data.y):
             line, = plt.plot(self.data.x,d,
-                             color=self.lineColors[i],
+                             color=self.lineColors[self.data.current],
                              linestyle=self.data.options.lineStyle)
             self.lines.append(line)
 
@@ -306,10 +306,10 @@ class plotter:
 
         if self.data.options.yMin:
             ymin=self.data.options.yMin
-            plt.ylim(ymin,ymax)
+            plt.ylim(ymin,plt.ylim()[1])
         if self.data.options.yMax:
             ymax=self.data.options.yMax
-            plt.ylim(ymin,ymax)
+            plt.ylim(plt.ylim()[0],ymax)
         if self.data.options.xMin:
             xmin=self.data.options.xMin
             plt.xlim(xmin,xmax)
