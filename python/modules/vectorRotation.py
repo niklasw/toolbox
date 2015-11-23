@@ -10,6 +10,7 @@ def toRad(d):
 
 
 class rotationMatrix:
+    '''Input rotation in degrees!'''
 
     def __init__(self,phiX,phiY,phiZ):
         self.phiX=toRad(phiX)
