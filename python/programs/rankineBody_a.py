@@ -13,25 +13,23 @@ def m2f(m):
 if __name__ == '__main__':
 
     ## Settings for Shaffers 9 ft 7/1 body
-    u_inf = f2m(10)                 # 10 feet/s    Shaffer page 13
+    u_inf = 2 #f2m(10)                 # 10 feet/s    Shaffer page 13
     x_offset = f2m(4.18)            # 4.18 ft from Shaffer page 5
     y_offset = 0.0
-    clDepth      = f2m(3)           # 3 feet    Shaffer page 13
+    clDepth      = 0.72 #f2m(3)           # 3 feet    Shaffer page 13
     sourceFactor = 0.104            # From page 5 in Shaffer ( 4*pi ??)
 
-    L = f2m(9)
-    aspect = 1.0/7
+    L = 3.0 #f2m(9)
+    aspect = 1.0/8
 
-    Mesh = mesh(-L,L,-L/2,-L/2,600,300)
+    Mesh = mesh(-L,L,-L/2,L/2,600,300)
 
     fs = freeStream(u_inf,0.0,Mesh)
 
-    body = rankine(L,aspect,fs,clDepth)
+    pos0 = (.0,.0)
+    body = rankine(L,aspect,pos0,fs,clDepth)
 
     body.info()
-
-
-
 
     size = 15
     figureSize = (size, (Mesh.dimensions()[1])/(Mesh.dimensions()[0])*size)
@@ -62,7 +60,6 @@ if __name__ == '__main__':
     if body.ok():
         wl =  body.getWaveLength()
 
-        body.solveDimensions(guess=1.0)
         body.info()
 
         #print body.solveSources(f2m(9.0),1.0/7.0)

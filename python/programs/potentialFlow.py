@@ -180,7 +180,7 @@ def solveSources(U, length, aspect):
     return c,M
 
 class rankine:
-    def __init__(self,length,aspect,freestream,depth,g=9.81):
+    def __init__(self,length,aspect,offset,freestream,depth,g=9.81):
         self.fs = freestream
         self.depth = depth
         self.g = g
@@ -189,7 +189,7 @@ class rankine:
         self.width = length*aspect
         self.sources = sourceList(freestream.mesh)
         self.sources.fs = freestream
-        self.offset = (0.0,0.0)
+        self.offset = offset
         self.solveSources()
 
     def ok(self):
