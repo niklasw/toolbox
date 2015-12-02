@@ -50,6 +50,21 @@ class WigleyHull:
 #        ax.set_aspect('equal')
         plt.show()
 
+    def scipyDisplacement(self):
+        from scipy import integrate
+        Xrange = [0,self.L/2]
+        Zrange = [0,self.T]
+        I = integrate.nquad(self.y,[Xrange,Zrange])
+        return I[0]
+
+    def analyticalDisplacement(self):
+        return self.L*self.B*self.T/9
+
+    def analyticalArea(self):
+        B,L,T=self.B,self.L,self.T
+        return 4*B**2*(4*T**2+L**2)/(45*T*L)
+        
+
     def createObj(self):
         import copy
         nz,nx = self.X().shape
@@ -76,7 +91,7 @@ class WigleyHull:
 
 if __name__ == '__main__':
 
-    L = 1.0 
+    L = 4.0 
     T = L*0.0625
     B = L*0.1
 
@@ -84,7 +99,11 @@ if __name__ == '__main__':
 
     hull = WigleyHull(B,L,T,resolution=(rez,int(rez*T*2/L)))
 
+    print 'Numerical Quarter Hull Displacement = ', hull.scipyDisplacement()
+    print 'Analytical Quarter Hull Displacement= ', hull.analyticalDisplacement()
+    print 'Analytical Quarter Hull Area        = ', hull.analyticalArea()
+
     hull.createObj()
 
-    hull.plot()
+    #hull.plot()
 

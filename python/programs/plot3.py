@@ -260,7 +260,7 @@ class dataManager:
 
 
 class plotter:
-    lineColors='b g r c m y k'.split()
+    lineColors='b r g c m y k'.split()
     def __init__(self, dmgr):
 
         self.data=dmgr
@@ -272,9 +272,13 @@ class plotter:
     def add(self):
         for i,d in enumerate(self.data.y):
             line, = plt.plot(self.data.x,d,
-                             color=self.lineColors[self.data.current],
+                             color=self.lineColors[i],
+                             #color=self.lineColors[self.data.current],
                              linestyle=self.data.options.lineStyle)
             self.lines.append(line)
+
+            print 'Average of data set {0} = {1}'.format(i,sum(d)/len(d))
+
 
     def addFft(self):
         if not self.data.fft:

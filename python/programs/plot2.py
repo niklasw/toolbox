@@ -224,6 +224,9 @@ for d in data:
         y=d[:]
         Y.append(y)
 
+    for i in range(ncols-1):
+        print 'Average of col {0} = {1}'.format(i,sum(Y[i])/len(Y[i]))
+
     for y_ in Y:
         print 'Plotting'
         y_/=norm

@@ -19,7 +19,7 @@ def buildExpr(B,L,T,x,z):
 L = 1.0
 B = L*0.1
 T = L*0.0625
-freeBoard = T/5.0
+freeBoard = T/2.0
 
 nCurves = 25
 

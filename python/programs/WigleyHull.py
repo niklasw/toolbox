@@ -61,13 +61,14 @@ class WigleyHull:
             z = self.z[j]
             for i in range(nx):
                 x = self.x[i]
-                vert = [x, self.y(x,z), z]
+                vert = [x, self.y(x,z), -z]
                 verts.append(vert)
                 if i < nx-1 and j < nz-1:
                     face = [nx*j+i+1, nx*j+i+2, nx*j+i+nx+2,  nx*j+i+nx+1]
                     faces.append(face)
 
         def mirrorObj(verts,faces,direction=0):
+            '''DOES NOT WORK YET'''
             import copy
             mVerts = copy.deepcopy(verts)
             for i,vert in enumerate(mVerts):
@@ -77,10 +78,11 @@ class WigleyHull:
             for face in faces:
                 mFace = [a+nFaces for a in face]
                 mFaces.append(mFace)
-            faces += mFaces
-            verts += mVerts
+            faces = mFaces
+            verts = mVerts
 
-        mirrorObj(verts,faces,0)
+        #mirrorObj(verts,faces,0)
+        #mirrorObj(verts,faces,1)
 
         with open('WigleyHull.obj','w') as obj:
             obj.write('g WigleyHull\n')
@@ -95,9 +97,9 @@ if __name__ == '__main__':
     T = L*0.0625
     B = L*0.1
 
-    rez = 500
+    rez = 30
 
-    hull = WigleyHull(B,L,T,resolution=(rez,int(rez*T*2/L)))
+    hull = WigleyHull(B,L,T,resolution=(rez,int(round(rez*T*2/L))))
 
     hull.createObj()
 
