@@ -58,6 +58,8 @@ def getArgs():
     settingsDir, settingsFile = os.path.split(settingsFile)
     opt.Setup = importlib.import_module(settingsFile)
 
+    print opt.Setup.N_SLICES
+
     if not opt.image:
         argError('Missing image file argument')
 
@@ -150,6 +152,7 @@ def main():
     options = getArgs()
     setup = options.Setup
     image = options.image
+    print setup.N_SLICES
 
     source = None
     if options.data:
