@@ -17,14 +17,14 @@ class Field:
         self.function = function if function else name
         self.min = colorMin
         self.max = colorMax
-        self.fieldDisplayMode = 'CELLS'
-        self.fieldFunctionMode ='Cell Data'
+        self.displayMode = 'CELLS'
+        self.functionMode ='Cell Data'
 
     def setDataMode(self, pointOrCell):
         if pointOrCell == 'CELLS':
-            self.fieldFunctionMode =  'Cell Data'
+            self.functionMode =  'Cell Data'
         elif pointOrCell == 'POINTS':
-            self.fieldFunctionMode = 'Point Data'
+            self.functionMode = 'Point Data'
         else:
             print 'ERROR: Wrong data mode. Must be CELLS or POINTS'
             sys.exit(1)
@@ -36,6 +36,7 @@ class Field:
         self.min = setup.SCALAR_MIN
         self.max = setup.SCALAR_MAX
         self.setDataMode(setup.FIELDMODE)
+        print 'Using field {0} with data mode {1}'.format(self.name, self.displayMode)
 
 class NwPvTools:
 
@@ -150,14 +151,14 @@ class NwPvTools:
         print 'Using scalar field {0}: min = {1}, max = {2}'.format(
                 self.field.name,self.field.min, self.field.max)
         display = GetDisplayProperties(GetActiveSource(),view=self.getView())
-        ColorBy(display, (self.field.fieldDisplayMode,self.field.name))
+        ColorBy(display, (self.field.displayMode,self.field.name))
         display.SetScalarBarVisibility(self.getView(), scalarBar)
         self.setColorRange(self.field.min,self.field.max)
  
     def calculator(self):
         Hide()
         calc = Calculator(Input=self.source)
-        calc.AttributeMode = self.field.fieldFunctionMode
+        calc.AttributeMode = self.field.functionMode
         calc.Function = self.field.function
         calc.ResultArrayName=self.field.function
         self.field.name=self.field.function

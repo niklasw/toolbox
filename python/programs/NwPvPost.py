@@ -48,7 +48,8 @@ if __name__=="__main__":
     Show()
     pvt.saveFig('testFig_magU',setup.IMAGE_SCALE)
 
-    pvt.field = Field('k','sqrt(k)',colorMin=0,colorMax=0.1)
+    setup.FIELD_FUNCTION='sqrt(k)'
+    pvt.field.initFromSetup(setup)
     pvt.calculator()
     pvt.legend(setup.LEGEND)
     Show()
