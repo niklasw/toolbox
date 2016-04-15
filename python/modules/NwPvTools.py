@@ -17,13 +17,25 @@ class Field:
         self.function = function if function else name
         self.min = colorMin
         self.max = colorMax
+        self.fieldDisplayMode = 'CELLS'
+        self.fieldFunctionMode ='Cell Data'
 
-    def initFromSetup(self):
+    def setDataMode(self, pointOrCell):
+        if pointOrCell == 'CELLS':
+            self.fieldFunctionMode =  'Cell Data'
+        elif pointOrCell == 'POINTS':
+            self.fieldFunctionMode = 'Point Data'
+        else:
+            print 'ERROR: Wrong data mode. Must be CELLS or POINTS'
+            sys.exit(1)
+
+    def initFromSetup(self,setup):
         self.name = setup.SCALAR_FIELD
         f = setup.FIELD_FUNCTION
         self.function = f if f else setup.SCALAR_FIELD
         self.min = setup.SCALAR_MIN
         self.max = setup.SCALAR_MAX
+        self.setDataMode(setup.FIELDMODE)
 
 class NwPvTools:
 
@@ -39,13 +51,13 @@ class NwPvTools:
         self.dataFile = dataFile
         self.source = self.loadCase()
         self.views = []
-        self.currentView = 0
+        self.currentView = -1 
         self.field = Field(fieldName)
         self.instants = []
 
-    def initFromSetup(self):
+    def initFromSetup(self,setup):
         self.field = Field()
-        self.field.initFromSetup()
+        self.field.initFromSetup(setup)
         self.initDisplayAndTime(viewSize=setup.VIEW_SIZE)
         self.setCamera(up=setup.CAMERA_UP,pos=setup.CAMERA_POS, \
                        focus=setup.CAMERA_FOCUS,scale=1.0/setup.CAMERA_ZOOM)
@@ -60,11 +72,14 @@ class NwPvTools:
     def getView(self):
         return self.views[self.currentView]
 
-    def setStartTime(self,view,i=1):
-        view.ViewTime = self.instants[i]
+    def setStartTime(self,i=1):
+        self.getView().ViewTime = self.instants[i]
 
-    def setLatestTime(self,view):
-        view.ViewTime = self.instants[-1]
+    def setLatestTime(self):
+        self.getView().ViewTime = self.instants[-1]
+
+    def setTime(self,i):
+        self.getView().ViewTime = self.instants[i]
 
     def saveFig(self,imageBase,mag):
         img = '{0}.png'.format(imageBase)
@@ -85,11 +100,13 @@ class NwPvTools:
     def initDisplayAndTime(self,bg=[1,1,1,],viewSize=[2000,1000], \
                            viewName='RenderView'):
         view = GetActiveViewOrCreate(viewName)
+        self.views.append(view)
+        self.currentView += 1
         SetActiveView(view)
         GetDisplayProperties(view=view)
         self.instants = self.source.TimestepValues
         try:
-            self.setLatestTime(view)
+            self.setLatestTime()
             print 'Time set to latest time: %f' % view.ViewTime
         except:
             pass
@@ -97,7 +114,6 @@ class NwPvTools:
         view.UseOffscreenRenderingForScreenshots=1
         view.Background = bg
         view.ViewSize = viewSize
-        self.views.append(view)
 
     def hideDefaultRepresentation(self):
         rep = GetDisplayProperties(self.source)
@@ -134,13 +150,14 @@ class NwPvTools:
         print 'Using scalar field {0}: min = {1}, max = {2}'.format(
                 self.field.name,self.field.min, self.field.max)
         display = GetDisplayProperties(GetActiveSource(),view=self.getView())
-        ColorBy(display, ('POINTS',self.field.name))
+        ColorBy(display, (self.field.fieldDisplayMode,self.field.name))
         display.SetScalarBarVisibility(self.getView(), scalarBar)
         self.setColorRange(self.field.min,self.field.max)
  
     def calculator(self):
         Hide()
         calc = Calculator(Input=self.source)
+        calc.AttributeMode = self.field.fieldFunctionMode
         calc.Function = self.field.function
         calc.ResultArrayName=self.field.function
         self.field.name=self.field.function
@@ -151,24 +168,25 @@ class NwPvTools:
     def legend(self,scalarBar=True):
         GetDisplayProperties().SetScalarBarVisibility(self.getView(),scalarBar)
 
-
-class setup:
-    SCALAR_FIELD    = 'k'
-    FIELD_FUNCTION  = 'sqrt(k)*mag(U)'
-    SCALAR_MIN      = 0
-    SCALAR_MAX      = 5
-    NORMAL          = (0,0,1)
-    ORIGIN          = (0,0,0)
-    CAMERA_UP       = (0,1,0)
-    CAMERA_POS      = (0.13, 0, 0.01)
-    CAMERA_FOCUS    = (0.13, 0, 0)
-    CAMERA_ZOOM     = 16
-    IMAGE_SCALE     = 1
-    VIEW_SIZE       = [2000,500]
-    LEGEND          = True
-
-
 if __name__=="__main__":
+
+    class setup:
+        SCALAR_FIELD    = 'k'
+        FIELD_FUNCTION  = 'sqrt(k)*mag(U)'
+        SCALAR_MIN      = 0
+        SCALAR_MAX      = 5
+        NORMAL          = (0,0,1)
+        ORIGIN          = (0,0,0)
+        CAMERA_UP       = (0,1,0)
+        CAMERA_POS      = (0.13, 0, 0.01)
+        CAMERA_FOCUS    = (0.13, 0, 0)
+        CAMERA_ZOOM     = 16
+        IMAGE_SCALE     = 1
+        VIEW_SIZE       = [2000,500]
+        LEGEND          = True
+        FIELDMODE       = 'CELLS' # 'POINTS'
+
+
 
     pvt = NwPvTools('case.foam')
     pvt.initFromSetup()
