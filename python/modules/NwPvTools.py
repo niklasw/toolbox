@@ -21,6 +21,7 @@ class Field:
         self.functionMode ='Cell Data'
 
     def setDataMode(self, pointOrCell):
+        self.displayMode = pointOrCell
         if pointOrCell == 'CELLS':
             self.functionMode =  'Cell Data'
         elif pointOrCell == 'POINTS':
