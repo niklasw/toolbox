@@ -49,6 +49,8 @@ if __name__=="__main__":
     pvt.saveFig('testFig_magU',setup.IMAGE_SCALE)
 
     setup.FIELD_FUNCTION='sqrt(k)'
+    setup.SCALAR_MAX=0.1
+
     pvt.field.initFromSetup(setup)
     pvt.calculator()
     pvt.legend(setup.LEGEND)
