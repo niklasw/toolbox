@@ -12,7 +12,7 @@ def getArgs(i):
     opts,args=parser.parse_args()
 
     if (getattr(opts, 'logfile')):
-        i.info('Will try to parse log for number of steps and clock time.')
+        i.info('Will try to parse log for nProcs, number of steps and clock time.')
         if not os.path.isfile(opts.logfile):
             i.error('Cannot find supplied log file')
         opts.parseLog = True
@@ -21,13 +21,33 @@ def getArgs(i):
 
     return opts, args
 
+def getNCores():
+    import os,re
+    dirContent=os.listdir(os.getcwd())
+    ppat=re.compile('processor[0-9]+')
+    return len(filter(ppat.match, dirContent))
+
+def getNCoresFromLog(logFile):
+    import re
+    pat = re.compile(r'^nProcs\s*:\s*([0-9]+).*$')
+    with open(logFile) as log:
+        count = 0
+        for line in log:
+            count+=1
+            match = pat.match(line)
+            if match:
+                return match.group(1)
+            if count > 200:
+                return 0
+
 def getNCells():
     import re,os
     from os.path import join as pjoin
     from os.path import isfile as isfile
-    logOpts = [ pjoin(os.getcwd(),'qlogs','checkMesh.log'),
-                pjoin(os.getcwd(),'logs','checkMesh.log'),
-                pjoin(os.getcwd(),'checkMesh.log')]
+    from glob import glob
+    logOpts = glob(pjoin(os.getcwd(),'qlogs','checkMesh*.log'))
+    logOpts+= glob(pjoin(os.getcwd(),'logs','checkMesh*.log'))
+    logOpts+= glob(pjoin(os.getcwd(),'checkMesh*.log'))
 
     pat = re.compile(r'cells:\s*([0-9]+)')
     for meshLog in logOpts:
@@ -43,11 +63,6 @@ def getNCells():
                         return nCells
     return 1
 
-def getNCores():
-    import os,re
-    dirContent=os.listdir(os.getcwd())
-    ppat=re.compile('processor[0-9]+')
-    return len(filter(ppat.match, dirContent))
 
 def parseLog(opts):
     from subprocess import Popen,PIPE
@@ -106,8 +121,18 @@ if __name__=='__main__':
 
     opts,args=getArgs(i)
 
-    nCores = i.get('Number of cores', test=int, default=getNCores())
-    nCells = i.get('Number of cells', test=float, default=getNCells())
+    try:
+        nCores = int(getNCoresFromLog(opts.logfile))
+        i.info('Number of cores from run log = {0}'.format(nCores))
+    except:
+        nCores = i.get('Number of cores', test=int, default=getNCores())
+
+    try:
+        nCells = int(getNCells())
+        i.info('Number of cells from mesh log = {0}'.format(nCells))
+    except:
+        nCells = i.get('Number of cells', test=float, default=getNCells())
+
     cTime = 0
     nSteps= 0
     if opts.parseLog:
@@ -116,6 +141,7 @@ if __name__=='__main__':
     else:
         cTime  = i.get('Elapsed time', test=float, default=1000)
         nSteps = i.get('Number of iterations/time steps', test=int, default=100)
+    i.info('Average core cell count is {0}'.format(float(nCells)/nCores))
 
     i.info('\n{0}\n'.format('='*50))
     i.info('Simulation  speed index = {0:0.1f} "cell-iterations per core-second".'.format(nSteps*nCells/float(nCores*cTime)))

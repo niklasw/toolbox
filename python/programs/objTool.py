@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import os,sys,re,string
-from struct import *
-from types import *
 from numpy import array
 
 
@@ -36,7 +34,8 @@ def getArgs():
     objExt = os.path.splitext(objIn)[1]
     objOut = opt.output
     if not opt.output:
-        objOut = objBase+'_scaled'+objExt
+        objOut = objBase+'_new'+objExt
+    opt.output = objOut
 
     if opt.scale:
         try:
@@ -50,10 +49,30 @@ def getArgs():
         except:
             argError('translation vector not in format \"(x y z)\".')
 
-
-
     return opt,arg
 
+class vertex:
+    def __init__(self,v=(1e10,1e10,1e10)):
+        self.v = array(v)
+
+    def __str__(self):
+        return 'v {0:e} {1:e} {2:e}\n'.format(*self.v)
+
+    def fromLine(self,line):
+        self.v = array(map(float,line.split()[-3:]))
+
+    def translate(self,t):
+        self.v += array(t)
+    def scale(self,s):
+        self.v *= array(s)
+
+class face:
+    def __init__(self,i=[]):
+        self.indices = i
+
+    def __str__(self):
+        fmt = 'f'+' {:d}'*len(self.indices)+'\n'
+        return fmt.format(*self.indices)
 
 class objToolBox:
     def __init__(self,objFile,objOutFile):
@@ -67,8 +86,9 @@ class objToolBox:
         self.faces = {}
         self.read()
         self.getVerts()
-        self.ops = {'scale': lambda x,s: x*s,
-                    'translate': lambda x,t: x+array(t)}
+        self.getRegions()
+        self.ops = {'scale': lambda v,s: v.scale(s),
+                    'translate': lambda v,t: v.translate(t)}
 
     def extractRegionName(self,line):
         return line.split(' ',1)[1]
@@ -93,11 +113,15 @@ class objToolBox:
     def getVerts(self):
         print 'Reading obj vertices'
         for line in self.data:
-            if line[0] == 'g':
-                break
             if line and line[0] == 'v':
-                v = array(map(float,line.split()[-3:]))
-                self.verts.append(v)
+                try:
+                    v = vertex()
+                    v.fromLine(line)
+                    self.verts.append(v)
+                except:
+                    print "Error reading vertex"
+                    sys.exit(1)
+                    
 
     def getFaces(self):
         regionName = 'defaultRegion'
@@ -106,7 +130,7 @@ class objToolBox:
                 regionName = self.extractRegionName(line)
                 self.faces[regionName] = []
             if line[0] == 'f':
-                f = map(int,line.split()[1:])
+                f = face(map(int,line.split()[1:]))
                 self.faces[regionName].append(f)
 
     def getRegionFaces(self,region='defaultRegion'):
@@ -123,8 +147,8 @@ class objToolBox:
         Returns all vertices if not region set.'''
         def f(faces):
             vertInds = []
-            for face in faces:
-                vertInds+=face
+            for f in faces:
+                vertInds+=f.indices
             vertInds = set(vertInds)
 
             for v in vertInds:
@@ -137,30 +161,44 @@ class objToolBox:
             return (v for v in self.verts)
 
     def vertsStr(self):
-        return ( 'v {0:e} {1:e} {2:e}\n'.format(v) for v in self.verts )
+        return ( vertex(v).__str__() for v in self.verts )
+
+    def writeRegion(self,regionName):
+        for v in self.getRegionVerts(regionName):
+            print v
 
 
-    def bounds(self, region='defaultRegion'):
-        print '\tCalculating bounding box for', self.objFile
+    def bounds(self, region=''):
         minX=minY=minZ =  1.0e10
         maxX=maxY=maxZ = -1.0e10
         verts = []
 
         cX=cY=cZ=0.0
-        for v in self.getRegionVerts(region):
-            X,Y,Z = v
+        for vert in self.getRegionVerts(region):
+            X,Y,Z = vert.v
             minX,minY,minZ = min(minX,X),min(minY,Y),min(minZ,Z)
             maxX,maxY,maxZ = max(maxX,X),max(maxY,Y),max(maxZ,Z)
             cX,cY,cZ=[(maxX+minX)/2.,(maxY+minY)/2.,(maxZ+minZ)/2.]
 
-        print '''\tobj bounds for %s in %s =
+        print '''\tBounds for %s =
         centre (%f, %f, %f)
         min    (%f, %f, %f)
         max    (%f, %f, %f)
         size   (%f, %f, %f)
-        ''' % (region,self.objFile,cX,cY,cZ,minX,minY,minZ,maxX,maxY,maxZ,maxX-minX,maxY-minY,maxZ-minZ)
+        ''' % (region,cX,cY,cZ,minX,minY,minZ,maxX,maxY,maxZ,maxX-minX,maxY-minY,maxZ-minZ)
 
         return (minX,minY,minZ),(maxX,maxY,maxZ)
+
+    def extractRegions(self,regionsToExtract):
+        for region in regionsToExtract:
+            if not self.faces:
+                self.getFaces()
+                if not region in self.faces.keys():
+                    print 'Cannot find region {0} in geometry'.format(region)
+                    sys.exit(1)
+                else:
+                    regionFaces = self.faces[region]
+                    pass
 
     def split(self):
         print 'Spliting obj file into regions:'
@@ -168,31 +206,38 @@ class objToolBox:
         pass
 
     def transform(self,op,v):
-        self.verts = [ op(a,v) for a in self.verts ]
+        [ op(a,v) for a in self.verts ]
 
     def getRegions(self):
         for line in self.data:
             if line[0] == 'g':
                 self.regions.append(self.extractRegionName(line))
 
+    def write(self):
+        with open(self.objOut,'w') as fp:
+            for r in self.regions:
+                for v in self.getRegionVerts(r):
+                    fp.write(v.__str__())
+                fp.write('g {0}\n'.format(r))
+                for f in self.getRegionFaces(r):
+                    fp.write(f.__str__())
 
 if __name__=='__main__':
     options, arguments = getArgs()
 
     ot = objToolBox(options.objFile, options.output)
 
-    ot.getHead()
-    print ot.head
-
-    ot.getRegions()
-
     if options.translate:
         ot.transform(ot.ops['translate'], options.translate)
     if options.scale:
         ot.transform(ot.ops['scale'], options.scale)
 
-    print 'Containing regions:'
+    print 'Per region bounding box'
     for r in ot.regions:
         if options.bounds:
-            ot.bounds(r)
+            ot.bounds(region=r)
+
+    print 'Overall bounding box'
+    ot.bounds(region='')
+    #ot.write()
 

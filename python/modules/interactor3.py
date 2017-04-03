@@ -175,7 +175,6 @@ if __name__=='__main__':
     I.getAll()
 
     print iFile.selected
-    print b.selected
 
     print ''
     print  I
