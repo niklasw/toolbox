@@ -35,8 +35,8 @@ class htmlTable:
         self.content = ''
 
     def newRow(self,cols, clst=('even','odd')):
-	# Horisontally striping possilbe through CSS classes
-	# even or odd
+        # Horisontally striping possilbe through CSS classes
+        # even or odd
         cls = clst[self.rowCounter % len(clst)]
         r0 = '<tr class="{0}">'.format(cls)
         r1 = '</tr>'

@@ -164,7 +164,7 @@ if __name__=='__main__':
     iv    = ValueSelector(prompt='Enter a float', test=float, default=1.0)
     iFile = FileSelector(suffix='.pyc',prompt='Select pyc file')
     b     = BooleanSelector(prompt='Is it yes or no?')
-    j     =ValueSelector(prompt='Enter an int', test=int, default=0)
+    j     = ValueSelector(prompt='Enter an int', test=int, default=0)
 
     I = Interactors('Test function for interactor3')
     I.add(iv,'floatvalue','f')

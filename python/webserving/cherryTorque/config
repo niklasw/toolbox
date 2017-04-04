@@ -4,7 +4,7 @@
 [Site]
 interfaceAddress = 150.227.20.126
 port = 8081
-htmlTemplate = /home/soft/Servers/cherryTorque/CSS/cherryTemplate.html
+htmlTemplate = /home/niklas/toolbox/python/webserving/cherryTorque/CSS/cherryTemplate.html
 
 [Db]
 path = /tmp/torqueLogs

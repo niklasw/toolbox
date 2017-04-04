@@ -57,7 +57,8 @@ def getArgs():
           'ncol':int(opt.ncol),
           'fwidth':fwidth,
           'log':opt.log,
-          'semilog':opt.semilog}
+          'semilog':opt.semilog,
+          'plotref':False}
 
     print 60*'-'
     for key in args.keys():
@@ -83,7 +84,7 @@ def vmag(U):
             out[i] = scipy.sqrt(scipy.dot(row,row))
         return out
 
-def plotFFT(samples,sampleFrq,filterWidth=1,plotdata=True,log=False):
+def plotFFT(samples,sampleFrq,plotref=False,filterWidth=1,plotdata=True,log=False):
     from scipy.signal.signaltools import medfilt
 
     n=len(samples)
@@ -130,8 +131,8 @@ def main():
     nVectors = getNVectors(sampleVectors)
 
     legend = map(str,arguments['col'])
-    if refline:
-        legend.append('k^-5/3')
+    #if refline:
+    #    legend.append('k^-5/3')
     
     for i in  range(nVectors):
         print 'Processing sample vector',i

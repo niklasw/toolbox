@@ -255,6 +255,9 @@ class dataManager:
 
             self.optionsApplied[self.current] = True
 
+    def reportAverage(self,seti=0):
+        Info('Data set {} average = {}'.format(seti,numpy.average(self.y)))
+
     def nArrays(self):
         return len(self.arrays)
 
@@ -277,7 +280,7 @@ class plotter:
                              linestyle=self.data.options.lineStyle)
             self.lines.append(line)
 
-            print 'Average of data set {0} = {1}'.format(i,sum(d)/len(d))
+            self.data.reportAverage(i)
 
 
     def addFft(self):

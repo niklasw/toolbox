@@ -4,11 +4,20 @@
 # with step size 1, like 00010.png, 00011.png.
 # ! 00010, 00020 does NOT seem to work !
 
-ffmpeg -i Scene_1koppInside%05d_stamped.png    -qmax 8        -r 10             -vcodec msmpeg4v2 out.avi
-        ---------input files--------------    --quality--  --frame rate--
-
-
-ffmpeg -sameq -i image%05d.png -r 20 -vcodec msmpeg4v2 newMovie.avi
-
-ffmpeg -i rapport-41-1930-svt-play.flv   -vcodec libh264 out3.avi
 ffmpeg -i firstWaves.%04d.png -r 24 -vcodec h264 -crf 18 -pix_fmt yuv420p firstWaves.mp4
+
+
+# Cut out a scene
+ffmpeg -i input.mp4 -ss 00:00:43 -t 00:01:07 -async 1 -strict -2 clip.mp4
+
+# Freeze last frame
+
+ffmpeg -f lavfi -i nullsrc=s=1280x720:d=90:r=24 -i clip.mp4 -filter_complex \
+    "[0:v][1:v]overlay[video]" -map "[video]" \
+    -codec:a copy -shortest out0.mp4
+
+# Add text to movie
+
+ffmpeg -i clip.mp4  -movflags +faststart \
+       -vf drawtext="enable='between(t,68,90)':fontfile=/usr/share/fonts/liberation/LiberationSans-Bold.ttf:text='David Belle': fontcolor=white: fontsize=86:box=1: boxcolor=black@0.2:boxborderw=5:x=(w-text_w)/2: y=(h-text_h)/2" \
+       -codec:a copy clipWithText.mp4
