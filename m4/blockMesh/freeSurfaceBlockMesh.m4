@@ -26,7 +26,7 @@ define(pi, 3.14159265)
 define(Hex, hex (v1$1 v2$1 v3$1 v4$1 v1$2 v2$2 v3$2 v4$2))
 
 define(L, 1.0)
-define(baseSize,calc(L/16))
+define(baseSize,calc(L/8))
 
 define(baseThickness,calc(baseSize/1))
 define(midThickness, calc(baseSize/8))
