@@ -39,7 +39,7 @@ class pipeFlow:
         return ff
 
     def pressureLoss(self):
-        rho = self.flow.media.density()
+        rho = self.flow.media.densityIdealGasLaw()
         U = self.flow.Q/self.pipe.area
         f = self.frictionFactor()
         return 0.5*rho*U**2*f*self.pipe.length/self.pipe.diameter

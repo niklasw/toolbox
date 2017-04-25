@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*- 
 
 from math import *
 import numpy as np
@@ -422,6 +423,12 @@ class rankineBody:
 class canvas:
     '''Object to handle all the plotting'''
 
+    lang = 'sv'
+    streamFunctionName={'sv':u'Strömfunktionen, $\Psi$','en':'Streamfunction, $\Psi$'}
+    potentialName     ={'sv':u'Potential, $\Phi$','en':'Potential, $\Phi$'}
+    cpName            ={'sv':u'Tryckkoefficient, $C_p$','en':'Pressure coefficient, $C_p$'}
+    wavesName         ={'sv':u'Våghöjd', 'en':'Wave height'}
+
     def __init__(self,sources):
         self.sources = sources
         self.fsize = 24
@@ -460,7 +467,7 @@ class canvas:
         plt.scatter(x_sources, y_sources, color='#CD2305', s=80, marker='o')
 
     def plotStreamfunction(self):
-        self.decorate('Streamfunction')
+        self.decorate(self.streamFunctionName[self.lang])
         X = self.sources.mesh.X
         Y = self.sources.mesh.Y
         u,v = self.sources.velocity()
@@ -479,7 +486,7 @@ class canvas:
         plt.axis('equal')
 
     def plotPotential(self):
-        self.decorate('Potential')
+        self.decorate(self.potentialName[self.lang])
         X = self.sources.mesh.X
         Y = self.sources.mesh.Y
         x_sources = [s.x for s in self.sources]
@@ -498,7 +505,7 @@ class canvas:
         plt.axis('equal')
 
     def plotCp(self):
-        self.decorate('Pressure coefficient, $C_p$')
+        self.decorate(self.cpName[self.lang])
         plt.grid(True)
         plt.xlabel('$x$', fontsize=self.fsize*1.5)
         plt.ylabel('$y$', fontsize=self.fsize*1.5)
@@ -559,7 +566,7 @@ class canvas:
         plt.plot(distance,wh,'#053061',linewidth=2)
         #plt.plot(distance-1.36,wh2,'g')
 
-        self.decorate('Waves @ $C_L$',ylabel='$\zeta$')
+        self.decorate(self.wavesName[self.lang]+' @ $C_L$',ylabel='$\zeta$')
         plt.grid('on')
         plt.xlim(-2,np.max(distance))
         #plt.ylim(-2*np.max(wh[len(wh)/2:]),2*np.max(wh[len(wh)/2:]))
