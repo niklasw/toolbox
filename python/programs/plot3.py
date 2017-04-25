@@ -204,6 +204,7 @@ class dataManager:
             if not len(self.legend) == len(self.y):
                 Warn('Legend assertion error. Legend does not match data and is disabled')
                 return False
+        Info('Applying legend')
         return True
 
     def diff(self,x,y):
@@ -307,7 +308,7 @@ class plotter:
     def add(self):
         for i,d in enumerate(self.data.y):
             line, = plt.plot(self.data.x,d,
-                             color=self.lineColors[data.current],
+                             color=self.lineColors[i],
                              linestyle=self.data.options.lineStyle)
             self.lines.append(line)
 
@@ -322,7 +323,7 @@ class plotter:
         for i,d in enumerate(self.data.fft):
             x = self.data.fftFrq[i]
             line, = plt.loglog(x,d,
-                               self.lineColors[data.current],
+                               self.lineColors[i],
                                linestyle=self.data.options.lineStyle)
             self.fftLines.append(line)
 
@@ -338,7 +339,7 @@ class plotter:
             pltaxis.grid('on')
         if self.data.options.title:
             pltaxis.set_title(self.data.options.title)
-        if self.data.legend and self.data.assertLegend():
+        if self.data.options.legend and self.data.assertLegend():
             pltaxis.legend(self.lines,self.data.legend, loc=0)
 
         if self.data.options.yMin:
@@ -387,6 +388,7 @@ if __name__=="__main__":
         p.decorate(p.ax)
     if opt.fft:
         fftFig = plt.figure()
+        data.options.title = 'FFT of '+data.options.title
         for i in range(data.nArrays()):
             data.current = i
             p.addFft(fftFig)

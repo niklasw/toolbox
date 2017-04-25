@@ -95,7 +95,7 @@ def xlsxToArray(fileName,sheetName='Sheet1',columns=None,rows=None):
         from openpyxl.reader.excel import load_workbook
     except:
         Error( "This program rely on the python module openpyxl for excel parsing" )
-    wb = load_workbook(filename=fileName)
+    wb = load_workbook(filename=fileName,read_only=True,data_only=True)
     if not sheetName in wb.get_sheet_names():
         Error( 'Could not open sheet named %s' % sheetName)
         sys.exit(1)
@@ -106,7 +106,7 @@ def xlsxToArray(fileName,sheetName='Sheet1',columns=None,rows=None):
     nCols = len(columns)
 
     for row in rows:
-        sheetRow = sheet.rows[row]
+        sheetRow = list(sheet.rows)[row]
         rowList = [ a.value for i,a in enumerate(sheetRow) if i in columns ]
         sheetArray.append(rowList)
     return sheetArray
