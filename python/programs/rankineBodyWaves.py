@@ -14,10 +14,10 @@ if __name__ == '__main__':
 
     ## Settings for Shaffers 9 ft 7/1 body
     u_inf = f2m(10)                 # 10 feet/s    Shaffer page 13
-    x_offset = f2m(4.18)            # 4.18 ft from Shaffer page 5
+    x_offset = 1.47 # f2m(4.18)            # 4.18 ft from Shaffer page 5
     y_offset = 0.0
     clDepth      = f2m(3)           # 3 feet    Shaffer page 13
-    sourceFactor = 0.104            # From page 5 in Shaffer ( 4*pi ??)
+    sourceFactor = 0.121 #0.104            # From page 5 in Shaffer ( 4*pi ??)
 
     ## Settings for Shaffers 4.5 ft 7/1 body
     #x_offset = f2m(2.09)            # 4.18 ft from Shaffer page 5
@@ -67,8 +67,6 @@ if __name__ == '__main__':
 
         body.solveDimensions(guess=1.0)
         body.info()
-
-        #print body.solveSources(f2m(9.0),1.0/7.0)
 
         downstreamCoordinates = np.linspace(x_offset*2,8*wl,400)
 

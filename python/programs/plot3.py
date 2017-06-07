@@ -265,41 +265,41 @@ class dataManager:
     def nArrays(self):
         return len(self.arrays)
 
-class lowPassFilter:                                                                                                                                                                                                                           
-    def __init__(self, cutoff, sampleRate, order=4):                                                                                                                                                                                           
-        self.cutoff = cutoff                                                                                                                                                                                                                   
-        self.sampleRate = sampleRate                                                                                                                                                                                                           
-        self.order = order                                                                                                                                                                                                                     
-        self.analog = False                                                                                                                                                                                                                    
-        self.ftype = 'low'                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                               
-    def butter_coeffs(self):                                                                                                                                                                                                                   
-        from scipy.signal import butter                                                                                                                                                                                                        
-        nyquist = 0.5*self.sampleRate                                                                                                                                                                                                          
-        normCutoff = self.cutoff/nyquist                                                                                                                                                                                                       
-        return butter(self.order,normCutoff,btype=self.ftype,analog=self.analog)                                                                                                                                                               
-                                                                                                                                                                                                                                               
-    def plotFrequencyResponse(self):                                                                                                                                                                                                           
-        from scipy.signal import freqz                                                                                                                                                                                                         
-        b,a = self.butter_coeffs()                                                                                                                                                                                                             
-        w,h = freqz(b,a,worN=8000)                                                                                                                                                                                                             
-        plt.plot(0.5*self.sampleRate*w/pi,abs(h),'k')                                                                                                                                                                                          
-        axvline(self.cutoff,color='r')                                                                                                                                                                                                         
-        xlim(0,self.cutoff*5)                                                                                                                                                                                                                  
-        grid()                                                                                                                                                                                                                                 
-        show()                                                                                                                                                                                                                                 
-                                                                                                                                                                                                                                               
-    def filter(self,data):                                                                                                                                                                                                                     
-        from scipy.signal import lfilter, filtfilt                                                                                                                                                                                             
-        b,a = self.butter_coeffs()                                                                                                                                                                                                             
-        filtered = filtfilt(b,a,data)                                                                                                                                                                                                          
-        return filtered                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                               
-    def nofilter(self,data):                                                                                                                                                                                                                   
+class lowPassFilter:
+    def __init__(self, cutoff, sampleRate, order=4):
+        self.cutoff = cutoff
+        self.sampleRate = sampleRate
+        self.order = order
+        self.analog = False
+        self.ftype = 'low'
+
+    def butter_coeffs(self):
+        from scipy.signal import butter
+        nyquist = 0.5*self.sampleRate
+        normCutoff = self.cutoff/nyquist
+        return butter(self.order,normCutoff,btype=self.ftype,analog=self.analog)
+
+    def plotFrequencyResponse(self):
+        from scipy.signal import freqz
+        b,a = self.butter_coeffs()
+        w,h = freqz(b,a,worN=8000)
+        plt.plot(0.5*self.sampleRate*w/pi,abs(h),'k')
+        axvline(self.cutoff,color='r')
+        xlim(0,self.cutoff*5)
+        grid()
+        show()
+
+    def filter(self,data):
+        from scipy.signal import lfilter, filtfilt
+        b,a = self.butter_coeffs()
+        filtered = filtfilt(b,a,data)
+        return filtered
+
+    def nofilter(self,data):
         return data
 
 class plotter:
-    lineColors='b r g c m y k'.split()
+    lineColors='b r g c m y k b r g c m y k'.split()
     def __init__(self, dmgr):
 
         self.data=dmgr
@@ -311,7 +311,7 @@ class plotter:
     def add(self):
         for i,d in enumerate(self.data.y):
             line, = plt.plot(self.data.x,d,
-                             color=self.lineColors[i],
+                             #color=self.lineColors[i],
                              linestyle=self.data.options.lineStyle)
             self.lines.append(line)
 

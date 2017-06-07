@@ -13,65 +13,41 @@ def m2f(m):
 if __name__ == '__main__':
 
     ## Settings for Shaffers 9 ft 7/1 body
-    u_inf = 2 #f2m(10)                 # 10 feet/s    Shaffer page 13
+    u_inf = f2m(10)                 # 10 feet/s    Shaffer page 13
     x_offset = f2m(4.18)            # 4.18 ft from Shaffer page 5
     y_offset = 0.0
-    clDepth      = 0.72 #f2m(3)           # 3 feet    Shaffer page 13
-    sourceFactor = 0.104            # From page 5 in Shaffer ( 4*pi ??)
+    clDepth  = f2m(3)               # 3 feet    Shaffer page 13
 
-    L = 3.0 #f2m(9)
-    aspect = 1.0/8
+    L = f2m(9)
+    aspect = 1.0/7
 
-    Mesh = mesh(-L,L,-L/2,L/2,600,300)
+    Mesh = mesh(-L,L,-L/2,L/2,1200,800)
 
     fs = freeStream(u_inf,0.0,Mesh)
 
     pos0 = (.0,.0)
     body = rankine(L,aspect,pos0,fs,clDepth)
+    sail = rankine(L/5.0,0.8,(-0.3,0.3),fs,clDepth-0.3)
 
     body.info()
+    sail.info()
+    wl =  body.getWaveLength()
 
     size = 15
     figureSize = (size, (Mesh.dimensions()[1])/(Mesh.dimensions()[0])*size)
 
-    c = canvas(body.sources)
-
+    allSources  = body.sources
+    allSources.addSources(sail.sources)
+    c = canvas(body.sources) #+sail.sources)
     c.new(figureSize)
-
-    c.sub(221)
-    c.plotStreamlines()
-    c.plotStreamfunction()
-    if body.ok():
-        c.plotBodyAndSaveGeometry(line='solid', color='#ffffff',fileName='RankineBody')
-    else:
-        c.plotBody(line='solid', color='#ffffff')
-
-    c.sub(222)
-    c.plotPotential()
-    c.plotBody(line='solid', color='#000000')
-
-    c.sub(223)
-    c.plotCp()
-    c.plotBody(line='solid', color='#000000')
-
-
+    c.plotPotentialFlow()
 
     # -Rankine Body ----------------------------------
-    if body.ok():
-        wl =  body.getWaveLength()
-
-        body.info()
-
-        #print body.solveSources(f2m(9.0),1.0/7.0)
-
-        downstreamCoordinates = np.linspace(x_offset*2,8*wl,400)
-
-        c.sub(224)
-        c.plotWaves(body,downstreamCoordinates, normalize=False)
-        body.writeWaves(downstreamCoordinates)
-
-
-        print 'Wave length = ',wl
+    sourceOffset = abs(body.sources[0].x)
+    downstreamCoordinates = np.linspace(sourceOffset*2,8*wl,400)
+    c.sub(224)
+    c.plotWaves(body,downstreamCoordinates, normalize=False)
+    #body.writeWaves(downstreamCoordinates)
     # ------------------------------------------------
     c.present('RankineBodyWaves.png')
 
