@@ -27,18 +27,18 @@ if __name__ == '__main__':
 
     pos0 = (.0,.0)
     body = rankine(L,aspect,pos0,fs,clDepth)
-    sail = rankine(L/5.0,0.8,(-0.3,0.3),fs,clDepth-0.3)
+    #sail = rankine(L/5.0,0.8,(-0.3,0.3),fs,clDepth-0.3)
 
     body.info()
-    sail.info()
+    #sail.info()
     wl =  body.getWaveLength()
 
     size = 15
     figureSize = (size, (Mesh.dimensions()[1])/(Mesh.dimensions()[0])*size)
 
-    allSources  = body.sources
-    allSources.addSources(sail.sources)
-    c = canvas(body.sources) #+sail.sources)
+    #allSources = body.sources
+    #allSources.addSources(sail.sources)
+    c = canvas(body.sources)
     c.new(figureSize)
     c.plotPotentialFlow()
 
