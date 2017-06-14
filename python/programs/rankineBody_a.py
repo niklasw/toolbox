@@ -14,8 +14,6 @@ if __name__ == '__main__':
 
     ## Settings for Shaffers 9 ft 7/1 body
     u_inf = f2m(10)                 # 10 feet/s    Shaffer page 13
-    x_offset = f2m(4.18)            # 4.18 ft from Shaffer page 5
-    y_offset = 0.0
     clDepth  = f2m(3)               # 3 feet    Shaffer page 13
 
     L = f2m(9)
@@ -27,17 +25,13 @@ if __name__ == '__main__':
 
     pos0 = (.0,.0)
     body = rankine(L,aspect,pos0,fs,clDepth)
-    #sail = rankine(L/5.0,0.8,(-0.3,0.3),fs,clDepth-0.3)
 
     body.info()
-    #sail.info()
     wl =  body.getWaveLength()
 
     size = 15
     figureSize = (size, (Mesh.dimensions()[1])/(Mesh.dimensions()[0])*size)
 
-    #allSources = body.sources
-    #allSources.addSources(sail.sources)
     c = canvas(body.sources)
     c.new(figureSize)
     c.plotPotentialFlow()

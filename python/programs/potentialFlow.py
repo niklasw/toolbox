@@ -5,6 +5,8 @@ from math import *
 import numpy as np
 import matplotlib.pyplot as plt
 
+DEBUG=False
+
 class mesh:
     def __init__(self,x0,x1,y0,y1,Nx,Ny):
         self.x0 = x0
@@ -180,7 +182,7 @@ class rankine:
             #- Compute c(M) from eq3 Shaffer
             A = Z/M
             c = A*h/sqrt(1-A*A)
-            if (c > l):
+            if DEBUG and (c > l):
                 print "Offset exceeds half length!"
 
             #- Newton-Rapson find root for eq2
@@ -211,10 +213,11 @@ class rankine:
             #diff = np.abs(delM)
             balance1 = (l**2-c**2)**2 - c*l*M/(np.pi*U)
             balance2 = c/sqrt(h**2+c**2) - Z/M
-            print 'Residuals in eqn1 and eqn2:',balance1, balance2
+            if DEBUG:
+                print 'Residuals in eqn1 and eqn2:',balance1, balance2
+                print balance1, balance2
             diff = np.abs(balance1)+np.abs(balance2)
 
-            print balance1, balance2
             if M < Z:
                 M = 1.01*Z
 
