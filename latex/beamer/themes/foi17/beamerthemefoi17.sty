@@ -1,0 +1,113 @@
+\usetheme{Rochester}
+\usefonttheme{professionalfonts}
+
+\RequirePackage{pgf}
+\RequirePackage{tikz}
+
+\pgfdeclareimage[height=0.6\beamer@headheight]{foi-logo}{ThemeImages/logo0}
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+\setbeamercovered{transparent}
+\definecolor{bannertext}{rgb}{0.1,0.17,0.28}
+
+\beamer@headheight=0.13\paperwidth
+
+\definecolor{foiorange}{rgb}{.953 ,.502 ,.04}
+\definecolor{foidarkblue}{HTML}{2181c9}
+\definecolor{foitextblue}{HTML}{2181c9}
+\definecolor{foilightblue}{HTML}{6DB8E1}
+\definecolor{foigray}{HTML}{686868}
+\definecolor{foilightgray}{HTML}{F0F0F0}
+\definecolor{secret}{HTML}{841010}
+
+\setbeamercolor*{Title bar top}{fg=white, bg=foidarkblue}
+\setbeamercolor*{Title bar}{fg=foilightblue, bg=foilightblue}
+\setbeamercolor*{Title page left block}{fg=white, bg=foilightblue}
+\setbeamercolor*{Title page rigth block}{fg=white, bg=foidarkblue}
+\setbeamercolor*{Location bar}{fg=foilightblue,bg=white}
+\setbeamercolor*{frametitle}{parent=Title bar, fg=foidarkblue, bg=white}
+\setbeamercolor*{structure}{fg=bannertext}
+\setbeamercolor*{block title}{bg=foidarkblue,fg=white}
+\setbeamercolor*{block body}{bg=white,fg=foitextblue}
+\setbeamercolor*{normal text}{bg=white,fg=foitextblue}
+\setbeamercolor*{section in head/foot}{bg=white,fg=foitextblue}
+
+\usecolortheme[named=foidarkblue]{structure}
+
+%\setbeamerfont{section in head/foot}{size=\tiny,series=\normalfont}
+
+\renewcommand{\familydefault}{phv}
+\renewcommand{\sfdefault}{phv}
+
+\setbeamerfont{frametitle}{size=\Large, series=\bfseries} %, family={\fontfamily{phv}}}
+\setbeamerfont{title}{size=\Large, series=\bfseries} %, family={\fontfamily{phv}}}
+
+\setbeamersize{text margin left=0pt,text margin right=0pt} 
+
+\setbeamertemplate{title page}
+{
+  \begingroup
+     \begin{beamercolorbox}[wd=0.4\paperwidth,ht=0.75\paperheight]{Title page left block}
+     \end{beamercolorbox}
+  \endgroup
+
+  \begingroup
+    \begin{beamercolorbox}[wd=\paperwidth,ht=0.25\beamer@headheight]{Title bar top}
+        \hskip2ex\usebeamerfont{title}\inserttitle\par%
+        \vskip0.3em
+         \ifx\insertsubtitle\@empty%
+         \else%
+           \vskip0.25em%
+           {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+         \fi%
+
+    \end{beamercolorbox}
+
+    \vskip2em
+    \usebeamerfont{author}\insertauthor \\
+   % \vskip0.5em
+   % \usebeamerfont{institute}\insertinstitute \\
+    \vskip0.5em
+    \usebeamerfont{date}\insertdate
+    \vskip0.5em
+    \begin{center}
+    \usebeamerfont{author}\color{secret}{\infoclass}
+    \end{center}
+  \endgroup
+}
+
+\setbeamertemplate{frametitle}
+{
+  \vskip-1.8\baselineskip
+  \usebeamerfont*{frametitle}\insertframetitle
+  \vskip-0.10em
+  \usebeamerfont*{framesubtitle}\insertframesubtitle
+}
+
+
+\setbeamertemplate{headline}
+{
+  \begin{beamercolorbox}[wd=\paperwidth,ht=0.25\beamer@headheight]{Title bar top}
+  \vskip -1.95cm
+  \linethickness{0.0pt}
+    %\insertsectionnavigationhorizontal{0pt}{\hskip0.22cm}{}%
+  \end{beamercolorbox}
+
+  \begin{beamercolorbox}[wd=\paperwidth,ht=0.75\beamer@headheight]{Title bar}
+  \end{beamercolorbox}
+}
+
+\setbeamertemplate{footline}
+{
+  \linethickness{0pt}
+  \framelatex{
+  \begin{beamercolorbox}[leftskip=.2cm,wd=\paperwidth,ht=0.7\beamer@headheight,sep=0.1cm]{Location bar}
+    \usebeamerfont{section in head/foot}%
+    \insertframenumber/\inserttotalframenumber\hspace{5mm}
+    \insertshortauthor % ~|~\insertshorttitle~|~\color{secret}{\infoclass}
+    \hfill \pgfuseimage{foi-logo}\hspace{5mm}\hfill%
+  \end{beamercolorbox}}
+}
+
+\beamertemplatenavigationsymbolsempty
+

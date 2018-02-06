@@ -1,0 +1,99 @@
+\mode<presentation>{}
+
+\beamertemplatenavigationsymbolsempty
+
+% packages --------------------------------------------------------------------
+\RequirePackage[absolute,overlay]{textpos}
+\RequirePackage{calc}
+\RequirePackage{pgf}
+\RequirePackage{tikz}
+
+
+\newcommand{\foilogo}{./ThemeImages/logo0}
+
+
+% fonts -----------------------------------------------------------------------
+\usefonttheme{professionalfonts}
+\setbeamerfont{title}{size=\huge,series=\bfseries}
+\setbeamerfont{subtitle}{size=\large,series=\bfseries}
+\setbeamerfont{frametitle}{size=\large, series=\bfseries}                                                                                                                                      
+\setbeamerfont{framsubetitle}{size=\normalsize, series=\bfseries}                                                                                                                                      
+
+% colours ----------------------------------------------------------------------
+\definecolor{foiorange}{rgb}{.953 ,.502 ,.04}
+\definecolor{foidarkblue}{HTML}{2181c9}
+\definecolor{foiblue}{HTML}{2181c9}
+\definecolor{foitextblue}{HTML}{2181c9}
+\definecolor{foilightblue}{HTML}{6DB8E1}
+\definecolor{foigray}{HTML}{686868}
+\definecolor{foilightgray}{HTML}{F0F0F0}
+\definecolor{secret}{HTML}{841010}
+
+\setbeamercolor*{Titlebar}{fg=foiblue, bg=white}
+\setbeamercolor*{Titlepageleft}{fg=black, bg=foilightblue}
+\setbeamercolor*{Titlepageright}{fg=white, bg=foidarkblue}
+\setbeamercolor*{Locationbar}{fg=foilightblue,bg=white}
+\setbeamercolor*{toprule1}{bg=foidarkblue}
+\setbeamercolor*{toprule2}{bg=foilightblue}
+\setbeamercolor*{frametitle}{parent=Title bar, fg=white, bg=foidarkblue}
+\setbeamercolor{framesubtitle}{fg=foiblue}                                                                                                                                                    
+%\setbeamercolor*{structure}{fg=bannertext}
+\setbeamercolor*{block title}{bg=foidarkblue,fg=white}
+\setbeamercolor*{block body}{bg=white,fg=foitextblue}
+\setbeamercolor*{normal text}{bg=white,fg=foitextblue}
+\setbeamercolor*{section in head/foot}{bg=white,fg=foitextblue}
+
+
+
+% title -----------------------------------------------------------------------
+                                                                                                                                                                                               
+                                                                                                                                                                                               
+\setbeamertemplate{frametitle}{%                                                                                                                                                               
+  \begin{beamercolorbox}[                                                                                                                                                                      
+    wd=\the\paperwidth,                                                                                                                                                                        
+    ht=3mm,                                                                                                                                                                         
+    dp=0mm]{toprule1}                                                                                                                                                             
+    \usebeamerfont{frametitle}                                                                                                                                                                 
+  \end{beamercolorbox}%                                                                                                                                                                        
+  \insertframetitle
+                                                                                                
+}%
+
+% title page ------------------------------------------------------------------
+\newlength{\foilogowidth} % the size of the purdue logo on the title page
+\setlength{\foilogowidth}{0.4\linewidth}
+\newlength{\foilogomargin}{\paperwidth+0.1pt}
+\setlength{\foilogomargin}{\leftmargin+0.07\linewidth}
+
+
+\setbeamertemplate{title page}{%
+\vspace{\topmargin}
+\hspace*{\evensidemargin}
+\begin{minipage}[t]{\the\paperwidth}
+  \hbox{%
+    \begin{beamercolorbox}[
+      wd=0.3\paperwidth,
+      ht=\paperheight,
+      dp=0.02\linewidth]{Titlepageleft}
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[
+      wd=0.72\paperwidth,
+      ht=\paperheight,
+      dp=0.02\linewidth,
+      sep=0.8em]{Titlepageright}
+      \parbox{0.8\linewidth}{%
+        {\usebeamerfont{title} \usebeamercolor[fg]{Titlepageright} \noindent \inserttitle} \\
+        {\usebeamerfont{subtitle} \usebeamercolor[fg]{Titlepageright} \insertsubtitle}\\
+		\vspace*{0.5em} \\
+		{\hspace*{0em} \bf \insertauthor}\\
+		{\hspace*{0em} \bf \insertdate}
+      }%
+    \end{beamercolorbox}
+  }% END hbox
+\end{minipage}
+\begin{textblock}{20}(14.2,14)
+\includegraphics[width=40px]{\foilogo}
+\end{textblock}
+%
+}% END setbeamertemplate
+
