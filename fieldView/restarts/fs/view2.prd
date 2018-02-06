@@ -1,8 +1,0 @@
-presentation_render_restart_version: 4
-ambient_intensity: 0.300000
-diffuse_intensity: 0.700000
-precise_transparency: 0
-presentation_render: 1
-antialias: 1
-specular: 1.000000 0.500000
-specular_active:  comp_surf iso_surf streamline coord_surf boundary_surf particle_path vortex_core

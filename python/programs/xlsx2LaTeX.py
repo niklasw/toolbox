@@ -50,8 +50,11 @@ Example Options: -f myFile.xlsx -R 1,4:10 -C "A,D:G,AZ --pretty"
             if r in doubleAlphabet:
                 columns.add(mapHash[r])
             else:
-                begin,end = r.split(':')
-                columns = columns.union(sorted(mapHash.values())[mapHash[begin]:mapHash[end]+1])
+                if ':' in r:
+                    begin,end = r.split(':')
+                    columns = columns.union(sorted(mapHash.values())[mapHash[begin]:mapHash[end]+1])
+                else:
+                    columns.add(mapHash[r])
         return list(sorted(columns))
 
     if not opt.xlsx or not os.path.isfile(opt.xlsx):
@@ -68,7 +71,8 @@ Example Options: -f myFile.xlsx -R 1,4:10 -C "A,D:G,AZ --pretty"
     if opt.rows:
         try:
             opt.rows = charRangeToIntList(opt.rows,intMap)
-        except:
+        except ValueError as e:
+            print e
             argError('Could not parse row range %s' % opt.rows)
 
     try:

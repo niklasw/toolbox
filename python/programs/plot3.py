@@ -12,6 +12,15 @@ except:
 
 prog=os.path.basename(sys.argv[0])
 
+def timer(func):
+    import time
+    def wrapper(*arg):
+        t1 = time.time()
+        res = func(*arg)
+        t2 = time.time()
+        print '%s took %0.3f ms' % (func.func_name, (t2-t1)*1000.0)
+        return res
+    return wrapper
 
 def Error(s,sig=1):
     print '\nError %s!\n' % s
@@ -141,8 +150,9 @@ class dataManager:
 
     def clean(self,stringList):
         from itertools import ifilter
-        return (self.parenPat.sub(' ',a).strip() for a in ifilter(self.dropPat.match,stringList))
+        return [self.parenPat.sub(' ',a).strip() for a in ifilter(self.dropPat.match,stringList)]
 
+    @timer
     def read(self):
         from itertools import imap
 
@@ -169,6 +179,7 @@ class dataManager:
                 self.current += 1
             except:
                 Warn('Could not load {0}. Skipping data set.'.format(f))
+
 
     def shape(self):
         return self.shapes[self.current]
@@ -311,7 +322,7 @@ class plotter:
     def add(self):
         for i,d in enumerate(self.data.y):
             line, = plt.plot(self.data.x,d,
-                             #color=self.lineColors[i],
+                             color=self.lineColors[i],
                              linestyle=self.data.options.lineStyle)
             self.lines.append(line)
 
@@ -385,8 +396,10 @@ if __name__=="__main__":
         data.current = i
         data.assertXY()
         data.applyDataOptions()
+        print 'XAV',data.current,numpy.average(data.y)
     for i in range(data.nArrays()):
         data.current = i
+        data.extractXY()
         p.add()
         p.decorate(p.ax)
     if opt.fft:
@@ -394,6 +407,7 @@ if __name__=="__main__":
         data.options.title = 'FFT of '+data.options.title
         for i in range(data.nArrays()):
             data.current = i
+            data.extractXY()
             p.addFft(fftFig)
             p.decorate(p.fftAx)
 

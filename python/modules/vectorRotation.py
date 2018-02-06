@@ -46,7 +46,7 @@ class rotationMatrix:
 if __name__=="__main__":
     v=[1,1,0.1]
     v=array(v)
-    M=rotationMatrix(4,10,80)
+    M=rotationMatrix(90,10,80)
     for o in ['xyz','xzy','zxy','zyx','yxz','yzx']:
         print '\n',o
         vr=M.rotate(v,o)
