@@ -16,7 +16,7 @@ def Info(s):
 def getArgs():
     from optparse import OptionParser
     descString = """
-    Python thing to scale stl file vertices
+    Python thing
     """
 
     parser=OptionParser(description=descString)

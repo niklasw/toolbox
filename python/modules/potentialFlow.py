@@ -5,6 +5,8 @@ from math import *
 import numpy as np
 import matplotlib.pyplot as plt
 
+DEBUG=0
+
 class mesh:
     def __init__(self,x0,x1,y0,y1,Nx,Ny):
         self.x0 = x0
@@ -180,7 +182,7 @@ class rankine:
             #- Compute c(M) from eq3 Shaffer
             A = Z/M
             c = A*h/sqrt(1-A*A)
-            if (c > l):
+            if DEBUG and (c > l):
                 print "Offset exceeds half length!"
 
             #- Newton-Rapson find root for eq2
@@ -211,10 +213,10 @@ class rankine:
             #diff = np.abs(delM)
             balance1 = (l**2-c**2)**2 - c*l*M/(np.pi*U)
             balance2 = c/sqrt(h**2+c**2) - Z/M
-            print 'Residuals in eqn1 and eqn2:',balance1, balance2
+            if DEBUG:
+                print 'Residuals in eqn1 and eqn2:',balance1, balance2
             diff = np.abs(balance1)+np.abs(balance2)
 
-            print balance1, balance2
             if M < Z:
                 M = 1.01*Z
 
@@ -222,12 +224,12 @@ class rankine:
         c = A*h/sqrt(1-A*A)
         # If I do this, everything seems OK, but why??
         # Why does c end up wrong side of l?
-        c = 2*l-c
+        if c > l:
+            print 'Warning: source offset correction'
+            c = 2*l-c
 
         self.sources.addSource( M,-c+self.offset[0],self.offset[1])
         self.sources.addSource(-M, c+self.offset[0],self.offset[1])
-
-        print "c, M =", c,M
 
         return c,M
 
@@ -243,7 +245,7 @@ class rankine:
         wh = np.zeros(len(distance))
         for S in self.sources:
             wh += self.singleSourceWaves(distance,S)
-        return wh/(4*pi)
+        return wh
 
     def singleSourceWaves(self,distance,source):
         '''Wave pattern from a single source moving beneath
@@ -254,7 +256,8 @@ class rankine:
         cSign = c/abs(c)
         U = abs(self.fs.u)
         g = self.g
-        print "M/U = ", M/U
+        if DEBUG:
+            print "M/U = ", M/U
 
         # Function to calculate distance to source from downstream
         # distance and depth (Pythagora)
@@ -262,7 +265,7 @@ class rankine:
 
         # Function of r (distance to source) to calculate surface elevation
         # from a single source, according to Shaffer and Yim
-        h = lambda r: 4*M/U*sqrt(2*pi*g/(r*U**2))*exp(-g*f/U**2)*cos(g*r/U**2+pi/4)
+        h = lambda r: 4*M/U*sqrt(2*pi*g/(r*U**2))*exp(-g*f/U**2)*cos(g*r/U**2+pi/4)/(4*pi)
 
         return np.array([h(R(d)) for d in distance ])
 
@@ -284,6 +287,7 @@ class rankine:
             return m/0.3048
         c = abs(self.sources[0].x)
         print 'Velocity    = {0:8.3f} m/s, {1:8.2f} f/s'.format(self.fs.u,m2f(self.fs.u))
+        print 'Src strength= {0:8.3f} m^3'.format(self.sources[0].strength)
         print 'Src offset  = {0:8.3f} m, {1:8.2f} f'.format(c,m2f(c))
         print 'Body Lpp    = {0:8.3f} m, {1:8.2f} feet'.format(self.length,m2f(self.length))
         print 'Body w      = {0:8.3f} m, {1:8.2} feet'.format(self.width,m2f(self.width))

@@ -65,10 +65,10 @@ class WigleyHull:
         return 4*B**2*(4*T**2+L**2)/(45*T*L)
         
 
-    def createObj(self):
+    def createObj(self, mirror=[]):
         import copy
         nz,nx = self.X().shape
-        print nx,nz
+        print 'Quarter hull resolution = {0}x{1}'.format(nx,nz)
         faces = list()
         verts = list()
         nFaces = (nx-1)*(nz-1)
@@ -99,9 +99,10 @@ if __name__ == '__main__':
 
     hull = WigleyHull(B,L,T,resolution=(rez,int(rez*T*2/L)))
 
-    print 'Numerical Quarter Hull Displacement = ', hull.scipyDisplacement()
-    print 'Analytical Quarter Hull Displacement= ', hull.analyticalDisplacement()
-    print 'Analytical Quarter Hull Area        = ', hull.analyticalArea()
+    print 'Wigley Hull total length            =  {0} m'.format(L)
+    print 'Numerical Hull Displacement = ', 4*hull.scipyDisplacement()
+    print 'Analytical Hull Displacement= ', 4*hull.analyticalDisplacement()
+    print 'Analytical Hull Area        = ', 4*hull.analyticalArea()
 
     hull.createObj()
 
