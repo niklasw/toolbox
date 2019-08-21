@@ -3,4 +3,13 @@ sudo vboxmanage extpack install --replace /tmp/Oracle_VM_VirtualBox_Extension_Pa
 vboxmanage list extpacks
 vboxmanage startvm WinDev1905Eval --type=headless
 vboxmanage showvminfo WinDev1905Eval
+
+#This failed
 vboxmanage guestcontrol WinDev1905Eval updateadditions --source /usr/share/virtualbox/VBoxGuestAdditions.iso --verbose
+
+#Trying this
+vboxmanage storagectl "<vbox_name>" --name "IDE controller" --add ide
+vboxmanage storageattach WinDev1905Eval --storagectl "IDE controller" --port 1 --device 0 --type dvddrive --medium /usr/share/virtualbox/VBoxGuestAdditions.iso
+
+#Connected graphically using rdesktop-vrdp
+
