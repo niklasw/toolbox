@@ -94,6 +94,7 @@ legendNames=[]
 legendLocation=0
 dosave=False
 dolog=False
+linlog=False
 dodiff=False
 filterWidth=0
 doclean=False
@@ -133,6 +134,8 @@ while len(arguments):
         translateX=float(getnext(arguments))
     elif arg=='-try':
         translateY=float(getnext(arguments))
+    elif arg=='-linlog':
+        linlog=True
     elif arg=='-log':
         dolog=True
     elif arg=='-diff':
@@ -241,7 +244,8 @@ for d in data:
             print "WARNING:\nEvaluating magnitude of variable to avoid log(-y)"
             y_ = pylab.log10(pylab.fabs(y_))
             x  = pylab.log10(x)
-
+        if linlog:
+            y_ = pylab.log10(pylab.fabs(y_))
         if filterWidth:
             y_ = filtered(y_,filterWidth)
 

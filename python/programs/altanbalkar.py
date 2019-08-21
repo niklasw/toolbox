@@ -153,6 +153,7 @@ limtra=material(rho=700,E=12e9,name='Limtrae')
 kerto360 = rectangularSection(Kerto,bb,bh)
 kerto300 = rectangularSection(Kerto,bb,300*mm)
 double170 = rectangularSection(C24,2*bb,170*mm)
+double190 = rectangularSection(C24,2*bb,190*mm)
 single170 = rectangularSection(C24,b=bb,h=170*mm)
 single190 = rectangularSection(C24,b=bb,h=190*mm)
 single220 = rectangularSection(C24,b=bb,h=220*mm)
@@ -209,3 +210,9 @@ print 'Altantak takbalk deflecton = ', delta
 altanTakBeam=beam(single220,3.9)
 delta = altanTakBeam.uniformLoadDeflection(2000*3.0/2)
 print 'Altantak barlina deflecton = ', delta
+
+altanTakBeam=beam(double190,3.4)
+delta = altanTakBeam.centerLoadDeflection(3500*2.7*3.3/4)
+print 'Altantak balkong-barlina deflecton = ', delta
+
+

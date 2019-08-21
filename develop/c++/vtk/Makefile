@@ -2,14 +2,15 @@ CXX=g++
 
 CXX_OPT_ARGS=-Wno-deprecated
 
-VTK_ROOT=/usr/lib
+VTK_LIB_ROOT=/usr/lib64/vtk
+VTK_INCLUDE=/usr/include/vtk
 
-INCLUDES=-I$(VTK_ROOT)/Rendering \
-         -I$(VTK_ROOT) \
-         -I$(VTK_ROOT)/Graphics \
-         -I$(VTK_ROOT)/Common \
-         -I$(VTK_ROOT)/Filtering 
-SOLIBS=-L$(VTK_ROOT)/bin -lvtkRendering -lvtkGraphics -lvtkCommon -lvtkFiltering
+INCLUDES=-I$(VTK_INCLUDE)/Rendering \
+         -I$(VTK_INCLUDE) \
+         -I$(VTK_INCLUDE)/Graphics \
+         -I$(VTK_INCLUDE)/Common \
+         -I$(VTK_INCLUDE)/Filtering 
+SOLIBS=-L$(VTK_LIB_ROOT) -lvtkRenderingCore
 all: sphere
 
 sphere.o: sphere.C

@@ -257,9 +257,12 @@ class dataManager:
                 y *= self.options.scaleY
                 y += self.options.translateY
 
-                if self.options.logY:
-                    Warn('Negative y-values are zeroed due to log option')
-                    self.y[i] = numpy.log(numpy.maximum(y,0))
+            if self.options.logY:
+                Warn('Negative y-values are zeroed due to log option')
+                #y[i] = numpy.log(numpy.maximum(y[i],0))
+
+                self.y = numpy.log10(self.y)
+                print self.y
 
             if self.options.logX:
                 Warn('Negative x-values are zeroed due to log option')

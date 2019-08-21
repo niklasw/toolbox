@@ -1,0 +1,2 @@
+VBoxManage list webcams
+vboxmanage controlvm win10-1nterprise webcam attach .1

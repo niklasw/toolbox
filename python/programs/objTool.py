@@ -12,6 +12,7 @@ def getArgs():
 
     parser=OptionParser(description=descString)
     parser.add_option('-f','--file',dest='objFile',default=None,help='Input obj file')
+    parser.add_option('-a','--append',dest='append',default=None,help='obj file to append')
     parser.add_option('-o','--output',dest='output',default=None,help='Output obj file')
     parser.add_option('-s','--scale',dest='scale',default=None,help='Scaling factor')
     parser.add_option('-t','--translate',dest='translate',default=None,help='Translate all vertices')
@@ -49,6 +50,12 @@ def getArgs():
         except:
             argError('translation vector not in format \"(x y z)\".')
 
+    if opt.append:
+        if not os.path.isfile(opt.append):
+            argError('Cannot read obj file to append')
+        else:
+            print 'Will append {} to {}, writing to {}'.format(opt.append,opt.objFile,opt.output)
+
     return opt,arg
 
 class vertex:
@@ -70,15 +77,19 @@ class face:
     def __init__(self,i=[]):
         self.indices = i
 
+    def shiftVerts(self,offset):
+        self.indices = [i+offset for i in self.indices]
+        return self
+
     def __str__(self):
         fmt = 'f'+' {:d}'*len(self.indices)+'\n'
         return fmt.format(*self.indices)
 
 class objToolBox:
-    def __init__(self,objFile,objOutFile):
+    def __init__(self,objFile,objOutFile='default.obj'):
         self.objFile = objFile
         self.objHandle = open(objFile)
-        self.regions = []
+        self.regions = [] # List of names
         self.objOut = objOutFile
         self.head = ''
         self.verts = []
@@ -88,7 +99,8 @@ class objToolBox:
         self.getVerts()
         self.getRegions()
         self.ops = {'scale': lambda v,s: v.scale(s),
-                    'translate': lambda v,t: v.translate(t)}
+                    'translate': lambda v,t: v.translate(t),
+                    'append': lambda v,a: v.append(a)}
 
     def extractRegionName(self,line):
         return line.split(' ',1)[1]
@@ -145,7 +157,7 @@ class objToolBox:
     def getRegionVerts(self,region=''):
         '''Return a generator for selected vertices.
         Returns all vertices if not region set.'''
-        def f(faces):
+        def F(faces):
             vertInds = []
             for f in faces:
                 vertInds+=f.indices
@@ -156,7 +168,7 @@ class objToolBox:
 
         if region:
             faces = self.getRegionFaces(region)
-            return f(faces)
+            return F(faces)
         else:
             return (v for v in self.verts)
 
@@ -222,7 +234,14 @@ class objToolBox:
                 for f in self.getRegionFaces(r):
                     fp.write(f.__str__())
 
-if __name__=='__main__':
+    def append(self,ot2):
+        indexOffset = len(self.verts)
+        self.verts += ot2.verts
+        for r in ot2.regions:
+            self.regions.append(r)
+            self.faces[r] = [f.shiftVerts(indexOffset) for f in ot2.faces[r]]
+
+def test1():
     options, arguments = getArgs()
 
     ot = objToolBox(options.objFile, options.output)
@@ -231,6 +250,11 @@ if __name__=='__main__':
         ot.transform(ot.ops['translate'], options.translate)
     if options.scale:
         ot.transform(ot.ops['scale'], options.scale)
+    if options.append:
+        ot2 = objToolBox(options.append)
+        ot.getFaces()
+        ot2.getFaces()
+        ot.append(ot2)
 
     print 'Per region bounding box'
     for r in ot.regions:
@@ -239,5 +263,17 @@ if __name__=='__main__':
 
     print 'Overall bounding box'
     ot.bounds(region='')
-    #ot.write()
+    ot.write()
 
+def testAppend():
+    f1=sys.argv[1]
+    f2=sys.argv[2]
+    ot1 = objToolBox(f1,'merged.obj')
+    ot2 = objToolBox(f2,'dummy.obj')
+    ot1.getFaces()
+    ot2.getFaces()
+    ot1.append(ot2)
+    ot1.write()
+
+if __name__=='__main__':
+    test1()

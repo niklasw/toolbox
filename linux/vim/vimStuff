@@ -2,3 +2,7 @@
 # Replace multiple empty lines with one single empty line:
 %s/\s\+$//e
 %s/\n\{3,}/\r\r/e
+
+# Good reminders:
+http://vim.wikia.com/wiki/Search_and_replace
+

@@ -40,13 +40,13 @@ def getNCoresFromLog(logFile):
             if count > 200:
                 return 0
 
-def getNCells():
+def getNCells(logDir='logs'):
     import re,os
     from os.path import join as pjoin
     from os.path import isfile as isfile
     from glob import glob
-    logOpts = glob(pjoin(os.getcwd(),'qlogs','checkMesh*.log'))
-    logOpts+= glob(pjoin(os.getcwd(),'logs','checkMesh*.log'))
+    logOpts = glob(pjoin(os.getcwd(),logDir,'checkMesh*.log'))
+    logOpts+= glob(pjoin(os.getcwd(),'qlogs','checkMesh*.log'))
     logOpts+= glob(pjoin(os.getcwd(),'checkMesh*.log'))
 
     pat = re.compile(r'cells:\s*([0-9]+)')
@@ -117,6 +117,7 @@ def parseLog(opts):
         failed('Got this "{0}"'.format(out))
 
 if __name__=='__main__':
+    from os.path import dirname
     i=interactor()
 
     opts,args=getArgs(i)
@@ -128,7 +129,7 @@ if __name__=='__main__':
         nCores = i.get('Number of cores', test=int, default=getNCores())
 
     try:
-        nCells = int(getNCells())
+        nCells = int(getNCells(dirname(opts.logfile)))
         i.info('Number of cells from mesh log = {0}'.format(nCells))
     except:
         nCells = i.get('Number of cells', test=float, default=getNCells())
@@ -137,14 +138,13 @@ if __name__=='__main__':
     nSteps= 0
     if opts.parseLog:
         nSteps,cTime = parseLog(opts)
-        i.info('Simulation ran for {0} steps in {1} seconds'.format(nSteps,cTime))
+        i.info('Simulation wall time ({0} steps) = {1}'.format(nSteps,cTime))
     else:
         cTime  = i.get('Elapsed time', test=float, default=1000)
         nSteps = i.get('Number of iterations/time steps', test=int, default=100)
-    i.info('Average core cell count is {0}'.format(float(nCells)/nCores))
+    i.info('Average core cell count = {0:0.0f}'.format(float(nCells)/nCores))
 
     i.info('\n{0}\n'.format('='*50))
-    i.info('Simulation  speed index = {0:0.1f} "cell-iterations per core-second".'.format(nSteps*nCells/float(nCores*cTime)))
-    i.info('Alternative speed index = {0:0.3e} "core-seconds per cell-iteration".'.format(float(nCores*cTime)/(nSteps*nCells)))
+    i.info('Simulation  speed index = {0:0.0f}'.format(nSteps*nCells/float(nCores*cTime)))
 
     i.info('')

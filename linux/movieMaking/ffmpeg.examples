@@ -21,3 +21,6 @@ ffmpeg -f lavfi -i nullsrc=s=1280x720:d=90:r=24 -i clip.mp4 -filter_complex \
 ffmpeg -i clip.mp4  -movflags +faststart \
        -vf drawtext="enable='between(t,68,90)':fontfile=/usr/share/fonts/liberation/LiberationSans-Bold.ttf:text='David Belle': fontcolor=white: fontsize=86:box=1: boxcolor=black@0.2:boxborderw=5:x=(w-text_w)/2: y=(h-text_h)/2" \
        -codec:a copy clipWithText.mp4
+
+
+ffmpeg -framerate 10 -i animation.%04d.png -c:v libx265 -r 30 -preset veryslow -crf 22 -vf format=yuv420p -vf scale=iw/1:-1 animation.mp4

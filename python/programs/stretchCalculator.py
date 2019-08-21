@@ -1,20 +1,20 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from numpy import roots, zeros, log
 import sys
 
 def Error(s,sig=1):
-    print '\nError %s!\n' % s
+    print( '\nError %s!\n' % s)
     sys.exit(sig)
 
 def Warn(s):
     output = 'Warning %s!' % s
-    print '\n'+'='*len(output)
-    print output
-    print '='*len(output)
+    print( '\n'+'='*len(output))
+    print( output)
+    print( '='*len(output))
 
 def Info(s):
-    print '\t%s' % s
+    print( '\t%s' % s)
 
 def getArgs():
     from optparse import OptionParser
@@ -24,7 +24,7 @@ def getArgs():
 
     parser=OptionParser(description=descString)
     parser.add_option('-f','--first',dest='first',default=0.01,help='First cell thickness.')
-    parser.add_option('-l','--last',dest='last',default=0.01,help='Last cell thickness.')
+    parser.add_option('-l','--last',dest='last',default=0.1,help='Last cell thickness.')
     parser.add_option('-L','--length',dest='length',default=1.0,help='Block heigth.')
     parser.add_option('-s','--shortOutput',dest='shortOutput',action='store_true',default=False,help='Only report N')
 
@@ -33,7 +33,7 @@ def getArgs():
     def argError(s):
         s = '* ERROR: %s. *' % s
         n=len(s)
-        print '\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*')
+        print( '\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*'))
         parser.print_help()
         sys.exit(1)
 

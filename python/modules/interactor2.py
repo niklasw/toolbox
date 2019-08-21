@@ -122,6 +122,34 @@ class interactor:
 
         return selected
 
+    def iGet(self,prompt='Enter value',default=0,test=int, allowed=[], showAllowed=False):
+        print
+        if showAllowed:
+            for i,ok in enumerate(allowed):
+                self.info('(%3i)%s '%(i,ok))
+        try:
+            selected = raw_input('%s [%s]: '% (prompt,default))
+            if not selected:
+                selected = default
+            try:
+                selected = test(selected)
+            except:
+                self.warn('Typo: %s is not %s' % (str(selected),test.__name__))
+                selected = self.iGet(prompt,default,test,allowed)
+
+            if allowed and not test(selected) in range(len(allowed)):
+                selected = self.iGet(prompt,default,test,allowed)
+
+        except (KeyboardInterrupt,SystemExit):
+            self.error('Execution aborted by user')
+
+        if test(selected) in range(len(allowed)):
+            print 'test', selected
+            return allowed[selected]
+        else:
+            print 'notest',selected
+            return selected
+
     def yesno(self,prompt='Enter value',default='N',test=str,allowed=['y','n','Y','N']):
         print
         try:

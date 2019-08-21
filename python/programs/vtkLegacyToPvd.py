@@ -5,6 +5,7 @@ referencing a series of VTU files.
 
 import os,sys
 from paraview import servermanager
+import paraview.simple
 
 def findFiles(seekNames, path):
     import glob
@@ -50,8 +51,10 @@ def getArgs():
 
 def vtk_to_vtu(in_file, out_file):
     "Convert one vtk file to a vtu file"
-    reader = servermanager.sources.LegacyVTKFileReader(FileNames=in_file)
-    writer = servermanager.writers.XMLUnstructuredGridWriter(Input=reader, FileName=out_file)
+    #reader = servermanager.sources.LegacyVTKFileReader(FileNames=in_file)
+    #writer = servermanager.writers.XMLUnstructuredGridWriter(Input=reader, FileName=out_file)
+    reader = paraview.simple.LegacyVTKReader(FileNames=in_file)
+    writer = paraview.simple.XMLUnstructuredGridWriter(Input=reader, FileName=out_file)
     writer.UpdatePipeline()
 
 def sortFilesByIndex(fileList):
@@ -132,6 +135,7 @@ def main():
     args = getArgs()
 
     vtk_partsDict = args['parts']
+    print vtk_partsDict
     out_file = args['outfile']
     nCpus = args['nCpus']
     vtu_dir = os.path.splitext(out_file)[0]+'_vtu'

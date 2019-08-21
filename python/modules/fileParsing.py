@@ -88,9 +88,9 @@ def loadArray(fname,converters=None, delimiter=None, comments='#',
     def cleanData(astring):
         import re
         dropPat = re.compile('^\s*([\(\)\#\/a-zA-Z])')
-        parenPat = re.compile('[\(\),]')
+        parenPat = re.compile('[\(\)]')
         if dropPat.match(astring): return ''
-        return parenPat.sub(' ',astring)
+        return parenPat.sub('',astring)
 
     if converters is None: converters = {}
     fh = cbook.to_filehandle(fname)

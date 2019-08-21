@@ -1,0 +1,6 @@
+vboxmanage 'turn on vrdp' (google it)
+sudo vboxmanage extpack install --replace /tmp/Oracle_VM_VirtualBox_Extension_Pack-6.0.10.vbox-extpack
+vboxmanage list extpacks
+vboxmanage startvm WinDev1905Eval --type=headless
+vboxmanage showvminfo WinDev1905Eval
+vboxmanage guestcontrol WinDev1905Eval updateadditions --source /usr/share/virtualbox/VBoxGuestAdditions.iso --verbose

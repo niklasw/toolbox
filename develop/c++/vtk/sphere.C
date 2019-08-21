@@ -16,7 +16,7 @@ int main ()
 
   // map to graphics library
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();
-  map->SetInput(sphere->GetOutput());
+  map->SetInputData(sphere->GetOutput());
 
   // actor coordinates geometry, properties, transformation
   vtkActor *aSphere = vtkActor::New();

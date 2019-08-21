@@ -1,15 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os,sys,re,string
 
 def Info(s,i='Info'):
     s = '! %s: %s' % (i,s)
     n=len(s)
-    print '\n\t%s' % (s)
+    print('\n\t%s' % (s))
 
 def Error(s):
     Info(s,'Error')
-    print ''
+    print('')
     sys.exit(1)
 
 
@@ -72,7 +72,7 @@ Example Options: -f myFile.xlsx -R 1,4:10 -C "A,D:G,AZ --pretty"
         try:
             opt.rows = charRangeToIntList(opt.rows,intMap)
         except ValueError as e:
-            print e
+            print(e)
             argError('Could not parse row range %s' % opt.rows)
 
     try:
@@ -83,11 +83,10 @@ Example Options: -f myFile.xlsx -R 1,4:10 -C "A,D:G,AZ --pretty"
     return opt
 
 def tableStart(nCols,alignment='c'):
-    str = string.join([
+    str = '\n'.join([
     '\\begin{table}',
     '\\caption{My table}\n'
-    '\\begin{tabular*}{\\textwidth}{%s} \\toprule\n'% ('l'+(nCols-1)*alignment)],
-    '\n')
+    '\\begin{tabular*}{\\textwidth}{%s} \\toprule\n'% ('l'+(nCols-1)*alignment)])
     return str
 
 def tableEnd():
@@ -100,10 +99,10 @@ def xlsxToArray(fileName,sheetName='Sheet1',columns=None,rows=None):
     except:
         Error( "This program rely on the python module openpyxl for excel parsing" )
     wb = load_workbook(filename=fileName,read_only=True,data_only=True)
-    if not sheetName in wb.get_sheet_names():
+    if not sheetName in wb.sheetnames:
         Error( 'Could not open sheet named %s' % sheetName)
         sys.exit(1)
-    sheet = wb.get_sheet_by_name(name=sheetName)
+    sheet = wb[sheetName]
 
 
     sheetArray = []
@@ -134,7 +133,7 @@ def arrayToLatexTable(sheetArray,precision=2,colSep = '&'):
     rnd = lambda f : roundFloat(f,precision)
 
     for rowList in sheetArray:
-        rowString = string.join(map(rnd,rowList),separator) + '  \\\\'
+        rowString = separator.join(map(rnd,rowList)) + '  \\\\'
         newLines.append(rowString)
 
     return nCols,newLines
