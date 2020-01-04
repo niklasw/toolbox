@@ -60,19 +60,27 @@ def getArgs():
 
 class stlToolBox:
     def __init__(self,stlFile,stlOutFile,binary=False):
-        import gzip
         self.stlFile = stlFile
         readOpt = 'r'
         if binary: readOpt='rb'
-        if stlFile[-3:] == '.gz':
-            self.stlHandle = gzip.open(stlFile)
-        else:
-            self.stlHandle = open(stlFile,readOpt)
+        self.stlHandle = self.openFile(readOpt)
         self.vertPat = re.compile('^\s*vertex\s+',re.I)
         self.regions = []
         self.stlOut = stlOutFile
         self.verts = []
         self.binary = binary
+
+    def openFile(self,readOpt):
+        import gzip
+        def isGzip(f):
+            try:
+                s=open(f,'rb').read(2)
+                s=s.encode('hex')
+                return (s == '1f8b')
+            except:
+                print 'Cannot open stl file'
+        f = gzip.open if isGzip(self.stlFile) else open
+        return f(self.stlFile,readOpt)
 
     def action(self, scale=1.0, split=False, bounds=False, translate=False,binary=False):
         if sum(map(abs,translate)) > 0:
@@ -158,11 +166,13 @@ class stlToolBox:
         minX=minY=minZ =  1.0e10
         maxX=maxY=maxZ = -1.0e10
         stlLines = []
-        if not name:
-            self.stlHandle.seek(0)
-            stlLines = self.stlHandle.readlines()
-        else:
-            stlLines = self.readSolid(name)
+        self.stlHandle.seek(0)
+        stlLines = self.stlHandle.readlines()
+        #if not name:
+        #    self.stlHandle.seek(0)
+        #    stlLines = self.stlHandle.readlines()
+        #else:
+        #    stlLines = self.readSolid(name)
 
         cX=cY=cZ=0.0
         for line in stlLines:
@@ -208,6 +218,8 @@ class stlToolBox:
                 name = match.groups()[0]
                 lines += readToEnd(end)
                 break
+        if not lines:
+            print 'readSolid(): Could not find a matching solid.'
         return (name, lines)
 
     def split(self):
@@ -224,9 +236,18 @@ class stlToolBox:
             except:
                 break
 
-    def getSolids(self):
-        pass
-    
+def getStlSolids(stlFile):
+    import re
+    tool = stlToolBox(stlFile,'None',False)
+    fp = tool.openFile('r')
+
+    solids = []
+    solidPat = re.compile('^\s*solid (.*)$')
+    for line in fp:
+        match = solidPat.match(line)
+        if match:
+            solids.append(match.groups()[0])
+    return solids
 
 
 if __name__=='__main__':

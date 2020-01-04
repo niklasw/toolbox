@@ -1,0 +1,184 @@
+<Servers>
+  <Server name="parallel1" resource="cs://localhost:22221">
+    <CommandStartup>
+      <Options>
+        <Option name="__SSH_USER" label="Your username on the server" save="true">
+          <String default="changeme"/>
+        </Option>
+        <Option name="__SERVER" label="Server" save="true">
+          <Enumeration default="localhost">
+            <Entry value="rut01" label="rut01"/>
+            <Entry value="rut02" label="rut02"/>
+            <Entry value="noboru01" label="noboru01"/>
+            <Entry value="noboru02" label="noboru02"/>
+            <Entry value="takahata01" label="takahata01"/>
+            <Entry value="takahata02" label="takahata02"/>
+          </Enumeration>
+        </Option>
+        <Option name="__PORT" label="Port number (generally, leave as is)" readonly="false">
+          <Range type="int" min="22222" max="44444" step="1" default="random"/>
+        </Option>
+        <Option name="__NCORES" label="Number of Processes">
+          <Range type="int" min="4" max="256" step="4" default="8"/>
+        </Option>
+        <Option name="SSH_EXE" label="SSH Executable" save="true">
+          <Enumeration default="ssh">
+            <Entry value="ssh" label="ssh"/>
+            <Entry value="&#x22;C:\Program files (x86)\PuTTY\plink.exe&#x22;" label="putty"/>
+          </Enumeration>
+        </Option>
+        <Option name="__SERVER_TYPE" label="Server type (only change if all else fail)" save="false">
+          <Enumeration default="pvserver">
+            <Entry value="pvserver" label="pvserver"/>
+            <Entry value="paraview" label="paraview"/>
+          </Enumeration>
+        </Option>
+      </Options>
+      <Command exec="$SSH_EXE$" delay="6">
+        <Arguments>
+          <Argument value="-L"/>
+          <Argument value="22221:$__SERVER$:$__PORT$"/>
+          <Argument value="$__SERVER$"/>
+          <Argument value="-l"/>
+          <Argument value="$__SSH_USER$"/>
+          <Argument value="module add $__SERVER_TYPE$/$PV_VERSION_FULL$  &#x26;&#x26; mpirun -np $__NCORES$ pvserver --server-port=$__PORT$"/>
+        </Arguments>
+      </Command>
+    </CommandStartup>
+  </Server>
+  <Server name="parallel2" resource="cs://localhost:22222">
+    <CommandStartup>
+      <Options>
+        <Option name="__SSH_USER" label="Your username on the server" save="true">
+          <String default="changeme"/>
+        </Option>
+        <Option name="__SERVER" label="Server" save="true">
+          <Enumeration default="localhost">
+            <Entry value="rut01" label="rut01"/>
+            <Entry value="rut02" label="rut02"/>
+            <Entry value="noboru01" label="noboru01"/>
+            <Entry value="noboru02" label="noboru02"/>
+            <Entry value="takahata01" label="takahata01"/>
+            <Entry value="takahata02" label="takahata02"/>
+          </Enumeration>
+        </Option>
+        <Option name="__PORT" label="Port number (generally, leave as is)" readonly="false">
+          <Range type="int" min="22222" max="44444" step="1" default="random"/>
+        </Option>
+        <Option name="__NCORES" label="Number of Processes">
+          <Range type="int" min="4" max="256" step="4" default="8"/>
+        </Option>
+        <Option name="SSH_EXE" label="SSH Executable" save="true">
+          <Enumeration default="ssh">
+            <Entry value="ssh" label="ssh"/>
+            <Entry value="&#x22;C:\Program files (x86)\PuTTY\plink.exe&#x22;" label="putty"/>
+          </Enumeration>
+        </Option>
+        <Option name="__SERVER_TYPE" label="Server type (only change if all else fail)" save="false">
+          <Enumeration default="pvserver">
+            <Entry value="pvserver" label="pvserver"/>
+            <Entry value="paraview" label="paraview"/>
+          </Enumeration>
+        </Option>
+      </Options>
+      <Command exec="$SSH_EXE$" delay="6">
+        <Arguments>
+          <Argument value="-L"/>
+          <Argument value="22222:$__SERVER$:$__PORT$"/>
+          <Argument value="$__SERVER$"/>
+          <Argument value="-l"/>
+          <Argument value="$__SSH_USER$"/>
+          <Argument value="module add $__SERVER_TYPE$/$PV_VERSION_FULL$  &#x26;&#x26; mpirun -np $__NCORES$ pvserver --server-port=$__PORT$"/>
+        </Arguments>
+      </Command>
+    </CommandStartup>
+  </Server>
+  <Server name="single1" resource="cs://localhost:22211">
+    <CommandStartup>
+      <Options>
+        <Option name="__SSH_USER" label="Your username on the server" save="true">
+          <String default="changeme"/>
+        </Option>
+        <Option name="__SERVER" label="Server" save="true">
+          <Enumeration default="localhost">
+            <Entry value="rut01" label="rut01"/>
+            <Entry value="rut02" label="rut02"/>
+            <Entry value="noboru01" label="noboru01"/>
+            <Entry value="noboru02" label="noboru02"/>
+            <Entry value="takahata01" label="takahata01"/>
+            <Entry value="takahata02" label="takahata02"/>
+          </Enumeration>
+        </Option>
+        <Option name="__PORT" label="Port number (generally, leave as is)" readonly="false">
+          <Range type="int" min="22222" max="44444" step="1" default="random"/>
+        </Option>
+        <Option name="SSH_EXE" label="SSH Executable" save="true">
+          <Enumeration default="ssh">
+            <Entry value="ssh" label="ssh"/>
+            <Entry value="&#x22;C:\Program files (x86)\PuTTY\plink.exe&#x22;" label="putty"/>
+          </Enumeration>
+        </Option>
+        <Option name="__SERVER_TYPE" label="Server type (only change if all else fail)" save="false">
+          <Enumeration default="pvserver">
+            <Entry value="pvserver" label="pvserver"/>
+            <Entry value="paraview" label="paraview"/>
+          </Enumeration>
+        </Option>
+      </Options>
+      <Command exec="$SSH_EXE$" delay="6">
+        <Arguments>
+          <Argument value="-L"/>
+          <Argument value="22211:$__SERVER$:$__PORT$"/>
+          <Argument value="$__SERVER$"/>
+          <Argument value="-l"/>
+          <Argument value="$__SSH_USER$"/>
+          <Argument value="module add $__SERVER_TYPE$/$PV_VERSION_FULL$  &#x26;&#x26; pvserver --server-port=$__PORT$"/>
+        </Arguments>
+      </Command>
+    </CommandStartup>
+  </Server>
+  <Server name="single2" resource="cs://localhost:22212">
+    <CommandStartup>
+      <Options>
+        <Option name="__SSH_USER" label="Your username on the server" save="true">
+          <String default="changeme"/>
+        </Option>
+        <Option name="__SERVER" label="Server" save="true">
+          <Enumeration default="localhost">
+            <Entry value="rut01" label="rut01"/>
+            <Entry value="rut02" label="rut02"/>
+            <Entry value="noboru01" label="noboru01"/>
+            <Entry value="noboru02" label="noboru02"/>
+            <Entry value="takahata01" label="takahata01"/>
+            <Entry value="takahata02" label="takahata02"/>
+          </Enumeration>
+        </Option>
+        <Option name="__PORT" label="Port number (generally, leave as is)" readonly="false">
+          <Range type="int" min="22222" max="44444" step="1" default="random"/>
+        </Option>
+        <Option name="SSH_EXE" label="SSH Executable" save="true">
+          <Enumeration default="ssh">
+            <Entry value="ssh" label="ssh"/>
+            <Entry value="&#x22;C:\Program files (x86)\PuTTY\plink.exe&#x22;" label="putty"/>
+          </Enumeration>
+        </Option>
+        <Option name="__SERVER_TYPE" label="Server type (only change if all else fail)" save="false">
+          <Enumeration default="pvserver">
+            <Entry value="pvserver" label="pvserver"/>
+            <Entry value="paraview" label="paraview"/>
+          </Enumeration>
+        </Option>
+      </Options>
+      <Command exec="$SSH_EXE$" delay="6">
+        <Arguments>
+          <Argument value="-L"/>
+          <Argument value="22212:$__SERVER$:$__PORT$"/>
+          <Argument value="$__SERVER$"/>
+          <Argument value="-l"/>
+          <Argument value="$__SSH_USER$"/>
+          <Argument value="module add $__SERVER_TYPE$/$PV_VERSION_FULL$  &#x26;&#x26; pvserver --server-port=$__PORT$"/>
+        </Arguments>
+      </Command>
+    </CommandStartup>
+  </Server>
+</Servers>

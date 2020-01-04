@@ -1,3 +1,6 @@
 *.o
+*.dep
+*.swp*
 *.pyc
+*.bak
 

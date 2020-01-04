@@ -13,3 +13,9 @@ vboxmanage storageattach WinDev1905Eval --storagectl "IDE controller" --port 1 -
 
 #Connected graphically using rdesktop-vrdp
 
+
+vboxmanage modifyvm WinDev1905Eval --vram 256
+vboxmanage modifyvm WinDev1905Eval --memory 60380
+vboxmanage modifyvm WinDev1905Eval --cpus 16
+vboxmanage modifyvm WinDev1905Eval --accelerate2dvideo on
+

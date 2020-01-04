@@ -1,0 +1,178 @@
+# Niklas Wikstroms $HOME/.bashrc
+
+[ -f /etc/bashrc ] && . /etc/bashrc
+
+umask 002
+
+
+# -----------------------------------------------------------------
+# MODULES
+# -----------------------------------------------------------------
+
+
+if [ -n $MODULESHOME ]; then
+    module use /remote/soft/Modulefiles
+    module add mpi  paraview/5.0.0
+    alias foam22='module rm openfoam; module add openfoam/2.2.x; source $FOAM_BASHRC'
+    alias foam23='module rm openfoam; module add openfoam/2.3.x; source $FOAM_BASHRC'
+    alias foam24='module rm openfoam; module add openfoam/2.4.x; source $FOAM_BASHRC'
+    alias foamdev='module rm openfoam; module add openfoam/dev; source $FOAM_BASHRC'
+
+    module add foamgroove toolbox
+fi
+
+if [ -n "$PS1" ]; # If interactive shell
+then
+    # -----------------------------------------------------------------
+    # KEY BINDINGS etc.
+    # -----------------------------------------------------------------
+
+        [[ -r $HOME/.xmodmap ]] && xmodmap $HOME/.xmodmap
+
+        bind '"\e[B": history-search-forward'
+        bind '"\e[A": history-search-backward'
+
+        # Return old behaviour to remember path in new tab
+        . /etc/profile.d/vte.sh
+
+        shopt -s direxpand
+
+    # -----------------------------------------------------------------
+    # ALIAS
+    # -----------------------------------------------------------------
+
+    alias cp='cp -i'
+    alias mv='mv -i'
+    alias ls='ls --color'
+    alias sl='ls'
+    alias ll='ls -lh'
+    alias lr='ls -ltrh'
+    alias tail='tail -n 100'
+    alias rmb="rm *~ #*# .*~"
+    alias lab='ipython --pylab'
+    alias nb='nautilus --no-desktop --browser "$PWD" > /dev/null 2>&1 &' 
+
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+
+    alias h='history|grep $@'
+
+    function plugh()
+    {
+        ln -sf $HOME/.ssh/config.plugh $HOME/.ssh/config
+        ssh -fN plugh
+        proxy-plugh
+    }
+    function unplugh()
+    {
+        ssh -O exit plugh
+        ln -sf $HOME/.ssh/config.direct $HOME/.ssh/config
+        proxy-off
+    }
+
+    # -----------------------------------------------------------------
+    # ENVIRONMENT
+    # -----------------------------------------------------------------
+
+    #[ -z $DISPLAY ] || xrdb $HOME/.Xresources;
+
+    export HISTSIZE=4000
+
+    export HISTFILESIZE=$HISTSIZE
+
+    export Tex_FoldedSections='part,chapter,section,subsection,%%fakesection'
+
+    export PATH="${PATH}:/sbin:/usr/sbin:/usr/local/sbin"
+
+    export EDITOR="vim"
+
+    [ -x /usr/bin/lessfile ] && eval $(lessfile)
+
+
+    #
+    # -----------------------------------------------------------------
+    # PROMPT
+    # -----------------------------------------------------------------
+
+    PROMPT_GREEN="\[\033[32m\]"
+    PROMPT_GREEN_B="\[\033[1;32m\]"
+    PROMPT_RED="\[\033[31m\]"
+    PROMPT_RED_B="\[\033[1;31m\]"
+    PROMPT_BLUE="\[\033[34m\]"
+    PROMPT_BLUE_B="\[\033[1;34m\]"
+    PROMPT_BLACK="\[\033[30m\]"
+    PROMPT_BLACK_B="\[\033[1;30m\]"
+    PROMPT_0="\[\033[0m\]"
+
+    PS1="${PROMPT_BLACK_B}${PROMPT_RED_B}\h: ${PROMPT_BLACK_B}\w\n${PROMPT_0}${PROMPT_GREEN}\u >${PROMPT_0}"
+
+    # -----------------------------------------------------------------
+    # USEFUL FUNCTIONS
+    # -----------------------------------------------------------------
+
+    function findinfile()
+    {
+        find . -name $2 -exec grep $1 {} \; -print
+    }
+
+    function proxy-on()
+    {
+        [[ $# == '0' ]] && return
+        gateway=$1
+        gateport=$2
+        shift 2
+        ignoreHosts="['localhost','192.168.0.0/8', '127.0.0.0/8', '::1']"
+        ignoreMore="$@"
+        ignoreHosts="${ignoreHosts%]*},${ignoreMore}]"
+        gsettings set org.gnome.system.proxy mode 'manual'
+        gsettings set org.gnome.system.proxy.http enabled true
+        gsettings set org.gnome.system.proxy.http host "$gateway"
+        gsettings set org.gnome.system.proxy.http port "$gateport"
+        gsettings set org.gnome.system.proxy.https host "$gateway"
+        gsettings set org.gnome.system.proxy.https port "$gateport"
+        gsettings set org.gnome.system.proxy.ftp host "$gateway"
+        gsettings set org.gnome.system.proxy.ftp port "$gateport"
+        gsettings set org.gnome.system.proxy ignore-hosts "$ignoreHosts"
+    }
+
+    function proxy-foi()
+    {
+        proxy-on www-gw.foi.se 8080 "'foi.se', 'win.foi.se'"
+    }
+
+    function proxy-plugh
+    {
+        proxy-on localhost 8080 "'foi.se', 'win.foi.se'"
+    }
+
+    function proxy-off
+    {
+        gsettings set org.gnome.system.proxy mode 'none'
+        gsettings set org.gnome.system.proxy.http enabled false
+        gsettings set org.gnome.system.proxy.socks host ''
+    }
+
+    function proxy-show
+    {
+        echo "http  $http_proxy"
+        echo "https $https_proxy"
+        echo "ftp   $ftp_proxy"
+    }
+
+    function fixknownhosts
+    {
+        sed  -i.bak -e "${1}d" $HOME/.ssh/known_hosts
+    }
+
+    function foipwd()
+    {
+        pwd|sed 's/niklas/nikwik/g'
+    }
+    # Google docks mount stuff
+    PATH="/home/niklas/.opam/system/bin:$PATH"
+
+fi # End if interactive shell
+
+

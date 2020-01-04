@@ -1,0 +1,219 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+
+
+# Only in interactive session
+if [[ $- == *i* ]]; then
+    # -----------------------------------------------------------------
+    # KEY BINDINGS etc.
+    # -----------------------------------------------------------------
+    
+    [[ -r $HOME/.xmodmap ]] && xmodmap $HOME/.xmodmap
+    
+    bind '"\e[B": history-search-forward'
+    bind '"\e[A": history-search-backward'
+    
+    shopt -s direxpand
+
+   
+    # -----------------------------------------------------------------
+    # ALIAS
+    # -----------------------------------------------------------------
+    
+    alias cp='cp -i'
+    alias mv='mv -i'
+    alias ls='ls --color'
+    alias sl='ls'
+    alias ll='ls -lh'
+    alias lr='ls -ltrh'
+    alias tail='tail -n 100'
+    alias rmb="rm *~ #*# .*~"
+    alias lab="ipython --profile=lab"
+    alias nb='xdg-open $(pwd)'
+    alias open='xdg-open $@'
+    alias gb="git branch"
+
+    if [[ "$XDG_SESSION_TYPE" == x11 ]];
+    then
+        alias vim="vimx -O"
+    else
+        alias vim="vim -O"
+    fi
+
+    function sshpwd()
+    {
+        ssh -t $1 "cd $PWD; bash"
+    }
+
+    function findinfile()
+    {
+        if [[ $# < 2 ]]
+        then
+            echo -e "Usage: findinfile <grep args> <file name>"
+            return 1
+        fi
+        findFile=${!#}                          # Catch last arg
+        echo "Searching in found files named $findFile"
+        echo "${@:1:${#}-1}"
+        grepCmd="grep --color -H ${@:1:${#}-1}"         # All but last arg
+        echo "with  grep command $grepCmd"
+        find $(pwd) -name "$findFile" -type f -exec $grepCmd {} \;
+    }
+
+    function today()
+    {
+        date +%Y-%m-%d
+    }
+    function now()
+    {
+        date +%Y-%m-%d:%H.%M.%S
+    }
+    
+    # -----------------------------------------------------------------
+    # PROMPT
+    # -----------------------------------------------------------------
+    
+    PROMPT_GREEN="\[\033[32m\]"
+    PROMPT_GREEN_B="\[\033[1;32m\]"
+    PROMPT_RED="\[\033[31m\]"
+    PROMPT_RED_B="\[\033[1;31m\]"
+    PROMPT_BLUE="\[\033[34m\]"
+    PROMPT_BLUE_B="\[\033[1;34m\]"
+    PROMPT_BLACK="\[\033[30m\]"
+    PROMPT_BLACK_B="\[\033[1;30m\]"
+    PROMPT_0="\[\033[0m\]"
+    
+    function getgitbranch()
+    {
+        branch=$(git branch 2>/dev/null | sed -n 's/\* \(.*\)/\1/p')
+        if [[ -n "$branch" ]]
+        then
+            foamModule=$(module list -t|sed -n 's/openfoam\/\(.*\)/\1/p')
+            echo "[$branch,$foamModule]"
+        fi
+    
+    }
+    
+    PS1="${PROMPT_RED_B}\h\$(hasTun):${PROMPT_BLACK_B}\w\n${PROMPT_0}${PROMPT_GREEN}\u ${PROMPT_BLUE}\$(getgitbranch)${PROMPT_GREEN}>${PROMPT_0}"
+    
+    function titlebar
+    {
+    case $TERM in
+         xterm*)
+            local TITLEBAR='\[\033]0;\u@\h (${CURRENT_IP}):\w\007\]'
+         ;;
+         rxvt*)
+            local TITLEBAR='\[\033]0;\u@\h (${CURRENT_IP}):\w\007\]'
+         ;;
+         *)
+            local TITLEBAR=''
+         ;;
+    esac
+    
+    PS1="${TITLEBAR}${PS1} "
+    PS2='> '
+    PS4='+ '
+    }
+    
+    titlebar
+    unset titlebar ${!PROMPT_*}
+    
+    # -----------------------------------------------------------------
+    # Terminal startup messages
+    # -----------------------------------------------------------------
+    function hasTun()
+    {
+        ifconfig tun0 >& /dev/null
+        [[ $? == "0" ]] && echo -e " vpn"
+    }
+    
+    hasTun
+    
+   
+   
+    # Google drive (test)
+    export GOPATH=$HOME/.local/share/google
+    export PATH=$GOPATH/bin:$PATH
+
+    # -----------------------------------------------------------------
+    # Inherit cwd in new terminal tab
+    # -----------------------------------------------------------------
+    source /etc/profile.d/vte.sh
+fi
+
+export HISTSIZE=2000
+
+export HISTFILESIZE=$HISTSIZE
+
+export PATH="${HOME}/bin:${PATH}:/sbin:/usr/sbin:/usr/local/sbin"
+
+export TEXHOME="/usr/local/texlive/2018"
+
+export EDITOR="vim"
+
+export TERM=xterm-256color
+
+ # Disk navigation aliases
+export G_EQUA=/equa/q
+export G_NIKLAS="$G_EQUA/Users/Niklas"
+export G_PROJECTS="$G_EQUA/Projekt"
+export G_SUPPORT="$G_NIKLAS/ida-ice48/support"
+alias GG='cd $G_NIKLAS'
+ 
+PATH="$TEXHOME/bin/x86_64-linux":$PATH
+
+# -----------------------------------------------------------------
+# REMOTE CLIENT
+# -----------------------------------------------------------------
+if [[ ! -z $SSH_CONNECTION ]]; then
+   export ssh_client=$(echo $SSH_CLIENT | awk '{print $1}')
+fi
+
+# -----------------------------------------------------------------
+# MODULE ENVIRONMENT
+# -----------------------------------------------------------------
+MY_MODULES=$HOME/.config/modulefiles
+if [ -d "$MY_MODULES" ];
+then
+    #source /etc/profile.d/modules.sh
+	module use --append $MY_MODULES
+
+    function useFoam()
+    {
+        module rm foamgroove >& /dev/null
+        if [[ -n $1 ]]
+        then
+    	    module add foamgroove/$1
+    	    source $FOAM_BASH
+            alias ssrc="cd $FOAM_SITE_SRC"
+        else
+            unalias ssrc
+        fi
+    }
+    
+    alias foam="useFoam 5.x"
+    alias foamdev="useFoam dev"
+    
+    module add paraview/git
+    module add toolbox/dev
+
+    useFoam 5.x
+    export WM_NCOMPPROCS=4
+fi
+
+if [ -f /home/software/OpenFOAM/foamRun ];
+then
+    PATH=/home/software/OpenFOAM:$PATH
+fi
+
+alias toggleFoam="source ~/bin/toggleFoam.sh"
+
+GPG_TTY=`tty`
+export GPG_TTY

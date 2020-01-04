@@ -86,7 +86,7 @@ class face:
         return fmt.format(*self.indices)
 
 class objToolBox:
-    def __init__(self,objFile,objOutFile='default.obj'):
+    def __init__(self,objFile,objOutFile='default.obj',binary=False):
         self.objFile = objFile
         self.objHandle = open(objFile)
         self.regions = [] # List of names

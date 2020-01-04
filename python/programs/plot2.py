@@ -16,8 +16,8 @@ def getnext(alist):
     try:
         astring=alist.pop()
         if astring[0] == '-':
-            print "Syntax error in argument list near:",astring
-            sys.exit(1)
+            print "Warning minus sign in argument list near:",astring
+            #sys.exit(1)
         return astring
     except:
         return "Error"
@@ -131,9 +131,13 @@ while len(arguments):
     elif arg=='-normalizex':
         normx=float(getnext(arguments))
     elif arg=='-trx':
-        translateX=float(getnext(arguments))
+        argument = getnext(arguments)
+        print(argument)
+        translateX=float(argument)
     elif arg=='-try':
-        translateY=float(getnext(arguments))
+        argument = getnext(arguments)
+        print(argument)
+        translateY=float(argument)
     elif arg=='-linlog':
         linlog=True
     elif arg=='-log':

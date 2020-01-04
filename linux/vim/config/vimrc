@@ -1,0 +1,281 @@
+"vundle
+" ==========================================================
+syntax on                     " syntax highlighing
+filetype on                   " try to detect filetypes
+filetype plugin indent on     " enable loading indent file for filetype
+
+set nocompatible              " Don't be compatible with vi
+let mapleader=","             " change the leader to be a comma vs slash
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+Plugin 'garbas/vim-snipmate'
+Plugin 'honza/vim-snippets'
+Plugin 'flazz/vim-colorschemes'
+Plugin 'effi/vim-OpenFoam-syntax'
+Plugin 'wincent/command-t'
+"Plugin 'kovisoft/slimv'
+Plugin 'gtags.vim'
+Plugin 'bf4/vim-dark_eyes'
+Plugin 'lervag/vimtex'
+Plugin 'gauteh/vim-evince-synctex'
+Plugin 'scrooloose/nerdtree'
+Plugin 'jamessan/vim-gnupg'
+
+call vundle#end()
+
+set number                    " Display line numbers
+set numberwidth=3             " using only 1 column (and 1 space) while possible
+set background=dark           " We are using dark background in vim
+set title                     " show title in console title bar
+set wildmenu                  " Menu completion in command mode on <Tab>
+set wildmode=full             " <Tab> cycles between all matching choices.
+
+" don't bell or blink
+set noerrorbells
+set vb t_vb=
+
+"set grepprg=grep\ -nH\ $*
+
+" Set working directory
+nnoremap <leader>. :lcd %:p:h<CR>
+
+""" Insert completion
+" don't select first item, follow typing in autocomplete
+set completeopt=menuone,longest,preview
+set pumheight=6             " Keep a small completion window
+
+
+""" Moving Around/Editing
+"set cursorline              " have a line indicate the cursor location
+set nostartofline           " Avoid moving cursor to BOL when jumping around
+set virtualedit=block       " Let cursor move past the last char in <C-v> mode
+set scrolloff=3             " Keep 3 context lines above and below the cursor
+set backspace=2             " Allow backspacing over autoindent, EOL, and BOL
+set showmatch               " Briefly jump to a paren once it's balanced
+set nowrap                  " don't wrap text
+set linebreak               " don't wrap textin the middle of a word
+set autoindent              " always set autoindenting on
+set smartindent             " use smart indent if there is no indent file
+set tabstop=4               " <tab> inserts 4 spaces 
+set shiftwidth=4            " but an indent level is 2 spaces wide.
+set softtabstop=4           " <BS> over an autoindent deletes both spaces.
+set expandtab               " Use spaces, not tabs, for autoindent/tab key.
+set shiftround              " rounds indent to a multiple of shiftwidth
+set matchpairs+=<:>         " show matching <> (html mainly) as well
+set foldmethod=indent       " allow us to fold on indents
+set foldlevel=99            " don't fold by default
+
+" don't outdent hashes
+inoremap # #
+
+"""" Reading/Writing
+set noautowrite             " Never write a file unless I request it.
+set noautowriteall          " NEVER.
+set noautoread              " Don't automatically re-read changed files.
+set modeline                " Allow vim options to be embedded in files;
+set modelines=5             " they must be within the first or last 5 lines.
+set ffs=unix,dos,mac        " Try recognizing dos, unix, and mac line endings.
+
+"""" Messages, Info, Status
+set vb t_vb=                " Disable all bells.  I hate ringing/flashing.
+set confirm                 " Y-N-C prompt if closing with unsaved changes.
+set showcmd                 " Show incomplete normal mode commands as I type.
+set report=0                " : commands always print changed line count.
+set shortmess+=a            " Use [+]/[RO]/[w] for modified/readonly/written.
+set ruler                   " Show some info, even without statuslines.
+set laststatus=2            " Always show statusline, even if only 1 window.
+set statusline=[%l,%v\ %P%M]\ %f\ %r%h%w\ (%{&ff})
+
+" displays tabs with :set list & displays when a line runs off-screen
+"set listchars=tab:>-,eol:$,trail:-,precedes:<,extends:>
+set listchars=tab:>-,trail:-,precedes:<,extends:>
+set nolist
+
+"""" Window resizing
+"set winheight=10
+"set winminheight=4
+"set winwidth=80
+"set winminwidth=20
+"map <leader>m :res 100<CR>
+"map <leader>M :vertical res 200<CR>
+
+
+""" Searching and Patterns
+set ignorecase              " Default to using case insensitive searches,
+set smartcase               " unless uppercase letters are used in the regex.
+set smarttab                " Handle tabs more intelligently 
+set hlsearch                " Highlight searches by default.
+set incsearch               " Incrementally search while typing a /regex
+
+"""" Display
+if has("gui_running")
+    colorscheme gruvbox
+    " Remove menu bar
+    set guioptions-=m
+    " Remove toolbar
+    set guioptions-=T
+    " Remove scrollbar
+    set guioptions-=r
+
+    set guifont=Terminus\ 16
+
+else
+    set t_Co=256
+    colorscheme gruvbox
+    hi Search cterm=bold ctermfg=black ctermbg=grey
+    hi clear SpellBad
+    hi SpellBad cterm=underline
+endif
+"
+"Vertical line at column ##
+set colorcolumn=79
+let &colorcolumn=join(range(81,81),",")
+highlight ColorColumn ctermbg=239 guibg=#444444
+
+
+" Clipboard with vimx
+map <leader>p "+p
+map <leader>y "+y
+
+inoremap <C-v> <ESC>"+pa
+vnoremap <C-c> "+y
+vnoremap <C-d> "+d
+
+
+" Quit window on <leader>q
+nnoremap <leader>q :q<CR>
+
+" hide matches on <leader>space
+nnoremap <leader><space> :nohlsearch<cr>
+
+" Remove trailing whitespace on <leader>S
+nnoremap <leader>S :%s/\s\+$//<cr>:let @/=''<CR>
+
+" Select the item in the list with enter
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+nnoremap <leader>w :wa<CR>:!wmake -j4<CR>
+nnoremap <leader>p :wa<CR>:!python3 -W ignore %<CR>
+"nnoremap <leader>w :wa<CR>:cd %:p:h<CR>:!wmake<CR>
+
+let g:acp_completeoptPreview=1
+
+"
+" When editing a file, always jump to the last known cursor position.
+autocmd BufReadPost *
+  \ if line("'\"") > 0 && line("'\"") <= line("$") |
+  \   exe "normal g`\"" |
+  \   let b:doopenfold = 1 |
+  \ endif
+" Need to postpone using "zv" until after reading the modelines.
+autocmd BufWinEnter *
+  \ if exists("b:doopenfold") |
+  \   unlet b:doopenfold |
+  \   exe "normal zv" |
+  \ endif
+
+" close preview window automatically when we move around
+autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+
+map <leader>q gqip
+
+"Latex suite
+let g:tex_flavor='latex'
+
+"""" Tags """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nnoremap <F12> :Gtags<CR><CR>
+nnoremap <C-F12> :ccl<CR>
+nnoremap <C-n> :cn<CR>
+nnoremap <C-p> :cp<CR>
+nnoremap <leader>G :Gtags<CR><CR>
+
+"""" Tabs """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set showtabline=2
+" Go to tab by number
+noremap <leader>1 1gt
+noremap <leader>2 2gt
+noremap <leader>3 3gt
+noremap <leader>4 4gt
+noremap <leader>5 5gt
+noremap <leader>6 6gt
+noremap <leader>7 7gt
+noremap <leader>8 8gt
+noremap <leader>9 9gt
+noremap <leader>0 :tablast<cr>
+
+" Rename tabs to show tab number.
+" (Based on http://stackoverflow.com/questions/5927952/whats-implementation-of-vims-default-tabline-function)
+if exists("+showtabline")
+    function! MyTabLine()
+        let s = ''
+        let wn = ''
+        let t = tabpagenr()
+        let i = 1
+        while i <= tabpagenr('$')
+            let buflist = tabpagebuflist(i)
+            let winnr = tabpagewinnr(i)
+            let s .= '%' . i . 'T'
+            let s .= (i == t ? '%1*' : '%2*')
+            let s .= ' '
+            let wn = tabpagewinnr(i,'$')
+
+            let s .= '%#TabNum#'
+            let s .= i
+            " let s .= '%*'
+            let s .= (i == t ? '%#TabLineSel#' : '%#TabLine#')
+            let bufnr = buflist[winnr - 1]
+            let file = bufname(bufnr)
+            let buftype = getbufvar(bufnr, 'buftype')
+            if buftype == 'nofile'
+                if file =~ '\/.'
+                    let file = substitute(file, '.*\/\ze.', '', '')
+                endif
+            else
+                let file = fnamemodify(file, ':p:t')
+            endif
+            if file == ''
+                let file = '[No Name]'
+            endif
+            let s .= ' ' . file . ' '
+            let i = i + 1
+        endwhile
+        let s .= '%T%#TabLineFill#%='
+        let s .= (tabpagenr('$') > 1 ? '%999XX' : 'X')
+        return s
+    endfunction
+    set stal=2
+    set tabline=%!MyTabLine()
+    set showtabline=1
+    highlight link TabNum Special
+endif
+
+
+" File explorer netrw
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_winsize = 15
+augroup ProjectDrawer
+  autocmd!
+  "autocmd VimEnter * :Vexplore
+augroup END
+autocmd FileType netrw setl bufhidden=wipe
+
+" VimTex plugin
+nnoremap <leader>lf :VimtexForwardSearch<CR>
+
+
+" Command to open file.C and file.H in new tab with two panes
+command! -complete=file -nargs=1 CHedit call FCHedit(<f-args>)
+
+function FCHedit(name)
+    execute "tabe " a:name . ".H"
+    execute "vnew " a:name . ".C"
+endfunction

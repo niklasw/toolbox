@@ -18,7 +18,6 @@ class ioList(list):
     def __str__(self):
         return '('+' '.join((str(a) for a in self))+')'
 
-
 class interactor:
 
     def __init__(self):
@@ -37,7 +36,7 @@ class interactor:
     def info(self,s):
         print '\t%s' % s
 
-    def iFileSelector(self,prompt='Select from above',default='',path='',suffix='*',folder=False):
+    def iFileSelector(self,prompt='Select from above',default='',path='',suffix='*',folder=False, stripShow=False):
         print
         import glob
         globbed = glob.glob(os.path.join(path,'*'+suffix))
@@ -57,13 +56,18 @@ class interactor:
                 selectables.append(f)
 
         for i,f in enumerate(selectables):
-            self.info('[%i] - %s' % (i,f))
+            s = f
+            if stripShow:
+                s=os.path.basename(os.path.splitext(f)[0])
+            self.info('[%i] - %s' % (i,s))
 
         isel = self.get(prompt=prompt,default=0,test=int,allowed=range(len(selectables)))
 
         self.info('Got file: %s' % (selectables[isel]))
 
-        return selectables[isel]
+        selected = selectables[isel]
+
+        return selected,os.path.basename(os.path.splitext(selected)[0])
 
     def fileSelector(self,prompt='Select from above',default='',path='',suffix='*',folder=False):
         print
