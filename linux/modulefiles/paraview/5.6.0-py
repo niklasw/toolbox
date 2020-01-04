@@ -1,0 +1,17 @@
+#%Module 1.0
+#
+#  OpenMPI module for use with 'environment-modules' package:
+#
+
+set softhome		"/home/software"
+set name		"ParaView"
+set version		"5.6.0"
+set pyver       "2.7"
+set prefix		"${softhome}/${name}/${version}"
+
+prepend-path 		PATH	"${prefix}/bin"
+prepend-path PYTHONPATH "${prefix}/lib/python${pyver}/site-packages"
+prepend-path PYTHONPATH "${prefix}/lib/python${pyver}/lib-dynload"
+prepend-path PYTHONPATH "${prefix}/lib/python${pyver}"
+#prepend-path 		LD_LIBRARY_PATH "${prefix}/lib"
+

@@ -1,0 +1,14 @@
+#%Module 1.0
+#
+#  OpenMPI module for use with 'environment-modules' package:
+#
+
+module add openfoam/2.3.x
+set softhome        "/home/software"
+set name            "foamGroove"
+set version         ""
+set prefix          "${softhome}/OpenFOAM/${name}${version}"
+
+setenv              FG_HOME    "${prefix}"
+setenv              FG_TEMPLATES_DIR "${prefix}/templates"
+prepend-path        PATH       "${prefix}/tools"

@@ -1,0 +1,13 @@
+#%Module 1.0
+#
+#  GCC module for use with 'environment-modules' package:
+#
+
+set softhome		"/home/software"
+set name		"GCC"
+set version		"8.3"
+set prefix		"${softhome}/${name}/${version}"
+
+prepend-path PATH "${prefix}/bin"
+prepend-path LD_LIBRARY_PATH "${prefix}/lib"
+prepend-path LD_LIBRARY_PATH "${prefix}/lib64"

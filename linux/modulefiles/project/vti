@@ -1,0 +1,17 @@
+#%Module 1.0
+#
+#  set paths for the VTI proj module for use with 'environment-modules' package:
+#
+
+set mpath           "/equa"
+set name            "VTI"
+set qpath           "${mpath}/q/Projekt/${name}"
+set dpath           "${mpath}/dt-21-vti"
+
+setenv    VTI_HOME  "${qpath}"
+set-alias    VTI    "cd ${qpath}"
+set-alias   DVTI    "cd ${dpath}"
+prepend-path PATH   "${qpath}/Scripts/misc"
+prepend-path PATH   "${qpath}/Scripts/makeSheet"
+prepend-path PYTHONPATH "${qpath}/Scripts"
+prepend-path PYTHONPATH "${qpath}/Scripts/makeSheet"

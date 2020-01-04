@@ -1,0 +1,15 @@
+#%Module 1.0
+#
+#  set paths for the VTI proj module for use with 'environment-modules' package:
+#
+
+set mpath           "/home/niklas/F"
+set name            "VTI"
+set gpath           "${mpath}/${name}"
+
+setenv    VTI_HOME  "${gpath}"
+set-alias    VTI    "cd ${gpath}"
+prepend-path PATH   "${gpath}/Scripts/misc"
+prepend-path PATH   "${gpath}/Scripts/makeSheet"
+prepend-path PYTHONPATH "${gpath}/Scripts"
+prepend-path PYTHONPATH "${gpath}/Scripts/makeSheet"

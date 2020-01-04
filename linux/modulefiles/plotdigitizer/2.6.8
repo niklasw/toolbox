@@ -1,0 +1,11 @@
+#%Module 1.0
+#
+# PlotDigitizer module
+#
+
+set softhome		"/home/software"
+set name		"PlotDigitizer"
+set version		"2.6.8"
+set prefix		"${softhome}/${name}/${version}"
+
+set-alias       plotdigitizer "java -jar ${prefix}/PlotDigitizer.jar > /tmp/PlotDigitizer.log 2>&1"
