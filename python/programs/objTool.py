@@ -25,7 +25,7 @@ def getArgs():
     def argError(s):
         s = '* ERROR: %s. *' % s
         n=len(s)
-        print '\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*')
+        print('\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*'))
         parser.print_help()
         sys.exit(1)
 
@@ -46,7 +46,7 @@ def getArgs():
 
     if opt.translate:
         try:
-            opt.translate = map(float,opt.translate.strip('()').split())
+            opt.translate = list(map(float,opt.translate.strip('()').split()))
         except:
             argError('translation vector not in format \"(x y z)\".')
 
@@ -54,7 +54,7 @@ def getArgs():
         if not os.path.isfile(opt.append):
             argError('Cannot read obj file to append')
         else:
-            print 'Will append {} to {}, writing to {}'.format(opt.append,opt.objFile,opt.output)
+            print('Will append {} to {}, writing to {}'.format(opt.append,opt.objFile,opt.output))
 
     return opt,arg
 
@@ -66,7 +66,7 @@ class vertex:
         return 'v {0:e} {1:e} {2:e}\n'.format(*self.v)
 
     def fromLine(self,line):
-        self.v = array(map(float,line.split()[-3:]))
+        self.v = array(list(map(float,line.split()[-3:])))
 
     def translate(self,t):
         self.v += array(t)
@@ -110,7 +110,7 @@ class objToolBox:
         and strip whites and newls'''
         self.data = [
                         line for line in 
-                        map(string.strip, self.objHandle.readlines()) 
+                        map(str.strip, self.objHandle.readlines()) 
                         if line
                     ]
 
@@ -123,35 +123,42 @@ class objToolBox:
             self.head += '{0}\n'.format(line) if line else '#'
 
     def getVerts(self):
-        print 'Reading obj vertices'
+        print('Reading obj vertices')
         for line in self.data:
-            if line and line[0] == 'v':
+            if line and line[0] == 'v' and line[1] != 'n':
                 try:
                     v = vertex()
                     v.fromLine(line)
                     self.verts.append(v)
                 except:
-                    print "Error reading vertex"
+                    print("Error reading vertex")
                     sys.exit(1)
                     
 
     def getFaces(self):
         regionName = 'defaultRegion'
+        slashPat = re.compile(r'\/\/[0-9]+')
+        spacePat = re.compile(r'\s+')
         for line in self.data:
             if line[0] == 'g':
                 regionName = self.extractRegionName(line)
                 self.faces[regionName] = []
             if line[0] == 'f':
-                f = face(map(int,line.split()[1:]))
+                if '/' in line: # Some obj writers make f 22//22 ...
+                    labels = [int(a) for a in slashPat.split(line) if a.isdigit()]
+                else:
+                    labels = [int(a) for a in spacePat.split(line) if a.isdigit()]
+
+                f = face(labels)
                 self.faces[regionName].append(f)
 
     def getRegionFaces(self,region='defaultRegion'):
         if not self.faces:
             self.getFaces()
-        if self.faces.has_key(region):
+        if region in self.faces:
             return self.faces[region]
         else:
-            print 'Cannot find region', region, 'in data'
+            print('Cannot find region', region, 'in data')
             return []
 
     def getRegionVerts(self,region=''):
@@ -177,7 +184,7 @@ class objToolBox:
 
     def writeRegion(self,regionName):
         for v in self.getRegionVerts(regionName):
-            print v
+            print(v)
 
 
     def bounds(self, region=''):
@@ -192,12 +199,12 @@ class objToolBox:
             maxX,maxY,maxZ = max(maxX,X),max(maxY,Y),max(maxZ,Z)
             cX,cY,cZ=[(maxX+minX)/2.,(maxY+minY)/2.,(maxZ+minZ)/2.]
 
-        print '''\tBounds for %s =
+        print('''\tBounds for %s =
         centre (%f, %f, %f)
         min    (%f, %f, %f)
         max    (%f, %f, %f)
         size   (%f, %f, %f)
-        ''' % (region,cX,cY,cZ,minX,minY,minZ,maxX,maxY,maxZ,maxX-minX,maxY-minY,maxZ-minZ)
+        ''' % (region,cX,cY,cZ,minX,minY,minZ,maxX,maxY,maxZ,maxX-minX,maxY-minY,maxZ-minZ))
 
         return (minX,minY,minZ),(maxX,maxY,maxZ)
 
@@ -205,16 +212,16 @@ class objToolBox:
         for region in regionsToExtract:
             if not self.faces:
                 self.getFaces()
-                if not region in self.faces.keys():
-                    print 'Cannot find region {0} in geometry'.format(region)
+                if not region in list(self.faces.keys()):
+                    print('Cannot find region {0} in geometry'.format(region))
                     sys.exit(1)
                 else:
                     regionFaces = self.faces[region]
                     pass
 
     def split(self):
-        print 'Spliting obj file into regions:'
-        print '\t!NOT IMPLEMENTED'
+        print('Spliting obj file into regions:')
+        print('\t!NOT IMPLEMENTED')
         pass
 
     def transform(self,op,v):
@@ -256,12 +263,12 @@ def test1():
         ot2.getFaces()
         ot.append(ot2)
 
-    print 'Per region bounding box'
-    for r in ot.regions:
-        if options.bounds:
-            ot.bounds(region=r)
+    print('Per region bounding box. NOT IMPLEMENTED')
+    #for r in ot.regions:
+    #    if options.bounds:
+    #        ot.bounds(region=r)
 
-    print 'Overall bounding box'
+    print('Overall bounding box')
     ot.bounds(region='')
     ot.write()
 

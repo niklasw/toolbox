@@ -4,7 +4,7 @@ from numpy import array,cos,pi
 import sys, os
 
 def Error(s):
-    print s
+    print(s)
     sys.exit(1)
 
 class House:
@@ -107,7 +107,7 @@ class layer:
         sA = sum([c.sA(self.cc) for c in self.components])
         if abs(sA-1.0) > 1e-6:
             for c in self.components:
-                print c.sA(self.cc)
+                print(c.sA(self.cc))
             Error('Layer coverage error: sA = {0}'.format(sA))
 
     def U(self):
@@ -134,7 +134,7 @@ class buildingSurface(list):
         self.element=element
         self.Rsi = {'wall':0.13,'roof':0.10}
         self.Rse = {'wall':0.13,'roof':0.04} # Assuming luftspalt in walls
-        print 'Building {0}'.format(name)
+        print('Building {0}'.format(name))
 
     def U(self):
         Rsi = self.Rsi[self.element]
@@ -217,20 +217,20 @@ K0roof.append(layer(thickness=0.220,cc=CC,components=[flexiBatts,studs]))
 K0roof.append(layer(thickness=0.035,cc=CC,components=[studs,luftspalt],insulation=False))
 K0roof.append(layer(thickness=0.023,cc=CC,components=[boards],insulation=False))
 
-print testWall
-print '\n'
-print roof
-print K0roof
-print oldWall
-print newWall
+print(testWall)
+print('\n')
+print(roof)
+print(K0roof)
+print(oldWall)
+print(newWall)
 
 
-print '\nHouse dimensions:'
-print 'House wall oldWall area[m2] = {0:3.0f}'.format(House.oldWallsArea())
-print 'House wall newWall area[m2] = {0:3.0f}'.format(House.newWallsArea())
-print 'House wall total area  [m2] = {0:3.0f}'.format(House.totalWallArea())
-print 'House roof area        [m2] = {0:3.0f}'.format(House.roofArea())
-print 'House windows area     [m2] = {0:3.0f}'.format(House.totalWindowArea())
+print('\nHouse dimensions:')
+print('House wall oldWall area[m2] = {0:3.0f}'.format(House.oldWallsArea()))
+print('House wall newWall area[m2] = {0:3.0f}'.format(House.newWallsArea()))
+print('House wall total area  [m2] = {0:3.0f}'.format(House.totalWallArea()))
+print('House roof area        [m2] = {0:3.0f}'.format(House.roofArea()))
+print('House windows area     [m2] = {0:3.0f}'.format(House.totalWindowArea()))
 
 avgDeltaT = 22-(6)
 lossRoof = roof.U()*House.roofArea()
@@ -239,17 +239,17 @@ lossNewWall = newWall.U()*House.newWallsArea()
 lossWindows = House.windowsU*House.totalWindowArea()
 totalConductionLosses=lossOldWall+lossNewWall+lossRoof+lossWindows
 
-print ''
-print 'Energy flux calculations at delta T = {0}:'.format(avgDeltaT)
-print 'Energy flux roof      [W] = {0:3.0f}'.format(lossRoof*avgDeltaT)
-print 'Energy flux old walls [W] = {0:3.0f}'.format(lossOldWall*avgDeltaT)
-print 'Energy flux new walls [W] = {0:3.0f}'.format(lossNewWall*avgDeltaT)
-print 'Energy flux windows   [W] = {0:3.0f}'.format(lossWindows*avgDeltaT)
-print 'Energy flux total     [W] = {0:3.0f}'.format(totalConductionLosses*avgDeltaT)
-print 'Overall U-value   [W/m2K] = {0:3.2f}'.format(totalConductionLosses/House.totalHouseArea())
+print('')
+print('Energy flux calculations at delta T = {0}:'.format(avgDeltaT))
+print('Energy flux roof      [W] = {0:3.0f}'.format(lossRoof*avgDeltaT))
+print('Energy flux old walls [W] = {0:3.0f}'.format(lossOldWall*avgDeltaT))
+print('Energy flux new walls [W] = {0:3.0f}'.format(lossNewWall*avgDeltaT))
+print('Energy flux windows   [W] = {0:3.0f}'.format(lossWindows*avgDeltaT))
+print('Energy flux total     [W] = {0:3.0f}'.format(totalConductionLosses*avgDeltaT))
+print('Overall U-value   [W/m2K] = {0:3.2f}'.format(totalConductionLosses/House.totalHouseArea()))
 
 
-print '\nVentilation losses:'
+print('\nVentilation losses:')
 
 ventilationFactor = 0.5
 ventilationEfficiency = 0.7
@@ -260,15 +260,15 @@ energyFlux = CpAir*airFlux*avgDeltaT*(1-ventilationEfficiency)
 vPipeDiameter = 0.16
 vPipeArea = pi*0.25*vPipeDiameter**2
 
-print 'House volume           [m3] = {0:3.0f}'.format(House.volume())
-print 'Ventilation factor          = {0}'.format(ventilationFactor)
-print 'Ventilation air flux [m3/s] = {0:3.2e}'.format(airFlux/rhoAir)
-print 'Ventilation energy flux [W] = {0:3.0f}'.format(energyFlux)
+print('House volume           [m3] = {0:3.0f}'.format(House.volume()))
+print('Ventilation factor          = {0}'.format(ventilationFactor))
+print('Ventilation air flux [m3/s] = {0:3.2e}'.format(airFlux/rhoAir))
+print('Ventilation energy flux [W] = {0:3.0f}'.format(energyFlux))
 
-print 'Ventilation pipe diam.  [m] = {0:3.2f}'.format(vPipeDiameter)
-print 'Ventilation air vel.  [m/s] = {0:3.2f}'.format(airFlux/(rhoAir*vPipeArea))
+print('Ventilation pipe diam.  [m] = {0:3.2f}'.format(vPipeDiameter))
+print('Ventilation air vel.  [m/s] = {0:3.2f}'.format(airFlux/(rhoAir*vPipeArea)))
 
-print '\nVentilation and conduction loss total:'
+print('\nVentilation and conduction loss total:')
 totalPower = energyFlux+totalConductionLosses*avgDeltaT
-print 'Total energy flux       [W] =  {0:3.0f}'.format(totalPower)
-print 'Total energy budget   [kWh] =  {0:3.0f}'.format(totalPower*1e-3*24*365)
+print('Total energy flux       [W] =  {0:3.0f}'.format(totalPower))
+print('Total energy budget   [kWh] =  {0:3.0f}'.format(totalPower*1e-3*24*365))
