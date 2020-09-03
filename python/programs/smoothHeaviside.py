@@ -17,9 +17,9 @@ x=linspace(0,1,500)
 s0=0.5
 s1=0.8
 H = array([smoothStep(s0,s1,a) for a in x])
-print H.shape
-print x.shape
-plt.plot(x,H)
+print(H.shape)
+print(x.shape)
+plt.plot(x,(H))
 plt.grid()
 plt.show()
 

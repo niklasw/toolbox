@@ -2,10 +2,10 @@
 
 class AirProperties:
     gamma = 7./5    # Adiabatic index)
-    M = 0.0289645   # kg/mol
+    M = 0.0289647   # kg/mol
+    R = 8.3144621
 
-    def __init__(self,T=293.15,p=1e5,R=287.05):
-        self.R=R
+    def __init__(self,T=293.15,p=101325):
         self.T=T
         self.p=p
 
@@ -28,9 +28,8 @@ class AirProperties:
         return 1.5207E-11*self.T**3 - 4.8574E-08*self.T**2 + 1.0184E-04*self.T - 3.9333E-04
 
     def densityIdealGasLaw(self):
-        p0=1.0e5
-        R=287.05
-        return p0/R/self.T
+        RtoM = self.R/self.M
+        return self.p/RtoM/self.T
 
     def densityPolynomial(self):
         return 360.77819*self.T**(-1.00336)
@@ -40,7 +39,8 @@ class AirProperties:
 
     def speedOfSound(self):
         import math
-        return math.sqrt(self.gamma*self.R*self.T)
+        RtoM = self.R/self.M
+        return math.sqrt(self.gamma*RtoM*self.T)
 
     def __str__(self):
 
@@ -64,8 +64,8 @@ if __name__=='__main__':
         try:
             tList.append(float(s))
         except:
-            print "\nCould not read input: ",s
+            print("\nCould not read input: ",s)
 
     for t in tList:
         air = AirProperties(T=t)
-        print air
+        print(air)

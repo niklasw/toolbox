@@ -253,15 +253,20 @@ def test1():
 
     ot = objToolBox(options.objFile, options.output)
 
+    doWrite = False
+
     if options.translate:
         ot.transform(ot.ops['translate'], options.translate)
+        doWrite = True
     if options.scale:
         ot.transform(ot.ops['scale'], options.scale)
+        doWrite = True
     if options.append:
         ot2 = objToolBox(options.append)
         ot.getFaces()
         ot2.getFaces()
         ot.append(ot2)
+        doWrite = True
 
     print('Per region bounding box. NOT IMPLEMENTED')
     #for r in ot.regions:
@@ -270,7 +275,8 @@ def test1():
 
     print('Overall bounding box')
     ot.bounds(region='')
-    ot.write()
+    if doWrite:
+        ot.write()
 
 def testAppend():
     f1=sys.argv[1]

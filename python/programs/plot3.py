@@ -6,7 +6,7 @@ try:
     import numpy
     import matplotlib.pyplot as plt
 except:
-    print 'Python modules numpy and and matplotlib must be installed to run this script'
+    print('Python modules numpy and and matplotlib must be installed to run this script')
     sys.exit(1)
 
 
@@ -18,22 +18,22 @@ def timer(func):
         t1 = time.time()
         res = func(*arg)
         t2 = time.time()
-        print '%s took %0.3f ms' % (func.func_name, (t2-t1)*1000.0)
+        print('%s took %0.3f ms' % (func.__name__, (t2-t1)*1000.0))
         return res
     return wrapper
 
 def Error(s,sig=1):
-    print '\nError %s!\n' % s
+    print('\nError %s!\n' % s)
     sys.exit(sig)
 
 def Warn(s):
     output = 'Warning %s!' % s
-    print '\n'+'='*len(output)
-    print output
-    print '='*len(output)
+    print('\n'+'='*len(output))
+    print(output)
+    print('='*len(output))
 
 def Info(s):
-    print '\t%s' % s
+    print('\t%s' % s)
 
 def getArgs():
     from optparse import OptionParser
@@ -45,7 +45,7 @@ def getArgs():
     def argError(s):
         s = '* ERROR: %s. *' % s
         n=len(s)
-        print '\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*')
+        print('\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*'))
         parser.print_help()
         sys.exit(1)
 
@@ -145,16 +145,16 @@ class dataManager:
 
     def filtered(self,A):
         sampleRate = 1.0/self.options.sampleInterval
-	Filter = lowPassFilter(self.options.cutoff,sampleRate)
+        Filter = lowPassFilter(self.options.cutoff,sampleRate)
         return Filter.filter(A)
 
     def clean(self,stringList):
-        from itertools import ifilter
-        return [self.parenPat.sub(' ',a).strip() for a in ifilter(self.dropPat.match,stringList)]
+        
+        return [self.parenPat.sub(' ',a).strip() for a in filter(self.dropPat.match,stringList)]
 
     @timer
     def read(self):
-        from itertools import imap
+        
 
         for f in self.files:
             Info( 'Reading file {0}'.format(f))
@@ -163,15 +163,15 @@ class dataManager:
                 for i,line in enumerate(self.clean(fp.readlines())):
                     if i >=  self.options.skipLines:
                         try:
-                            fLList.append(map(float,line.split()))
+                            fLList.append(list(map(float,line.split())))
                         except:
-                            print "Warning: Could not read line number {0}".format(i)
+                            print("Warning: Could not read line number {0}".format(i))
 
             if not len(fLList):
                 Warn('skipLines > data set length. Data set ignored')
                 continue
 
-            fLList=filter(len,fLList)
+            fLList=list(filter(len,fLList))
 
             try:
                 self.arrays.append(numpy.asarray(fLList))
@@ -262,7 +262,7 @@ class dataManager:
                 #y[i] = numpy.log(numpy.maximum(y[i],0))
 
                 self.y = numpy.log10(self.y)
-                print self.y
+                print(self.y)
 
             if self.options.logX:
                 Warn('Negative x-values are zeroed due to log option')
@@ -324,6 +324,9 @@ class plotter:
 
     def add(self):
         for i,d in enumerate(self.data.y):
+            if i >= len(self.lineColors):
+                i -= len(self.lineColors)
+
             line, = plt.plot(self.data.x,d,
                              color=self.lineColors[i],
                              linestyle=self.data.options.lineStyle)
@@ -399,7 +402,7 @@ if __name__=="__main__":
         data.current = i
         data.assertXY()
         data.applyDataOptions()
-        print 'XAV',data.current,numpy.average(data.y)
+        print('XAV',data.current,numpy.average(data.y))
     for i in range(data.nArrays()):
         data.current = i
         data.extractXY()

@@ -1,4 +1,4 @@
 ipmitool -H 10.228.20.98 -U ADMIN -P xxx chassis bootdev
 ipmitool -H 10.228.20.98 -U ADMIN -P xxx chassis bootdev bios
-ipmitool -H 10.228.20.98 -U ADMIN -P xxx sensor thresh FAN1 lower 200 250 300
-ipmitool -H 10.228.20.98 -U ADMIN -P xxx sensor thresh FAN2 lower 200 250 300
+ipmitool -H 10.228.20.98 -U ADMIN -P xxx sensor thresh FAN1 lower 100 200 300
+ipmitool -H 10.228.20.98 -U ADMIN -P xxx sensor thresh FAN2 lower 100 200 300

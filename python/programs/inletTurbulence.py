@@ -4,7 +4,7 @@ import sys,os,re,math
 import interactor2
 
 def usage():
-    print """
+    print("""
         Program to help approximate turbulet inlet conditons.
         It is interactive and will ask about far field velocity,
         and assumed turbulent length scale. 
@@ -30,13 +30,13 @@ def usage():
         is made that other data will be enough to give a result...
 
                                             /Niklas
-    """
+    """)
 
 
 def turbulenceProperties():
     usage()
     def Info(t):
-        print "\n\t%30s = %4e" % t
+        print("\n\t%30s = %4e" % t)
 
     i = interactor2.interactor()
 
@@ -77,7 +77,7 @@ def turbulenceProperties():
             Info(("turbulent viscosity",nut))
             Info(("omega",omega))
         else:
-            print "\n\t!NOT ENOUGH INPUT!"
+            print("\n\t!NOT ENOUGH INPUT!")
     else:
         if lt>=0 and nut>=0:
             tke=Cmu**0.25*(nut/lt)**2
@@ -92,9 +92,9 @@ def turbulenceProperties():
             Info(("epsilon",eps))
             Info(("omega",omega))
         else:
-            print "\n\t!NOT ENOUGH INPUT!"
+            print("\n\t!NOT ENOUGH INPUT!")
 
-    print "\nEnd.\n"
+    print("\nEnd.\n")
         
 
 if __name__=="__main__":

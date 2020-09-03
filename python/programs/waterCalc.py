@@ -5,7 +5,7 @@ import scipy
 from matplotlib import pyplot as plt
 
 def Info(s):
-    print('-->{}\n'.format(s))
+    print(('-->{}\n'.format(s)))
 
 def Error(s):
     Info(s)
@@ -51,8 +51,8 @@ class propertyTable:
         string = ''
         for i,c in enumerate(self.coeffs[::-1]):
             string+='+({0}*{2}**{1})'.format(c,i,varName)
-        print '\n{} = f({})'.format(self.propertyName,varName)
-        print '{}\n'.format(string)
+        print('\n{} = f({})'.format(self.propertyName,varName))
+        print('{}\n'.format(string))
 
     def getPropertyColumn(self,s):
         if not s in self.headerNames:
@@ -122,7 +122,7 @@ class waterProperties(propertyTable):
 if __name__ == '__main__':
     water = waterProperties()
     water.selectProperty('Pr')
-    print water.getPropertyValue(128.0)
+    print(water.getPropertyValue(128.0))
     water.printPolynomeAsString()
     
     water.selectProperty('rho')

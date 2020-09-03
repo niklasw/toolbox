@@ -25,7 +25,7 @@ def getNCores():
     import os,re
     dirContent=os.listdir(os.getcwd())
     ppat=re.compile('processor[0-9]+')
-    return len(filter(ppat.match, dirContent))
+    return len(list(filter(ppat.match, dirContent)))
 
 def getNCoresFromLog(logFile):
     import re
@@ -68,7 +68,7 @@ def parseLog(opts):
     from subprocess import Popen,PIPE
 
     def failed(e):
-        print "Log file parsing failed: {0}".format(e)
+        print("Log file parsing failed: {0}".format(e))
         sys.exit(1)
 
     # Different awking depending on log file format
@@ -108,7 +108,7 @@ def parseLog(opts):
     if err:
         failed(err)
     try:
-        out = map(float, out.split())
+        out = list(map(float, out.split()))
         for n in out:
             if n <= 0:
                 failed('Did you use the version option -V 1?')

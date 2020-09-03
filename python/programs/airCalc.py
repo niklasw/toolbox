@@ -9,9 +9,9 @@ for s in temperatures:
     try:
         tList.append(float(s))
     except:
-        print "\nCould not read input: ",s
+        print("\nCould not read input: ",s)
 
 for t in tList:
     air = AirProperties(T=t)
-    print air
+    print(air)
 
