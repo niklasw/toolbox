@@ -1,0 +1,40 @@
+<Servers>
+ <Server name="serial" resource="cs://localhost">
+   <CommandStartup>
+     <Options>
+       <Option name="PV_CONNECT_ID" label="Connect ID" readonly="true">
+         <Range type="int" min="1" max="65535" step="1" default="1000" />
+       </Option>
+     </Options>
+     <Command exec="/home/software/ParaView/client-git/bin/pvserver" delay="5">
+       <Arguments>
+         <Argument value="--connect-id=$PV_CONNECT_ID$" />
+       </Arguments>
+     </Command>
+   </CommandStartup>
+ </Server>
+
+ <Server name="parallel" resource="cs://localhost">
+    <CommandStartup>
+      <Options>
+        <Option name="PV_SERVER_PORT" label="Server port" readonly="false">
+          <Range type="int" min="22222" max="22299" step="1" default="22222" />
+        </Option>
+        <Option name="PV_NPROCS" label="N Cores">
+          <Range type="int" min="4" max="32" step="4" default="8"/>
+        </Option>
+        <Option name="PV_PVSC" label="Flag" readonly="true">
+          <String default="yes"/>
+        </Option>
+      </Options>
+      <Command exec="/home/niklas/bin/pvlaunch.sh">
+        <Arguments>
+          <Argument value="$PV_NPROCS$"/>
+          <Argument value="$PV_SERVER_PORT$"/>
+          <Argument value="$PV_PVSC$"/>
+        </Arguments>
+      </Command>
+    </CommandStartup>
+  </Server>
+
+</Servers>
