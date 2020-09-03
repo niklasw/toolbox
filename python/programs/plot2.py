@@ -6,7 +6,7 @@ import string
 try:
     import pylab
 except:
-    print 'Python modules pylab and numpy must be installed to run this script'
+    print('Python modules pylab and numpy must be installed to run this script')
     sys.exit(1)
 
 
@@ -16,7 +16,7 @@ def getnext(alist):
     try:
         astring=alist.pop()
         if astring[0] == '-':
-            print "Warning minus sign in argument list near:",astring
+            print("Warning minus sign in argument list near:",astring)
             #sys.exit(1)
         return astring
     except:
@@ -30,9 +30,9 @@ def getpart(infile,bpat,epat):
 def cleanData(stringList):
     dropPat = re.compile('^\s*(?![\(\)\#"\/a-zA-Z])')
     parenPat = re.compile('[,\(\)]')
-    filtered = filter(dropPat.match, stringList)
+    filtered = list(filter(dropPat.match, stringList))
     filtered = [parenPat.sub(' ',a) for a in filtered]
-    return map(string.strip,filtered)
+    return list(map(string.strip,filtered))
 
 def getcols(astring):
     cols=astring.split(':')
@@ -48,7 +48,7 @@ def filtered(A,w):
     return pylab.array( [ meanFilter(A,i,w) for i in range(len(A)) ])
 
 def usage(exit):
-    print """
+    print("""
     Python thing relying on pylab and numpy to plot
     column stored data in one or several files. Data
     files can contain one or two columns.
@@ -83,7 +83,7 @@ def usage(exit):
     -fromto "start pattern" "end pattern"
                         Plot only lines between
                         regexp patterns
-    """
+    """)
     sys.exit(1)
 
 arguments=sys.argv[:]
@@ -183,11 +183,11 @@ while len(arguments):
         bpat=re.compile(getnext(arguments))
         epat=re.compile(getnext(arguments))
     else:
-        print 'Uknown argument', arg, '\n'
+        print('Uknown argument', arg, '\n')
         usage(True)
 
 for file in files:
-    print "Reading file",file,"\n"
+    print("Reading file",file,"\n")
     thisData=''
     if bpat and epat:
         thisData=getpart(file,bpat,epat)
@@ -197,22 +197,22 @@ for file in files:
     fLList=[]
     for line in thisData:
         try:
-            fLList.append(map(float,line.split()))
+            fLList.append(list(map(float,line.split())))
         except:
-            print "Warning: Could not read line", line
-    fLList=filter(len,fLList)
+            print("Warning: Could not read line", line)
+    fLList=list(filter(len,fLList))
     del thisData
     try:
         data.append(pylab.asarray(fLList))
     except:
-        print "Could not load",file,"\nExiting.\n"
+        print("Could not load",file,"\nExiting.\n")
         sys.exit(1)
 
 
 for d in data:
     d=pylab.asarray(d)
     ashape=pylab.shape(d)
-    print 'Data array shape =',ashape
+    print('Data array shape =',ashape)
     nrows=ashape[0]
     ncols = 1
     x=y=pylab.array(0)
@@ -221,7 +221,7 @@ for d in data:
         ncols = ashape[1]
     if ncols>1:
         ncols,cols=getcols(usecols)
-        print "Columns =",cols,", ncols =",ncols
+        print("Columns =",cols,", ncols =",ncols)
         x=d[:,cols[0]]
         for i in range(ncols-1):
             y=d[:,cols[i+1]]
@@ -232,10 +232,10 @@ for d in data:
         Y.append(y)
 
     for i in range(ncols-1):
-        print 'Average of col {0} = {1}'.format(i,sum(Y[i])/len(Y[i]))
+        print('Average of col {0} = {1}'.format(i,sum(Y[i])/len(Y[i])))
 
     for y_ in Y:
-        print 'Plotting'
+        print('Plotting')
         y_/=norm
         x+=translateX
         x/=normx
@@ -245,7 +245,7 @@ for d in data:
             y_=pylab.diff(y_)
             x =x[0:-1]
         if dolog:
-            print "WARNING:\nEvaluating magnitude of variable to avoid log(-y)"
+            print("WARNING:\nEvaluating magnitude of variable to avoid log(-y)")
             y_ = pylab.log10(pylab.fabs(y_))
             x  = pylab.log10(x)
         if linlog:
@@ -255,10 +255,10 @@ for d in data:
 
         pylab.plot(x,y_,linestyle)
         if miny:
-            print 'Using Y axis limits'
+            print('Using Y axis limits')
             pylab.ylim(miny,maxy)
         if minx:
-            print 'Using X axis limits'
+            print('Using X axis limits')
             pylab.ylim(minx,maxx)
 
 
@@ -267,6 +267,6 @@ if len(legendNames)>0:
     pylab.legend(legendNames,loc=legendLocation)
 if dosave:
     pylab.savefig(figname)
-    print "Saved residual plot image in",figname
+    print("Saved residual plot image in",figname)
 if doshow:
     pylab.show()
