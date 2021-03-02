@@ -45,29 +45,29 @@ def makeSpectrum(kind,*args):
         freqs = []
         tmpTone = []
         for note in selection:
-            if note.upper() in notes.keys():
+            if note.upper() in list(notes.keys()):
                 f = notes[note.upper()]
-                print '--> {0}\t{1}'.format(note,f)
+                print('--> {0}\t{1}'.format(note,f))
                 freqs.append(f)
                 time,tone = makeTone([f],0.4,samplingRate)
                 tmpTone.extend(tone)
             else:
-                print "!! Not a valid note: {}".format(note)
+                print("!! Not a valid note: {}".format(note))
                 continue
         p=play(tmpTone)
         p.wait()
         return freqs
     elif kind == 'noise':
         import random
-        print args
+        print(args)
         low = float(args[0][0])
         bandWidth = float(args[0][1])
         freqs = [ low+random.random()*bandWidth for i in range(1000) ]
         return freqs
     elif kind == 'freqs':
-        return map(float,args[0])
+        return list(map(float,args[0]))
     else:
-        print 'Arg 1 is not "notes", "noise" or "freqs"'
+        print('Arg 1 is not "notes", "noise" or "freqs"')
         sys.exit(1)
 
 
@@ -95,7 +95,7 @@ def show(time,tone):
     plt.show()
 
 def usage():
-    print 'Usage: pyTone.py <notes|noise|freqs> <c e g|50 200| 400 440 500>'
+    print('Usage: pyTone.py <notes|noise|freqs> <c e g|50 200| 400 440 500>')
     sys.exit(1)
 
 # -----------------------------------------------------------------

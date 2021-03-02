@@ -75,7 +75,7 @@ class PipeSection:
         self.shieldRadius = shieldRadius
         self.shieldFactor = 0.5*self.shieldRadius/(self.Do/2.0)
         if not self.shieldRadius:
-            print "SHIELDS DOWN"
+            print("SHIELDS DOWN")
             self.shieldFactor = 1.0
         self.crossSectionArea=self.Di**2*pi/4
 
@@ -233,7 +233,7 @@ class PipeSection:
         str+= '%20s = %6f\n'%('Tin-Tout',self.deltaT())
         str+= '----------------------------------------------\n'
 
-        print str
+        print(str)
 
 def oneD():
     nozzleStartPosition = fullLength-nozzleLength
@@ -274,7 +274,7 @@ def oneD():
                 deltaT = pipe.solid.outerWall.T-clampCoolT
                 pipe.Qclamp = Clamp(deltaT).flux()
                 clampLoss += pipe.Qclamp
-                print "Loss at clamp %i = %3f (deltaT = %f)" % (clampMask[i],pipe.Qclamp, deltaT)
+                print("Loss at clamp %i = %3f (deltaT = %f)" % (clampMask[i],pipe.Qclamp, deltaT))
             else:
                 pipe.Qclamp = 0
         else:
@@ -297,16 +297,16 @@ def oneD():
     Tprobe = interp(probeLocation,distance,gasTemperatures)
     heaterPower =  massFlux*pipe.gas.specificHeat()*(T_inlet-T_ambience)
 
-    print "Air temperature at inlet = %4f[K], %4f[C] "%(T_inlet,T_inlet-273.15)
-    print "Air temperature at end probe = %4f[K], %4f[C]" % (Tprobe,Tprobe-273.15)
-    print "Fluxes: outer = %f, inner = %f, radiation = %f"% (sum(fluxes['outer']), sum(fluxes['inner']), sum(fluxes['radiation']))
-    print "Total clamp loss = %f" % clampLoss
-    print "Heater input power = %f" % heaterPower
+    print("Air temperature at inlet = %4f[K], %4f[C] "%(T_inlet,T_inlet-273.15))
+    print("Air temperature at end probe = %4f[K], %4f[C]" % (Tprobe,Tprobe-273.15))
+    print("Fluxes: outer = %f, inner = %f, radiation = %f"% (sum(fluxes['outer']), sum(fluxes['inner']), sum(fluxes['radiation'])))
+    print("Total clamp loss = %f" % clampLoss)
+    print("Heater input power = %f" % heaterPower)
 
-    print "Nozzle output total flux = %f" % sum(pipe.Qleak)
-    print "Balance: %e" % (sum(fluxes['inner'])- sum(fluxes['outer'])- sum(fluxes['radiation']),)
+    print("Nozzle output total flux = %f" % sum(pipe.Qleak))
+    print("Balance: %e" % (sum(fluxes['inner'])- sum(fluxes['outer'])- sum(fluxes['radiation']),))
 
-    print "Global balance: %e" % (heaterPower-sum(pipe.Qleak)-clampLoss-sum(fluxes['inner']),)
+    print("Global balance: %e" % (heaterPower-sum(pipe.Qleak)-clampLoss-sum(fluxes['inner']),))
 
     figure(1,figsize=(7,12),edgecolor='g')
     s=subplot(311)

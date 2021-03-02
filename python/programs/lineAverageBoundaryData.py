@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#/usr/bin/python
 import sys
 from mpl_toolkits.mplot3d import Axes3D
 from pylab import *

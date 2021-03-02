@@ -21,11 +21,11 @@ def calcBL():
     d_sub = 30*nu/(u_tau)
     y_cc  = y_p*nu/u_tau
 
-    print ''
-    print '{0:8s} = {1:0.3e}'.format('Re_x', rex)
-    print '{0:8s} = {1:0.3e}'.format('d_bl', d_bl)
-    print '{0:8s} = {1:0.3e}'.format('d_sub', d_sub)
-    print '{0:8s} = {1:0.3e}'.format('Cell center y', y_cc)
+    print('')
+    print(('{0:8s} = {1:0.3e}'.format('Re_x', rex)))
+    print(('{0:8s} = {1:0.3e}'.format('d_bl', d_bl)))
+    print(('{0:8s} = {1:0.3e}'.format('d_sub', d_sub)))
+    print(('{0:8s} = {1:0.3e}'.format('Cell center y', y_cc)))
 
 
 

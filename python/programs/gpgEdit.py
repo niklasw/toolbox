@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import os, sys, subprocess, getpass, stat, shutil
 
-editor = 'vim'
+editor = 'vim --clean'
 dataFile = sys.argv[1]
 
 ## make a backup of the encrypted file
@@ -31,9 +31,9 @@ try:
 
     ## decrypt file
     tmpFile = os.path.join(tmpDir, 'data')
-    cmd = "gpg -d --passphrase-fd 0 --output %s %s" % (tmpFile, dataFile)
+    cmd = "gpg -d --batch --passphrase-fd 0 --output %s %s" % (tmpFile, dataFile)
     proc = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE)
-    proc.stdin.write(passwd)
+    proc.stdin.write(passwd.encode())
     proc.stdin.close()
     if proc.wait() != 0:
         raise Exception("Error decrypting file.")
@@ -50,9 +50,9 @@ try:
         raise Exception("Data unchanged; not writing encrypted file.")
 
     ## re-encrypt, write back to original file
-    cmd = "gpg --yes --symmetric --passphrase-fd 0 --output %s %s" % (dataFile, tmpFile)
+    cmd = "gpg --yes --symmetric --batch --passphrase-fd 0 --output %s %s" % (dataFile, tmpFile)
     proc = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE)
-    proc.stdin.write(passwd)
+    proc.stdin.write(passwd.encode())
     proc.stdin.close()
     if proc.wait() != 0:
         raise Exception("Error encrypting file.")
@@ -60,7 +60,7 @@ except:
     ## If there was an error AND the data file was modified, restore the backup.
     dstat2 = os.stat(dataFile)
     if dstat.st_mtime != dstat2.st_mtime or dstat.st_size != dstat2.st_size:
-        print "Error occurred, restored encrypted file from backup."
+        print("Error occurred, restored encrypted file from backup.")
         shutil.copy(bakFile, dataFile)
     raise
 finally:
