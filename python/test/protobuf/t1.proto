@@ -1,0 +1,77 @@
+/*
+    Syntax:
+    - indentation: 4 spaces. no tabs.
+
+*/
+
+
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+
+package cloudmb;
+
+/* Containers? */
+
+message StringList {
+    repeated string Arguments = 1;
+}
+
+message DataList {
+    repeated google.protobuf.Any Data = 1;
+}
+
+
+/* CloudMB messages */
+
+message MbReply {
+    string Subject = 1;
+    enum Type {
+        STATUS = 0;
+        ERROR = 1;
+        RESULT = 2;
+        INFO = 3;
+    }
+    message Value {
+        int32 PID = 1;
+        int32 Exit = 2;
+        string Message = 3;
+        google.protobuf.Struct Result = 4;
+    }
+}
+
+message MbCommand {
+    string Cmd = 1;
+    StringList Arguments = 2;
+    string Subject = 3;
+}
+
+
+/* CFD messages */
+
+message CfdInfo {
+    int32 Progress = 1;
+    int32 Exit = 2;
+    int32 Done = 3;
+    message Result {
+        oneof kind {
+            CfdMeshInfo Mesh = 1;
+            CfdSolverInfo Residuals = 2;
+            google.protobuf.Struct Result = 3;
+            google.protobuf.ListValue Data = 4;
+        }
+
+    }
+}
+
+message CfdMeshInfo {
+    int32 ncells =1;
+    int32 failed = 2;
+    string emptypatch = 3;
+}
+
+message CfdSolverInfo {
+    repeated double residuals = 1;
+    repeated string fields = 2;
+}

@@ -4,6 +4,7 @@ from os.path import join as pjoin
 from flask import Flask,url_for,render_template
 import glob
 
+
 app = Flask(__name__)
 
 def mkImgPage(imgPaths):
@@ -69,8 +70,15 @@ def create_figure():
     axis.plot(xs, ys, color='orange')
     return fig
 
+
+# Test socketio
+from flask_socketio import SocketIO, emit
+
+socketio = SocketIO(app)
+
 if __name__ == '__main__':
     imageNames = getImageList(pjoin('static','images'))
 
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    #app.run(host="127.0.0.1", port=5000, debug=True)
+    socketio.run(app, host="127.0.0.1", port=5000, debug=True)
 

@@ -4,17 +4,17 @@ import sys
 from vectorRotation import rotationMatrix as RM
 
 def Error(self,s,sig=1):
-    print '\nError %s!\n' % s
+    print('\nError %s!\n' % s)
     sys.exit(sig)
 
 def Warn(self,s):
     output = 'Warning %s!' % s
-    print '\n'+'='*len(output)
-    print output
-    print '='*len(output)
+    print('\n'+'='*len(output))
+    print(output)
+    print('='*len(output))
 
 def Info(self,s):
-    print '\t%s' % s
+    print('\t%s' % s)
 
 def toDeg(r):
    return r*180.0/pi
@@ -72,12 +72,12 @@ def getArgs():
 
     def readVector(stringVector):
         vs = stringVector.strip(' ()')
-        return map(float, vs.split())
+        return list(map(float, vs.split()))
 
     def argError(s):
         s = '* ERROR: %s. *' % s
         n=len(s)
-        print '\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*')
+        print('\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*'))
         parser.print_help()
         sys.exit(1)
 
@@ -97,6 +97,6 @@ M = RM(rotation[0], rotation[1], rotation[2])
 
 vr = M.rotate(originalVector)
 
-print 'rotation =       ({0[0]} {0[1]} {0[2]})'.format(rotation)
-print 'input vector =   ({0[0]} {0[1]} {0[2]})'.format(originalVector)
-print 'rotated vector = ({0[0]} {0[1]} {0[2]})'.format(vr)
+print('rotation =       ({0[0]} {0[1]} {0[2]})'.format(rotation))
+print('input vector =   ({0[0]} {0[1]} {0[2]})'.format(originalVector))
+print('rotated vector = ({0[0]} {0[1]} {0[2]})'.format(vr))

@@ -89,7 +89,7 @@ def play(tone,volume=32767):
 
 def show(time,tone):
     L=len(time)/4
-    sec = [ t for t in time if t <= 1.0 ]
+    sec = [ t for t in time if t <= 3.0 ]
     plt.plot(sec,tone[0:len(sec)])
     plt.grid('on')
     plt.show()
