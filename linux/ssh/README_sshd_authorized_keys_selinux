@@ -1,0 +1,9 @@
+
+# Enable debugging sshd
+echo 'OPTIONS="-d"' |sudo tee -a /etc/sysconfig/sshd
+systemctl restart sshd
+
+# Make selinux accept non-standard paths to .ssh files
+semanage fcontext --add -t ssh_home_t "$PWD/.ssh(/.*)?"
+restorecon -FRv $PWD/.ssh/
+systemctl restart sshd
