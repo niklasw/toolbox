@@ -4,19 +4,19 @@ import re,os,sys
 try:
     from pylab import *
 except:
-    print 'Python modules pylab and scipy must be installed to run this script'
-    print 'On an ubuntu system:'
-    print 'sudo aptitude install python-scipy python-matplotlib ipython'
+    print('Python modules pylab and scipy must be installed to run this script')
+    print('On an ubuntu system:')
+    print('sudo aptitude install python-scipy python-matplotlib ipython')
     sys.exit(1)
 
-    
+
 class argumentsCollector: # NOT USED
     def __init__(self):
         from optparse import OptionParser
         self.description = 'Python thing to plot foam log info (residuals, so far)'
         (self.opt, self.arg) = self.parse()
         self.checkOptions()
-        
+
     def parse(self):
         parser=OptionParser(description=self.description)
         parser.add_option('-f','--file',dest='stlFile',default=None,help='Input stl file')
@@ -26,14 +26,14 @@ class argumentsCollector: # NOT USED
     def argError(self,s):
         s = '* ERROR: %s. *' % s
         n=len(s)
-        print '\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*')
+        print('\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*'))
         parser.print_help()
         sys.exit(1)
 
     def checkOptions(self):
         checkList = [ (o._long_opts[0], o.help)
                       for o in parser.option_list if not o.dest ]
-        
+
 
 def getArgs():
     from optparse import OptionParser
@@ -50,7 +50,7 @@ def getArgs():
     def argError(s):
         s = '* ERROR: %s. *' % s
         n=len(s)
-        print '\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*')
+        print('\n\t%s\n\t%s\n\t%s\n' % (n*'*',s,n*'*'))
         parser.print_help()
         sys.exit(1)
 
@@ -85,13 +85,13 @@ class FoamData:
 
     def msg(self,astring):
         if self.debug:
-            print astring
+            print(astring)
 
     def getData(self,lines):
         curVariables = []
         foundSome = False
         for line in lines:
-            match = self.timePat.match(line) 
+            match = self.timePat.match(line)
             if match: # Hit first line for new time step
                 curTime = float(match.group(1))
                 self.data['Time'].append(curTime)
@@ -100,7 +100,7 @@ class FoamData:
                 match = self.solverLine.match(line)
                 if match:
                     foundSome = True
-                    variable = match.group(self.resMatchGroups['variable']) 
+                    variable = match.group(self.resMatchGroups['variable'])
                     if variable not in self.variables:
                         self.variables.append(variable)
                         self.data[variable] = {'initres':[],'niters':[]}
@@ -113,12 +113,12 @@ class FoamData:
                 else:
                     match = self.continuityLine.match(line)
                     if match:
-                        if 'continuity' not in self.data.keys():
+                        if 'continuity' not in list(self.data.keys()):
                             self.data['continuity']={'local':[],'global':[],'cumulative':[]}
                         for kind in ('local','global','cumulative'):
                             self.data['continuity'][kind].append(float(match.group(self.contMatchGroups[kind])))
 
-        self.msg('\nExtracted data:\n'+str(self.data.keys()))
+        self.msg('\nExtracted data:\n'+str(list(self.data.keys())))
         return foundSome
 
 def dynamicRead(fp, readToRexp=None):
@@ -130,7 +130,7 @@ def dynamicRead(fp, readToRexp=None):
         while line:
             line = fp.readline()
             if lastPat.match(line):
-                lastPos = fp.tell()-len(line) 
+                lastPos = fp.tell()-len(line)
     fp.seek(startPos)
     if lastPos > startPos:
         return fp.read(lastPos-startPos).strip().split('\n')
@@ -151,10 +151,10 @@ class residualPlotter:
         self.updateInterval = 4
         self.debug=debug
         ion() # Interactive plot mode on
- 
+
     def msg(self,astring):
         if self.debug:
-            print astring
+            print(astring)
 
     def updateLine(self,X,Y,lineNo=0,bounds=None,lines=None,first=True):
         M = min(len(Y),len(X))
@@ -185,17 +185,17 @@ class residualPlotter:
         draw()
         if self.debug:
             savefig(self.logFile.name+'.png')
- 
+
     def updateGraphs(self):
         subplot(self.plotNo)
         self.times=self.dataContainer.data['Time']
-        for i,var in enumerate(self.vars): 
+        for i,var in enumerate(self.vars):
             residual = self.dataContainer.data[var]['initres']
             self.axisLimits = self.updateLine(self.times,residual,
                                               lineNo=i,bounds=self.axisLimits,
                                               lines=self.lines,first=False)
         axis(self.axisLimits)
- 
+
     def updateData(self, debug=False):
         import time
         while 1: # Wait until there is something to plot
@@ -208,23 +208,23 @@ class residualPlotter:
            else:
                time.sleep(self.updateInterval/2)
                break
-    
- 
+
+
     def run(self):
         if not self.debug:
             try:
                 pid = os.fork()
                 if pid > 0:
-                    print 'PID =',pid
+                    print('PID =',pid)
                     sys.exit(0)
-            except OSError, e:
+            except OSError as e:
                     sys.stderr.write("fork #1 failed: (%d) %sn" % (e.errno, e.strerror))
                     sys.exit(1)
 
         self.updateData()
 
         self.drawGraph(graphTitle='Residuals. Updated every %s seconds (PID = %i)'% (10, os.getpid()))
- 
+
         while 1:
             self.updateData()
             self.updateGraphs()

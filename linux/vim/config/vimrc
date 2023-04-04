@@ -25,10 +25,16 @@ Plugin 'lervag/vimtex'
 Plugin 'gauteh/vim-evince-synctex'
 Plugin 'scrooloose/nerdtree'
 Plugin 'jamessan/vim-gnupg'
-
+Plugin 'pangloss/vim-javascript'
+Plugin 'gregsexton/MatchTag'
+Plugin 'davidhalter/jedi-vim'
+Plugin 'chrisbra/unicode.vim'
+Plugin 'python-mode/python-mode'
 call vundle#end()
 
-set number                    " Display line numbers
+let g:snipMate = { 'snippet_version' : 1 }
+
+" set nonumber                    " Display line numbers
 set numberwidth=3             " using only 1 column (and 1 space) while possible
 set background=dark           " We are using dark background in vim
 set title                     " show title in console title bar
@@ -122,20 +128,23 @@ if has("gui_running")
     " Remove scrollbar
     set guioptions-=r
 
-    set guifont=Terminus\ 16
+    set guifont=Terminus\ Medium\ 16
 
 else
     set t_Co=256
-    colorscheme gruvbox
+    colorscheme Atelier_EstuaryDark
     hi Search cterm=bold ctermfg=black ctermbg=grey
     hi clear SpellBad
     hi SpellBad cterm=underline
+    hi VertSplit ctermfg=33 ctermbg=NONE cterm=NONE
+    " set fillchars=stl:^,stlnc:=,vert:\.,fold:-,diff:-
+    set fillchars=stlnc:=,vert:\.,fold:-,diff:-
 endif
 "
 "Vertical line at column ##
 set colorcolumn=79
 let &colorcolumn=join(range(81,81),",")
-highlight ColorColumn ctermbg=239 guibg=#444444
+highlight ColorColumn ctermbg=000 guibg=#111111
 
 
 " Clipboard with vimx
@@ -145,6 +154,9 @@ map <leader>y "+y
 inoremap <C-v> <ESC>"+pa
 vnoremap <C-c> "+y
 vnoremap <C-d> "+d
+
+" Buffer browsing
+nnoremap <C-l> :set nomore <Bar> :ls <Bar> :set more <CR>:b<Space>
 
 
 " Quit window on <leader>q
@@ -160,7 +172,6 @@ nnoremap <leader>S :%s/\s\+$//<cr>:let @/=''<CR>
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 nnoremap <leader>w :wa<CR>:!wmake -j4<CR>
-nnoremap <leader>p :wa<CR>:!python3 -W ignore %<CR>
 "nnoremap <leader>w :wa<CR>:cd %:p:h<CR>:!wmake<CR>
 
 let g:acp_completeoptPreview=1
@@ -279,3 +290,7 @@ function FCHedit(name)
     execute "tabe " a:name . ".H"
     execute "vnew " a:name . ".C"
 endfunction
+
+" Yank and pull visual selection to/from file
+noremap <leader>y :w !wl-copy<CR><CR>
+noremap <leader>Y :r !wl-paste<CR><CR>

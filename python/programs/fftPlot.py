@@ -15,7 +15,7 @@ prog=os.path.basename(sys.argv[0])
 def getArgs():
     from optparse import OptionParser
     descString = """
-    Python thing relying on pylab and scipy to plot 
+    Python thing relying on pylab and scipy to plot
     energy spectrum from sampled data.
     """
 
@@ -91,9 +91,9 @@ def plotFFT(samples,sampleFrq,plotref=False,filterWidth=1,plotdata=True,log=Fals
 
     freq=scipy.array(range(n/2+1))/(n/2.0)
     freq=freq[1:]*sampleFrq/2.0
-    
+
     period = 1./freq
-    
+
     if plotdata:
         Y = scipy.fft(samples)
         power = abs(Y[1:(n/2)+1])**2/n
@@ -106,7 +106,7 @@ def plotFFT(samples,sampleFrq,plotref=False,filterWidth=1,plotdata=True,log=Fals
             pylab.loglog(freq,power)
         else:
             pylab.plot(freq,power)
-    return 
+    return
 
 def getNVectors(anarray):
     if anarray.ndim == 1:
@@ -133,7 +133,7 @@ def main():
     legend = map(str,arguments['col'])
     #if refline:
     #    legend.append('k^-5/3')
-    
+
     for i in  range(nVectors):
         print 'Processing sample vector',i
         currentVector = []
@@ -141,24 +141,24 @@ def main():
             currentVector = sampleVectors
         else:
             currentVector = sampleVectors[i]
- 
+
         plotFFT(currentVector, \
                 samplFrq, \
                 filterWidth=arguments['fwidth'], \
                 plotref=False, \
-                log=arguments['log']) 
+                log=arguments['log'])
     plotFFT(currentVector, \
             samplFrq, \
             filterWidth=arguments['fwidth'], \
             plotdata=False, \
             log=arguments['log'])
-    
+
     pylab.grid()
-    
+
     pylab.title(fileName)
     pylab.legend(legend)
     pylab.xlabel('frequency (Hz)')
-    
+
     if arguments['image']:
         pylab.savefig(arguments['image'])
     pylab.show()
@@ -174,7 +174,7 @@ def testRead():
     for i in range(len(sampleVectors.shape)):
         print sampleVectors[i]
         print sampleVectors[i].__class__
- 
+
 
 if __name__ == "__main__":
     #testRead()

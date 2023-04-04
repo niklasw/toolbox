@@ -123,7 +123,7 @@ class tet(cell):
         self.face = t
         self.faces = 4*(self.face,)
         self.name = '(tetrahedron of faces {})'.format(self.face.name)
-        
+
     def H(self):
         return (1.0/3)*math.sqrt(6)*self.face.L
 
