@@ -3,4 +3,6 @@
 *.swp*
 *.pyc
 *.bak
+__pycache__
+
 

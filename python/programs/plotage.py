@@ -4,32 +4,40 @@ from matplotlib import pyplot as plt
 from numpy import floor, ceil, sqrt
 from itertools import cycle
 from datetime import datetime, timedelta
-
-months = int(90.75*12)
+from dateutil import rrule
 
 born = datetime(1973, 4, 9)
-age = datetime.now() - born
-age_in_months = age.days/30.437
-father = datetime(2006, 7, 13) - born
-father_in_months = father.days/30.437
+dad = datetime(2006, 7, 13)
+dead = born + timedelta(days=365*90)
 
-nx = int(ceil(sqrt(months)))
+n_months = \
+    len([0 for a in rrule.rrule(rrule.MONTHLY, dtstart=born, until=dead)])
+nx = int(ceil(sqrt(n_months)))
+nx = 2*12
 
-x = months*[0]
-y = months*[0]
-color = months*['']
+color = n_months*['']
 x_counter = cycle(range(nx))
-for i in range(months):
-    if i < father_in_months:
+i = 0
+age = 0
+x = []
+y = []
+
+for dtime in rrule.rrule(rrule.MONTHLY, dtstart=born, until=dead):
+    if dtime < dad:
         color[i] = 'lightblue'
-    elif i < age_in_months - 1:
-        color[i] = 'olive'
-    elif i < age_in_months:
+    elif dtime.year == datetime.now().year and \
+         dtime.month == datetime.now().month:
         color[i] = 'red'
+        age = i
+    elif dtime < datetime.now():
+        color[i] = 'olive'
     else:
         color[i] = 'orange'
-    x[i] = next(x_counter)
-    y[i] = int(floor(i/nx))
+    x.append(next(x_counter))
+    y.append(int(floor(i/nx)))
+    i += 1
+
+
 color[0] = 'pink'
 color[-1] = 'black'
 
@@ -37,5 +45,5 @@ _, ax = plt.subplots(1, 1)
 ax.scatter(x, y, c=color)
 ax.axis('equal')
 ax.grid(False)
-ax.set_title(f'age {age_in_months:4.2f} months')
+ax.set_title(f'age {age} months. one row = {nx} months')
 plt.show()
