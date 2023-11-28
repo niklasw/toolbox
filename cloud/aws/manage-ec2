@@ -39,7 +39,8 @@ function test_connection()
     return $?
 }
 
-SELECTED_INSTANCE=${AWS_INSTANCE:-"i-08866845398612bab"}
+# SELECTED_INSTANCE=${AWS_INSTANCE:-"i-08866845398612bab"}
+SELECTED_INSTANCE=${AWS_INSTANCE}
 
 function list_instances()
 {
@@ -53,6 +54,15 @@ function get_instance_state()
     aws ec2 describe-instances --output text \
         --query "Reservations[*].Instances[*].State.Name" \
         --filters Name=instance-id,Values=$1
+}
+
+function get_instances_state()
+{
+    for instance in $(list_instances)
+    do
+        state=$(get_instance_state $instance)
+        echo $instance $state
+    done
 }
 
 function stop_instance()
@@ -169,7 +179,12 @@ do
             break
             ;;
         state|status)
-            get_instance_state $SELECTED_INSTANCE
+            if [[ -z "$SELECTED_INSTANCE" ]]
+            then
+                get_instances_state
+            else
+                get_instance_state $SELECTED_INSTANCE
+            fi
             shift 1
             break
             ;;
