@@ -6,8 +6,8 @@ from interactor2 import interactor
 def getArgs(i):
     from optparse import OptionParser
     import os
-    parser=OptionParser(description="One measure of simulation speed. Can run interactively or parsing a log")
-    parser.add_option('-f','--logfile',dest='logfile',default=None, help='Optional log file to parse data from')
+    parser=OptionParser(description="One measure of simulation speed. Can run interactively or parsing a log. If checkMesh.log exists, it reads cell count automatically.")
+    parser.add_option('-f','--logfile',dest='logfile',default=None, help='Simulation log file to parse data from')
     parser.add_option('-V','--foamversion',dest='foamversion',default=2, help='Foam version (major only)')
     opts,args=parser.parse_args()
 
