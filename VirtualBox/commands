@@ -1,0 +1,25 @@
+vboxmanage showvminfo WinDev2002Eval
+VBoxManage natnetwork add -t nat-int-network -n "192.168.15.0/24" -e -h on
+VBoxManage list natnetworks
+
+systemctl list-unit-files|grep vbox
+systemctl stop vboxservice.service
+systemctl stop vboxdrv.service
+sudo vboxmanage extpack install Oracle_VM_VirtualBox_Extension_Pack-6.1.4.vbox-extpack
+
+#Did not work: vboxmanage guestcontrol WinDev2002Eval updateadditions  --source /usr/share/virtualbox/VBoxGuestAdditions.iso --verbose
+#Did not work: vboxmanage modifyvm WinDev2002Eval --accelerate2dvideo on
+
+# Add dvd and open for vrdp (rdesktop)
+vboxmanage sharedfolder add WinDev2002Eval --name epic_f --hostpath /home/niklas/F
+vboxmanage storagectl WinDev2002Eval --name IDE1 --add ide
+vboxmanage storageattach WinDev2002Eval --storagectl IDE1 --port 0 --device 0 --type dvddrive --medium /usr/share/virtualbox/VBoxGuestAdditions.iso
+vboxmanage modifyvm WinDev2002Eval --vrde on
+
+# Get IP address etc
+vboxmanage guestproperty enumerate WinDev2002Eval
+
+# More resolution options
+vboxmanage setextradata global GUI/MaxGuestResolution any
+vboxmanage setextradata WinDev2002Eval "CustomVideoMode1" "Width x Height x Bpp"
+vboxmanage controlvm WinDev2002Eval setvideomodehint Width Height Bpp

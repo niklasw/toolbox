@@ -1,0 +1,5 @@
+az storage container list --account-name equadiststorage -o table
+az storage account list -o table
+az storage blob list --container-name ice-batch --account-name equadiststorage -o table
+az login --tenant 73a59521-e989-4ac7-bbf3-ede3f74195e6 --allow-no-subscriptions
+az storage account keys list --account-name equadiststorage -o table
