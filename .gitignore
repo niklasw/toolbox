@@ -4,5 +4,8 @@
 *.pyc
 *.bak
 __pycache__
+**.sif
+**.tgz
+
 
 
