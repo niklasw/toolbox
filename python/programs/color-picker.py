@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import pygtk
+import pygtk2
 pygtk.require('3.0')
 import gtk
 
@@ -21,7 +21,7 @@ class ColorPicker:
         colors = [f.red,f.green,f.blue]
         rgb = [int(a/257.0) for a in colors]
         hx = ':'.join([a[2:] for a in map(hex,colors)])
-        print 'RGB = {0:02d} {1:02d} {2:02d}'.format(*rgb)
+        print('RGB = {0:02d} {1:02d} {2:02d}'.format(*rgb))
         #print '#{0}'.format(hx)
 
 prog = ColorPicker()

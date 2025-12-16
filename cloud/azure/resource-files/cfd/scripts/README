@@ -1,0 +1,2 @@
+singularity cannot be stored on a microsoft'ish share, since it breaks the
+necessary setuid bit!

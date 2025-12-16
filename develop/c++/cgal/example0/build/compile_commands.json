@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/niklas/toolbox/develop/c++/cgal/example0/build",
+  "command": "/usr/lib64/ccache/c++ -DCGAL_USE_GMPXX=1 -O3 -DNDEBUG -frounding-math -o CMakeFiles/CGALExample.dir/main.cpp.o -c /home/niklas/toolbox/develop/c++/cgal/example0/main.cpp",
+  "file": "/home/niklas/toolbox/develop/c++/cgal/example0/main.cpp",
+  "output": "CMakeFiles/CGALExample.dir/main.cpp.o"
+}
+]

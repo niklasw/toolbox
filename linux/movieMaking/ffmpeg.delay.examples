@@ -1,0 +1,1 @@
+ffmpeg -vcodec mjpeg -f v4l2 -r 30 -video_size 1920x1280 -i /dev/video4 -vf tpad=start_duration=30  -f h264 - | ffplay -

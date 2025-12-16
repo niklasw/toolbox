@@ -6,6 +6,9 @@ from airProperties import AirProperties
 from interactor2 import interactor
 
 
+def pa2mH2O(pa):
+    return pa/(9.81*1e3)
+
 class Flow:
     def __init__(self,Q=0.1,media=AirProperties()):
         self.media=media
@@ -17,6 +20,8 @@ class Pipe:
         self.diameter=float(diameter)
         self.rough = rough
         self.area = pi*self.diameter**2/4
+        self.volume = self.area * self.length
+        self.surface_area = pi * self.diameter * self.length
 
 
 class pipeFlow:
@@ -69,10 +74,17 @@ if __name__=='__main__':
 
     p = pipeFlow(pipe,flow)
 
-    print ''
+    print('Pipe info')
+    i.info('* '*20)
+    i.info(f'Surface area = {pipe.surface_area:.02f} m2')
+    i.info(f'Enclosed vol = {pipe.volume*1000:.02f} l')
+    print('')
+
+    print('This is AIR!')
     i.info('* '*20)
     i.info('Re            = %0.1e' % (p.Re()) )
-    i.info('Pressure loss = %0.2e Pa' % (p.pressureLoss()) )
+    i.info('Pressure loss = %0.2e Pa' % (p.pressureLoss()))
+    i.info('Pressure in mm H2O = %0.1f' % (1e3 * pa2mH2O(p.pressureLoss())))
     i.info('* '*20)
-    print
+    print()
 

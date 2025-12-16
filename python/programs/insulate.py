@@ -212,8 +212,7 @@ roof.append(layer(thickness=0.028*2,cc=CC,components=[studs,luftspalt],insulatio
 K0roof = buildingSurface(name='K0_Roof', element='roof')
 K0roof.append(layer(thickness=0.013,cc=CC,components=[gips]))
 K0roof.append(layer(thickness=0.028,cc=CC,components=[boards]))
-K0roof.append(layer(thickness=0.145,cc=CC,components=[flexiBatts,studs]))
-K0roof.append(layer(thickness=0.220,cc=CC,components=[flexiBatts,studs]))
+K0roof.append(layer(thickness=0.360,cc=CC,components=[isoCell,studs]))
 K0roof.append(layer(thickness=0.035,cc=CC,components=[studs,luftspalt],insulation=False))
 K0roof.append(layer(thickness=0.023,cc=CC,components=[boards],insulation=False))
 
@@ -232,7 +231,7 @@ print('House wall total area  [m2] = {0:3.0f}'.format(House.totalWallArea()))
 print('House roof area        [m2] = {0:3.0f}'.format(House.roofArea()))
 print('House windows area     [m2] = {0:3.0f}'.format(House.totalWindowArea()))
 
-avgDeltaT = 22-(6)
+avgDeltaT = 22-(-3)
 lossRoof = roof.U()*House.roofArea()
 lossOldWall = oldWall.U()*House.oldWallsArea()
 lossNewWall = newWall.U()*House.newWallsArea()

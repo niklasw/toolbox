@@ -16,7 +16,7 @@ class AirProperties:
         return -1.1555E-14*self.T**3 + 9.5728E-11*self.T**2 + 3.7604E-08*self.T - 3.4484E-06
 
     def dynamicViscosity(self):
-        return self.kinematicViscosity()*self.densityIdealGasLaw()
+        return self.kinematicViscosity()*self.density()
 
     def SutherlandDynamicViscosity(self):
         mu_0 = 18.27e-6
@@ -33,6 +33,11 @@ class AirProperties:
 
     def densityPolynomial(self):
         return 360.77819*self.T**(-1.00336)
+
+    def density(self, method=0):
+        if method == 0:
+            return self.densityIdealGasLaw()
+        return self.densityPolynomial()
 
     def specificHeat(self):
         return 1.9327E-10*self.T**4 - 7.9999E-07*self.T**3 + 1.1407E-03*self.T**2 - 4.4890E-01*self.T + 1.0575E+03

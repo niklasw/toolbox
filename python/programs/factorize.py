@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
     Factor a number
 
@@ -35,7 +36,7 @@ def factor(n, noduplicates = False):
 if __name__ == "__main__":
     import sys
 
-    print "Enter an integer:"
+    print("Enter an integer:")
     number = sys.stdin.readline()
-    print "Factors: " + str(factor(int(number), True))
+    print("Factors: " + str(factor(int(number), True)))
 

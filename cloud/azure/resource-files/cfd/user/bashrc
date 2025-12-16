@@ -1,0 +1,55 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+
+# User specific aliases and functions
+
+# Only in interactive session
+if [[ $- == *i* ]]
+then
+    # -----------------------------------------------------------------
+    # KEY BINDINGS etc.
+    # -----------------------------------------------------------------
+    
+    [[ -r $HOME/.xmodmap ]] && xmodmap $HOME/.xmodmap
+    
+    bind '"\e[B": history-search-forward'
+    bind '"\e[A": history-search-backward'
+    
+    shopt -s direxpand
+
+    function today()
+    {
+        date +%Y-%m-%d
+    }
+    function now()
+    {
+        date +%Y-%m-%d:%H.%M.%S
+    }
+ 
+    PROMPT_GREEN="\[\033[32m\]"
+    PROMPT_GREEN_B="\[\033[1;32m\]"
+    PROMPT_RED="\[\033[31m\]"
+    PROMPT_RED_B="\[\033[1;31m\]"
+    PROMPT_BLUE="\[\033[34m\]"
+    PROMPT_BLUE_B="\[\033[1;34m\]"
+    PROMPT_LBLUE="\[\033[94m\]"
+    PROMPT_BLACK="\[\033[30m\]"
+    PROMPT_BLACK_B="\[\033[1;30m\]"
+    PROMPT_0="\[\033[0m\]"
+
+    PS1="${PROMPT_BLUE_B}aznode${PROMPT_0}:${PROMPT_LBLUE}\w\n${PROMPT_0}${PROMPT_GREEN}\u ${PROMPT_GREEN}>${PROMPT_0}"
+
+    export EDITOR="vim"
+
+fi
+ 
+export GOPATH=${HOME}/go
+export PATH=/usr/local/go/bin:${PATH}:${GOPATH}/bin
+
+export MPI_HOME=/usr/local/openmpi
+export PATH=$MPI_HOME/bin:$PATH

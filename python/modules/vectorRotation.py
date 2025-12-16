@@ -68,8 +68,7 @@ class projectionRotationMatrix:
     def rotate(self,v):
         return array(self.R.dot(v))[0]
 
-def tryRotationMatrix():
-    v=[0,1,0]
+def tryRotationMatrix(v=[0,1,0]):
     v=array(v)
     M=rotationMatrix(90,0,0)
     for o in ['xyz','xzy','zxy','zyx','yxz','yzx']:
@@ -89,5 +88,5 @@ def tryProjectionRotationMatrix():
 
 
 if __name__=="__main__":
-    tryProjectionRotationMatrix()
+    tryRotationMatrix([1,0,0])
 

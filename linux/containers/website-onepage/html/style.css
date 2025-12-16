@@ -1,0 +1,100 @@
+/* Basic reset for consistent styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    /* Prevents all scrolling on the page */
+    overflow: hidden;
+    height: 100%;
+    font-family: sans-serif;
+}
+
+/* Styles the header and positions the logo */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+header a {
+    text-decoration: none;
+    color: #333;
+    margin-right: 20px;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+/* Container for the full-screen pages */
+main {
+    height: 100vh;
+    width: 100vw;
+    /* Uses CSS Grid to stack the sections on top of each other */
+    display: grid;
+    grid-template-rows: repeat(3, 100vh);
+    scroll-snap-type: y mandatory;
+}
+
+.page {
+    /* Each section takes up 100% of the viewport height and width */
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    scroll-snap-align: start;
+}
+
+/* Styling for each section to give them different looks */
+#section1 {
+    background-color: #ff6347; /* Tomato */
+}
+
+#section2 {
+    background-color: #4682b4; /* SteelBlue */
+}
+
+#section3 {
+    background-color: #3cb371; /* MediumSeaGreen */
+}
+
+.leftcontent
+{
+    width: 45%;
+    height: 90vh;
+    margin: 20px;
+    margin-top: 100px;
+    border-radius: 10px;
+    border-width: 3px;
+    border-color: #ffffff;
+    border-style: solid;
+    float: left;
+}
+
+.rightcontent
+{
+    width: 45%;
+    height: 90vh;
+    margin: 20px;
+    margin-top: 100px;
+    border-radius: 10px;
+    border-width: 3px;
+    border-color: #000000;
+    border-style: solid;
+    float: right;
+}

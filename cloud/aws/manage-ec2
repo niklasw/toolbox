@@ -20,6 +20,7 @@ function usage()
         start
         stop
         set-type <t3.micro|t3.medium>
+        get-ip
 
     Options (must come first):
         -i <instance-id>    Use instance instance-id
@@ -84,11 +85,23 @@ function get_instance_type()
         --filters Name=instance-id,Values=$1
 }
 
+function describe_instances()
+{
+    aws ec2 describe-instances \
+        --query "Reservations[].Instances[].{ID:InstanceId,Name:Tags[?Key=='Name']|[0].Value}" \
+        --output text
+}
+
+
 function set_instance_type()
 {
     case $2 in
         t3.micro) ;;
         t3.medium) ;;
+        r7a.xlarge) ;;
+        r7a.4xlarge) ;;
+        r7a.8xlarge) ;;
+        r7a.12xlarge) ;;
         *)
             echo "wrong instance type"
             exit 1
@@ -141,6 +154,14 @@ function select_instance()
     echo $SELECTED_INSTANCE
 }
 
+function get_ip()
+{
+    INSTANCE_ID=$1
+    aws ec2 describe-instances --output text --query \
+        "Reservations[*].Instances[*].PublicIpAddress" \
+        --filters Name=instance-id,Values=$INSTANCE_ID
+}
+
 for a in $@
 do
     case $a in
@@ -169,7 +190,7 @@ do
             shift 1
             ;;
         list)
-            list_instances
+            describe_instances
             shift 1
             break
             ;;
@@ -206,6 +227,11 @@ do
         set-type)
             set_instance_type $SELECTED_INSTANCE $2
             shift 2
+            ;;
+        get-ip)
+            get_ip $SELECTED_INSTANCE
+            shift 1
+            break
             ;;
         *)
             echo -e "Unknown command $1\n"

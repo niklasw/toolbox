@@ -1,0 +1,1 @@
+[{"pkgName":"cl-user","text":"(load \"format-tests.lisp\")"},{"pkgName":"cl-user","text":"(call-my-function 3)"},{"pkgName":"cl-user","text":"(testwrite 'a 'b)"},{"pkgName":"cl-user","text":"(load \"format-tests.fasl\")"},{"pkgName":"cl-user","text":"(test-write 'a 'b)"},{"pkgName":"cl-user","text":"(circleArea 3)"},{"pkgName":"cl-user","text":"(call-my-function 1)"}]

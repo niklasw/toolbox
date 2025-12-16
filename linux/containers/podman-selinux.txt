@@ -1,0 +1,10 @@
+# podman run
+issues permission denied on libraries, e.g. glibc
+
+Find the "graphRoot"
+# podman info|grep graphRoot
+
+# semanage fcontext -a -e /var/lib/containers <graphRoot_path>
+# restorecon -R -v <graphRoot_path>
+
+

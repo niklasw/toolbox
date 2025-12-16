@@ -60,8 +60,8 @@ class Clamp:
     def __init__(self,deltaT):
         self.deltaT=deltaT
     def flux(self):
-        #return 1.28*(self.deltaT) # From openfoam simulation
-        return 0.0*(self.deltaT) # From openfoam simulation
+        return 1.28*(self.deltaT) # From openfoam simulation
+        #return 0.0*(self.deltaT) # From openfoam simulation
 
 class PipeSection:
     def __init__(self,dx=1.0,D=40e-3,t=2e-3,massFlux=1.0,solid=Solid(),gas_i=Gas(), gas_e=Gas(), shieldRadius=0):

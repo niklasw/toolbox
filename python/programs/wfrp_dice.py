@@ -50,7 +50,7 @@ class RPC:
     def __init__(self, name, specie, n_rolls=3):
         R = DiceRoll()
         self.defs = self.attr_defs[specie]
-        roll = [R.roll_max(n,a, n_rolls=n_rolls) for n,a in self.defs.items()]
+        roll = [R.roll_max(n, a, n_rolls=n_rolls) for n,a in self.defs.items()]
         self.attributes = dict(zip(self.attr_names, roll))
 
     def bonus(self,attribute):
@@ -90,7 +90,4 @@ def roll():
     print(D.d100())
 
 if __name__ == '__main__':
-    roll()
-
-
-
+    character()

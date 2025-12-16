@@ -1,0 +1,18 @@
+version: "3.3"
+
+services:
+  ice-cfd:
+    image: "localhost/ubuntu-24.04-openfoam-equa"
+    container_name: ice-cfd
+    restart: unless-stopped
+    user: cfd
+    ports:
+      - 4444:4444
+      - 4445:4445
+      - 5000:5000
+    environment:
+      - CFD_N_CORES=4
+      - NATS_SERVER=
+    command: ["/opt/cfd/bin/start-cfd-service.sh", "sleep"]
+
+

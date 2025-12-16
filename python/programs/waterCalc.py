@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import sys
 import numpy as np
-import scipy
 from matplotlib import pyplot as plt
 
 def Info(s):
@@ -20,14 +19,15 @@ class propertyTable:
     2 12
     '''
 
-    def __init__(self,order=8):
+    def __init__(self,order=8, useKelvin=False):
         import numpy as np
         self.polynomeOrder = order
         self.headerNames = self.dataTableHeader.split()
         rawData = np.fromstring(self.dataTable,sep = ' ')
         nCols = len(self.headerNames)
-        nRows = len(rawData)/nCols
+        nRows = int(len(rawData)/nCols)
         self.properties = np.reshape(rawData,(nRows,nCols)).transpose()
+        self.useKelvin = useKelvin
 
         self.propertyName = ''
         self.variableName = ''
@@ -63,12 +63,15 @@ class propertyTable:
     def selectProperty(self,propertyName,variableName = 'T'):
         self.propertyName = propertyName
         self.variableName = variableName
-        self.X = self.getPropertyColumn(variableName)
+        shift = 273.15 if self.useKelvin else 0
+        self.X = self.getPropertyColumn(variableName) + shift
         self.Y = self.getPropertyColumn(propertyName)
         self.mkPolynomial()
 
     def showProperty(self):
         T = np.linspace(0,200,1000)
+        if self.useKelvin:
+            T += 273.15
         plt.plot(self.X, self.Y,'o',label=self.propertyName)
         plt.plot(T,self.polynome(T),label=self.propertyName)
         plt.legend()
@@ -116,15 +119,18 @@ class waterProperties(propertyTable):
         200   0.158  851.7  0.92   1550    864    4.51   2.329
     '''
 
-    def __init__(self):
-        propertyTable.__init__(self,order=8)
+    def __init__(self, order=8):
+        propertyTable.__init__(self,order, useKelvin=True)
 
 if __name__ == '__main__':
-    water = waterProperties()
+    water = waterProperties(4)
     water.selectProperty('Pr')
-    print(water.getPropertyValue(128.0))
     water.printPolynomeAsString()
     
     water.selectProperty('rho')
+    water.printPolynomeAsString()
+    water.showProperty()
+
+    water.selectProperty('nu')
     water.printPolynomeAsString()
     water.showProperty()
